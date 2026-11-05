@@ -4,29 +4,74 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export async function login(formData: FormData) {
-  const supabase = await createClient();
-  const email = String(formData.get("email") || "").trim();
+  const email = String(formData.get("email") || "").trim().toLowerCase();
   const password = String(formData.get("password") || "");
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) redirect(`/login?error=${encodeURIComponent(error.message)}`);
+  if (!email || !password) {
+    redirect(`/login?error=${encodeURIComponent("Email dan kata sandi wajib diisi.")}`);
+  }
+
+  let errorMessage: string | null = null;
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      const raw = error.message;
+      const lower = raw.toLowerCase();
+      if (lower.includes("email not confirmed") || lower.includes("email_not_confirmed")) {
+        errorMessage = "Email belum diverifikasi. Buka email pendaftaran dan klik tautan verifikasi sebelum masuk.";
+      } else if (lower.includes("invalid login credentials")) {
+        errorMessage = "Email atau kata sandi tidak sesuai. Periksa kembali atau daftar jika belum memiliki akun.";
+      } else {
+        errorMessage = raw;
+      }
+    }
+  } catch (error) {
+    errorMessage = error instanceof Error ? error.message : "Tidak dapat menghubungi layanan autentikasi.";
+  }
+
+  if (errorMessage) redirect(`/login?error=${encodeURIComponent(errorMessage)}`);
   redirect("/dashboard");
 }
 
 export async function register(formData: FormData) {
-  const supabase = await createClient();
   const displayName = String(formData.get("display_name") || "").trim();
-  const email = String(formData.get("email") || "").trim();
+  const email = String(formData.get("email") || "").trim().toLowerCase();
   const password = String(formData.get("password") || "");
-  if (displayName.length < 2 || password.length < 8) {
-    redirect("/register?error=" + encodeURIComponent("Nama minimal 2 karakter dan kata sandi minimal 8 karakter."));
+
+  if (displayName.length < 2) {
+    redirect(`/register?error=${encodeURIComponent("Nama lengkap minimal 2 karakter.")}`);
   }
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { display_name: displayName } }
-  });
-  if (error) redirect(`/register?error=${encodeURIComponent(error.message)}`);
-  redirect("/login?registered=1");
+  if (!email || !email.includes("@")) {
+    redirect(`/register?error=${encodeURIComponent("Masukkan alamat email yang valid.")}`);
+  }
+  if (password.length < 8) {
+    redirect(`/register?error=${encodeURIComponent("Kata sandi minimal 8 karakter.")}`);
+  }
+
+  let errorMessage: string | null = null;
+  let hasSession = false;
+  try {
+    const supabase = await createClient();
+    const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+    const vercelUrl = process.env.VERCEL_URL?.trim();
+    const siteUrl = (configuredSiteUrl || (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000")).replace(/\/$/, "");
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: displayName },
+        emailRedirectTo: `${siteUrl}/auth/callback?next=%2Fdashboard`
+      }
+    });
+    if (error) errorMessage = error.message;
+    hasSession = Boolean(data.session);
+  } catch (error) {
+    errorMessage = error instanceof Error ? error.message : "Pendaftaran belum dapat diproses. Periksa koneksi Supabase.";
+  }
+
+  if (errorMessage) redirect(`/register?error=${encodeURIComponent(errorMessage)}`);
+  if (hasSession) redirect("/dashboard");
+  redirect(`/register?success=check-email&email=${encodeURIComponent(email)}`);
 }
 
 export async function signOut() {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { login } from "@/app/actions";
+import SubmitButton from "@/components/SubmitButton";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; registered?: string }> }) {
   const params = await searchParams;
@@ -15,7 +16,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <form action={login} className="mt-6 space-y-4">
           <div><label className="mb-2 block text-sm font-bold">Email</label><input className="input" type="email" name="email" required placeholder="nama@email.com"/></div>
           <div><label className="mb-2 block text-sm font-bold">Kata sandi</label><input className="input" type="password" name="password" required placeholder="Masukkan kata sandi"/></div>
-          <button className="btn-primary w-full py-3" type="submit">Masuk</button>
+          <SubmitButton pendingLabel="Memeriksa akun...">Masuk</SubmitButton>
         </form>
         <p className="mt-6 text-center text-sm text-[#718078]">Belum punya akun? <Link className="font-black text-[#2e8b62]" href="/register">Daftar sekarang</Link></p>
       </div>

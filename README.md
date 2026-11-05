@@ -70,6 +70,7 @@ Salin `.env.example` menjadi `.env.local`, lalu isi kredensial Supabase:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_OR_PUBLIC_KEY
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 Jika project Supabase menggunakan publishable key baru, dapat digunakan sebagai alternatif:
@@ -118,19 +119,39 @@ Jalankan migration sebelum seed. File seed dapat dijalankan ulang; data inti mem
 7. Tambahkan Environment Variables berikut untuk **Production** dan **Preview**:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (atau `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`)
+   - `NEXT_PUBLIC_SITE_URL` (isi dengan domain utama Vercel, misalnya `https://nama-project.vercel.app`)
 8. Klik Deploy.
 
 Halaman yang membutuhkan data Supabase ditandai `force-dynamic`, sehingga tidak diprerender saat build. Ini mencegah proses `next build` mencoba membaca sesi/database Supabase saat deployment. Koneksi Supabase tetap wajib tersedia saat pengguna membuka fitur login, dashboard, materi, latihan, profil, toko, atau dashboard guru.
 
-### C. Pengaturan URL Supabase Auth
+### C. Pengaturan URL Supabase Auth dan verifikasi email
 
-Setelah deployment berhasil, buka Supabase → Authentication → URL Configuration. Atur Site URL ke domain Vercel dan tambahkan domain deployment ke Redirect URLs, misalnya:
+Setelah deployment berhasil, buka Supabase → Authentication → URL Configuration.
 
-```text
-https://NAMA-PROJECT.vercel.app/**
-```
+- Atur **Site URL** ke domain utama Vercel, misalnya `https://nama-project.vercel.app`.
+- Tambahkan URL callback berikut ke **Redirect URLs**: `https://nama-project.vercel.app/auth/callback`.
+- Pastikan provider **Email** aktif pada Authentication → Providers.
+- Jika verifikasi email diaktifkan, siswa harus membuka email konfirmasi sebelum dapat login. Aplikasi akan menampilkan instruksi setelah pendaftaran.
+- Pastikan `NEXT_PUBLIC_SITE_URL` di Vercel sama dengan domain utama tersebut, lalu redeploy setelah mengubah Environment Variables.
 
-## 5. Membuat akun guru
+Route `/auth/callback` menukar kode verifikasi menjadi sesi login Supabase dan mengarahkan siswa ke dashboard.
+
+## 5. Alur registrasi dan login siswa
+
+1. Siswa membuka `/register`, mengisi nama lengkap, email, dan kata sandi minimal 8 karakter.
+2. Aplikasi mengirim pendaftaran ke Supabase Auth dan menyimpan `display_name` sebagai metadata pengguna.
+3. Jika Supabase mengaktifkan konfirmasi email, halaman registrasi menampilkan instruksi untuk membuka email dan mengklik tautan verifikasi. Tautan diarahkan ke `/auth/callback`, lalu sesi ditukar dan pengguna diarahkan ke dashboard.
+4. Jika konfirmasi email dinonaktifkan, sesi langsung dibuat dan pengguna diarahkan ke `/dashboard`.
+5. Profil siswa dibuat otomatis oleh trigger `on_auth_user_created` dari migration `001_init.sql`.
+
+Jika tombol daftar tidak menghasilkan akun, periksa:
+- Environment Variables `NEXT_PUBLIC_SUPABASE_URL` dan `NEXT_PUBLIC_SUPABASE_ANON_KEY` atau `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- Migration `supabase/migrations/001_init.sql` sudah dijalankan pada project Supabase yang sama.
+- Authentication → Providers → Email dalam keadaan aktif.
+- Authentication → URL Configuration memiliki URL callback domain aplikasi.
+- Authentication → Users untuk memastikan apakah user baru benar-benar tercatat.
+
+## 6. Membuat akun guru
 
 Registrasi normal membuat role `student`. Untuk mengubah akun tertentu menjadi guru:
 
@@ -148,7 +169,7 @@ where id = 'UUID-AKUN-GURU';
 
 Jangan memberikan role guru/admin kepada pengguna umum.
 
-## 6. Pemeriksaan sebelum rilis
+## 7. Pemeriksaan sebelum rilis
 
 ```bash
 npm run typecheck
