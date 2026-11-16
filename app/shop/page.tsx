@@ -24,7 +24,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         <article className="surface p-6">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fff0f0] text-[#f06b75]"><Heart size={30} fill="currentColor"/></div>
           <h2 className="mt-4 text-xl font-black">Isi ulang 5 nyawa</h2><p className="mt-2 text-sm leading-6 text-[#718078]">Pulihkan energi belajar agar kamu dapat melanjutkan sesi dan mengulang soal yang belum benar.</p>
-          <div className="my-5 flex items-center gap-2 text-lg font-black text-sky-600"><Gem size={21}/>100 berlian</div>
+          <div className="my-5 flex items-center gap-2 text-lg font-black text-sky-600"><Gem size={21}/>25 berlian</div>
           <form action={buyHeartsFromShop}><button className="btn-primary w-full" type="submit" disabled={p.hearts >= 5}> {p.hearts >= 5 ? "Nyawa sudah penuh" : "Tukar berlian"}</button></form>
         </article>
         <article className="surface flex flex-col justify-between bg-[#fff4e5] p-6">

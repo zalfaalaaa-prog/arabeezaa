@@ -281,7 +281,7 @@ begin
 end;
 $$;
 
-create or replace function public.buy_hearts(p_cost integer default 100)
+create or replace function public.buy_hearts(p_cost integer default 25)
 returns jsonb
 language plpgsql
 security definer
@@ -291,12 +291,12 @@ declare
   v_user uuid := auth.uid();
   v_diamonds integer;
   v_hearts integer;
-  v_cost integer := greatest(1, least(coalesce(p_cost, 100), 10000));
+  v_cost integer := greatest(1, least(coalesce(p_cost, 25), 10000));
 begin
   if v_user is null then raise exception 'Silakan login terlebih dahulu.'; end if;
   select diamonds, hearts into v_diamonds, v_hearts from public.profiles where id = v_user for update;
   if v_hearts >= 5 then raise exception 'Nyawa kamu sudah penuh.'; end if;
-  if v_diamonds < v_cost then raise exception 'Berlian tidak cukup. Kamu membutuhkan 100 berlian.'; end if;
+  if v_diamonds < v_cost then raise exception 'Berlian tidak cukup. Kamu membutuhkan 25 berlian.'; end if;
 
   update public.profiles set diamonds = diamonds - v_cost, hearts = 5 where id = v_user;
   return jsonb_build_object('ok', true, 'hearts', 5, 'diamonds', v_diamonds - v_cost);

@@ -31,3 +31,8 @@
 - [ ] Materi At-Ta‘āruf tampil.
 - [ ] Latihan 15 soal dapat diselesaikan.
 - [ ] Profil dan catatan guru dapat dibuka sesuai role.
+
+
+## Database update for the Arabeeza revision
+
+For an existing Supabase project, run `supabase/migrations/002_arabeeza_revision.sql` in SQL Editor after the original migration. This updates the heart refill price to 25 diamonds and adds avatar customization columns. No Vercel environment variable changes are required. Commit/push the revised ZIP contents to GitHub, then redeploy the project on Vercel.

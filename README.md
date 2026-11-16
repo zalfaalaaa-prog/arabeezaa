@@ -4,6 +4,19 @@ ARABEEZA adalah bahan ajar Bahasa Arab inklusif berbasis website untuk siswa kel
 
 Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan Supabase (Auth + PostgreSQL). Struktur ZIP ini sengaja dibuat **langsung di root project**: folder `app/` dan file `package.json` berada sejajar. Karena itu, ketika diunggah ke GitHub, unggah **isi ZIP**, bukan folder pembungkusnya.
 
+## Pembaruan pada revisi ini
+
+- Navigasi mobile menampilkan label Beranda, Capaian, Toko, dan Profil.
+- Maskot kucing Arabeeza tampil di beranda dan selama latihan; logo SVG juga diganti menjadi kucing.
+- Dashboard menampilkan jalur visual 10 level dengan label kesulitan.
+- Jawaban tidak langsung dikoreksi saat dipilih. Siswa harus menekan tombol **Periksa jawaban**.
+- Soal yang meminta arti kosakata tidak menampilkan ulang teks Arab yang merupakan petunjuk jawaban.
+- Isi ulang 5 nyawa diturunkan menjadi 25 berlian; jalankan migration 002 pada database yang sudah ada.
+- Avatar mendapat opsi karakter laki-laki/perempuan, model rambut, kerudung, dan ekspresi wajah.
+- Capaian At-Ta‘āruf dilengkapi tujuh target pembelajaran sesuai dokumen revisi.
+
+**Catatan bank soal:** ZIP sumber hanya menyediakan 15 butir soal untuk Materi 1. Karena itu 10 bulatan level sudah disediakan pada tampilan, tetapi bank soal unik 15 butir untuk masing-masing level (150 butir) belum tersedia dan belum boleh dianggap sudah dibuat. Saat ini level-level tersebut masih mengarah ke bank soal 15 butir yang sama. Materi 2–5 pada dokumen sudah ditampilkan sebagai cakupan panduan/capaian, tetapi belum dibuat menjadi sesi bank soal terpisah.
+
 ## Fitur pada paket awal
 
 - Landing page ARABEEZA, registrasi, login, dan logout.
@@ -11,7 +24,7 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 - Materi 1 At-Ta‘āruf: kosakata berharakat, transliterasi, terjemahan, contoh kalimat, kata tanya, kata ganti, dan dialog.
 - Empat pilihan latihan: campuran 4 maharah, menyimak, membaca/pelafalan, dan percakapan.
 - Sesi latihan maksimal 15 soal, umpan balik benar/salah, serta pengulangan soal yang belum benar.
-- Hadiah XP dan berlian berdasarkan skor; toko untuk menukar 100 berlian menjadi 5 nyawa.
+- Hadiah XP dan berlian berdasarkan skor; toko untuk menukar 25 berlian menjadi 5 nyawa.
 - Profil dan pengaturan avatar dasar.
 - Halaman capaian pembelajaran Fase E.
 - Dashboard guru untuk melihat siswa dan menulis catatan pembelajaran.
@@ -93,7 +106,8 @@ Buka `http://localhost:3000`.
 2. Buka **Project Settings → API** untuk mengambil Project URL dan anon/public key atau publishable key.
 3. Buka **SQL Editor**.
 4. Jalankan seluruh isi `supabase/migrations/001_init.sql`.
-5. Jalankan seluruh isi `supabase/seed.sql` untuk memasukkan Materi 1, kosakata, dialog, dan bank soal.
+5. Jalankan seluruh isi `supabase/migrations/002_arabeeza_revision.sql` untuk harga isi ulang nyawa 25 berlian dan opsi avatar lanjutan.
+6. Jalankan seluruh isi `supabase/seed.sql` untuk memasukkan Materi 1, kosakata, dialog, dan bank soal.
 
 Jalankan migration sebelum seed. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
 

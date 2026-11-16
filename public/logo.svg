@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Arabeeza">
-  <rect width="128" height="128" rx="34" fill="#EAF7EF"/>
-  <path d="M83 28c-18 0-31 13-31 31 0 15 10 25 25 25 9 0 17-4 22-11-2 17-15 29-34 29-22 0-38-16-38-39 0-25 19-44 45-44 5 0 10 1 14 3l-3 6Z" fill="#2E8B62"/>
-  <circle cx="91" cy="88" r="13" fill="#F39A32"/>
-  <path d="M85 88h12M91 82v12" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Maskot kucing Arabeeza">
+ <rect width="128" height="128" rx="34" fill="#EAF7EF"/>
+ <path d="M23 48 28 15 50 35Q64 30 78 35L101 15 105 51Q115 91 64 111Q13 91 23 48Z" fill="#fff" stroke="#34423d" stroke-width="5" stroke-linejoin="round"/>
+ <path d="m31 35 3-13 12 15m37-1 12-14 2 16" fill="#f3a4b3"/>
+ <path d="M27 53Q42 31 57 38Q49 54 29 64M71 38Q91 31 101 54L99 65Q81 55 71 38" fill="#39413f"/>
+ <ellipse cx="47" cy="66" rx="5" ry="7" fill="#263b35"/><ellipse cx="81" cy="66" rx="5" ry="7" fill="#263b35"/>
+ <path d="m61 77 6 0-3 5Z" fill="#ef8e9e"/><path d="M55 87Q64 97 74 87" fill="none" stroke="#34423d" stroke-width="3" stroke-linecap="round"/>
 </svg>

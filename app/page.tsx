@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BookOpen, Flame, Gem, Headphones, Mic, ShieldCheck, Sparkles } from "lucide-react";
+import CatMascot from "@/components/CatMascot";
 
 export default function HomePage() {
   return (
@@ -21,7 +22,7 @@ export default function HomePage() {
             <div className="absolute -right-5 -top-5 h-36 w-36 rounded-full bg-[#ffedcf] blur-2xl"/>
             <div className="surface relative rotate-1 p-6">
               <div className="flex items-center justify-between"><span className="rounded-full bg-[#fff4e5] px-3 py-1 text-xs font-black text-[#bd741b]">MATERI 1</span><span className="flex items-center gap-1 font-black text-orange-500"><Flame size={18} fill="currentColor"/> 7</span></div>
-              <div className="my-8 rounded-3xl bg-[#eaf7ef] px-5 py-8 text-center"><p className="arabic text-5xl font-bold">اَلسَّلَامُ عَلَيْكُمْ</p><p className="mt-3 font-bold text-[#2e8b62]">As-salāmu ‘alaikum</p><p className="mt-1 text-sm text-[#718078]">Semoga keselamatan tercurah kepadamu</p></div>
+              <div className="my-8 rounded-3xl bg-[#eaf7ef] px-5 py-5 text-center"><CatMascot mood="celebrate" size={112} className="mx-auto mb-2"/><p className="arabic text-5xl font-bold">اَلسَّلَامُ عَلَيْكُمْ</p><p className="mt-3 font-bold text-[#2e8b62]">As-salāmu ‘alaikum</p><p className="mt-1 text-sm text-[#718078]">Semoga keselamatan tercurah kepadamu</p></div>
               <div className="grid grid-cols-3 gap-3"><div className="rounded-2xl bg-[#f7faf6] p-3 text-center"><Gem className="mx-auto text-sky-500"/><b className="mt-1 block">Berlian</b></div><div className="rounded-2xl bg-[#f7faf6] p-3 text-center"><Flame className="mx-auto text-orange-500"/><b className="mt-1 block">Streak</b></div><div className="rounded-2xl bg-[#f7faf6] p-3 text-center"><ShieldCheck className="mx-auto text-[#2e8b62]"/><b className="mt-1 block">Progres</b></div></div>
             </div>
             <div className="absolute -bottom-5 -left-5 rounded-2xl bg-[#2e8b62] px-4 py-3 text-sm font-black text-white shadow-soft">يَلَّا نَتَعَلَّمُ! ✨</div>

@@ -111,7 +111,7 @@ export async function buyHearts() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Silakan login kembali." };
-  const { data, error } = await supabase.rpc("buy_hearts", { p_cost: 100 });
+  const { data, error } = await supabase.rpc("buy_hearts", { p_cost: 25 });
   if (error) return { ok: false, error: error.message };
   const { data: profile } = await supabase.from("profiles").select("hearts,diamonds").eq("id", user.id).single();
   return { ok: true, hearts: profile?.hearts ?? 5, diamonds: profile?.diamonds ?? 0, message: data?.message };
@@ -119,7 +119,7 @@ export async function buyHearts() {
 
 export async function buyHeartsFromShop() {
   const supabase = await createClient();
-  const { error } = await supabase.rpc("buy_hearts", { p_cost: 100 });
+  const { error } = await supabase.rpc("buy_hearts", { p_cost: 25 });
   if (error) redirect(`/shop?error=${encodeURIComponent(error.message)}`);
   redirect("/shop?success=1");
 }
@@ -130,12 +130,20 @@ export async function updateAvatar(formData: FormData) {
   if (!user) redirect("/login");
   const avatarSkin = String(formData.get("avatar_skin") || "sawo-matang");
   const avatarOutfit = String(formData.get("avatar_outfit") || "hijau");
-  const allowedSkins = ["sawo-matang", "kuning-langsat", "cokelat", "cerah"];
-  const allowedOutfits = ["hijau", "biru", "oranye", "ungu"];
-  if (!allowedSkins.includes(avatarSkin) || !allowedOutfits.includes(avatarOutfit)) redirect("/profile?error=Pilihan+avatar+tidak+valid");
-  const { error } = await supabase.rpc("update_my_avatar", {
-    p_avatar_skin: avatarSkin,
-    p_avatar_outfit: avatarOutfit
+  const gender = String(formData.get("avatar_gender") || "perempuan");
+  const hair = String(formData.get("avatar_hair") || "panjang");
+  const hijab = String(formData.get("avatar_hijab") || "tidak");
+  const expression = String(formData.get("avatar_expression") || "senyum");
+  const valid = [
+    [avatarSkin, ["sawo-matang", "kuning-langsat", "cokelat", "cerah"]],
+    [avatarOutfit, ["hijau", "biru", "oranye", "ungu"]],
+    [gender, ["laki-laki", "perempuan"]], [hair, ["pendek", "panjang", "keriting"]],
+    [hijab, ["tidak", "ya"]], [expression, ["senyum", "ceria", "serius"]]
+  ] as const;
+  if (valid.some(([value, options]) => !options.includes(value as never))) redirect("/profile?error=Pilihan+avatar+tidak+valid");
+  const { error } = await supabase.rpc("update_my_avatar_v2", {
+    p_avatar_skin: avatarSkin, p_avatar_outfit: avatarOutfit, p_avatar_gender: gender,
+    p_avatar_hair: hair, p_avatar_hijab: hijab, p_avatar_expression: expression
   });
   if (error) redirect(`/profile?error=${encodeURIComponent(error.message)}`);
   redirect("/profile?updated=1");

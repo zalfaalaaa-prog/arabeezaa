@@ -54,6 +54,11 @@ export default async function OutcomesPage() {
         </div>
       </section>
 
+      <section className="surface mt-7 p-5 md:p-6">
+        <div className="mb-4 flex items-center gap-3"><span className="rounded-2xl bg-[#fff0d9] p-3 text-2xl">🐱</span><div><p className="text-xs font-black tracking-[.14em] text-[#2e8b62]">TARGET PEMBELAJARAN</p><h2 className="text-xl font-black">Capaian Materi At-Ta‘āruf</h2></div></div>
+        <p className="mb-4 text-sm leading-6 text-[#718078]">Bahan ajar ini berfokus pada satu tema, yaitu At-Ta‘āruf, dengan cakupan kemampuan berikut:</p>
+        <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-[#50645a]"><li>Mengidentifikasi kosakata dan ungkapan Bahasa Arab yang berkaitan dengan tema At-Ta‘āruf.</li><li>Memahami dan menggunakan kata tanya <span className="arabic font-bold">أَدَوَاتُ الِاسْتِفْهَامِ</span> sesuai konteks kalimat.</li><li>Mengidentifikasi dan menggunakan kata ganti <span className="arabic font-bold">الضَّمَائِرُ</span>.</li><li>Memahami informasi tersurat dan tersirat dari dialog perkenalan sederhana.</li><li>Membaca dan memahami teks pendek berbahasa Arab tentang perkenalan.</li><li>Melakukan percakapan sederhana menggunakan ungkapan perkenalan.</li><li>Menulis kalimat sederhana tentang identitas diri dalam Bahasa Arab.</li></ul>
+      </section>
       <section className="mt-7">
         <h2 className="mb-4 text-xl font-black">Keterampilan berbahasa</h2>
         <div className="grid gap-4 md:grid-cols-2">
