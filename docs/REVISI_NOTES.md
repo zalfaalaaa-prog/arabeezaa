@@ -32,3 +32,12 @@
 - Suara apresiasi dan audio Bahasa Arab memakai Speech Synthesis browser/perangkat. Suara yang tersedia dapat berbeda antarperangkat.
 - Latihan berbicara memakai Speech Recognition jika browser mendukungnya. Jika tidak, siswa tetap dapat memilih jawaban secara manual.
 - Soal dibuat mengikuti cakupan materi At-Ta‘āruf pada LKS yang dilampirkan. Guru tetap disarankan meninjau redaksi dan kunci sebelum digunakan sebagai asesmen resmi.
+
+
+## Revisi v4 — nyawa harian dan efek suara jawaban
+
+- Nyawa akun kembali menjadi 5 pada pergantian hari pukul 00.00 WIB (Asia/Jakarta); reset tidak mengurangi berlian.
+- Reset dipastikan di database saat halaman dimuat, sebelum nyawa dikonsumsi, dan sebelum isi ulang berbayar.
+- Jika aplikasi tetap terbuka melewati tengah malam, komponen sinkronisasi akan memeriksa reset dan memperbarui tampilan. Jika tab tertidur/ditutup, reset diproses saat pengguna kembali membuka aplikasi.
+- Setiap jawaban yang diperiksa menghasilkan bunyi chime: nada naik untuk benar dan nada turun lembut untuk salah. Jawaban benar tetap mendapat suara apresiasi Bagus/Mumtaz/Keren.
+- Database update: jalankan migration `004_daily_hearts_reset.sql` satu kali di Supabase SQL Editor.

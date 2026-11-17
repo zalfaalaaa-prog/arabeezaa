@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Gem, Heart, Mic,
@@ -21,6 +21,35 @@ function speakArabic(text: string) {
   utterance.rate = 0.82;
   window.speechSynthesis.speak(utterance);
   return true;
+}
+
+function playAnswerChime(correct: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    const context = new AudioContextClass();
+    if (context.state === "suspended") void context.resume();
+    const notes = correct ? [880, 1174.66] : [392, 329.63];
+    notes.forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const startAt = context.currentTime + index * 0.105;
+      oscillator.type = correct ? "sine" : "triangle";
+      oscillator.frequency.setValueAtTime(frequency, startAt);
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(correct ? 0.12 : 0.065, startAt + 0.018);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.24);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(startAt);
+      oscillator.stop(startAt + 0.25);
+      if (index === notes.length - 1) oscillator.onended = () => void context.close();
+    });
+  } catch {
+    // Audio is optional; answer checking must keep working if the browser blocks sound.
+  }
 }
 
 function playPraiseSound() {
@@ -76,7 +105,8 @@ export default function PracticeClient({
   level = 1,
   questions,
   initialHearts,
-  initialDiamonds
+  initialDiamonds,
+  initialHeartsResetDate
 }: {
   lessonSlug: string;
   lessonTitle: string;
@@ -85,6 +115,7 @@ export default function PracticeClient({
   questions: Question[];
   initialHearts: number;
   initialDiamonds: number;
+  initialHeartsResetDate: string;
 }) {
   const [queue, setQueue] = useState<Question[]>(questions);
   const [index, setIndex] = useState(0);
@@ -103,6 +134,15 @@ export default function PracticeClient({
   const [recording, setRecording] = useState(false);
   const [verifying, setVerifying] = useState(false);
 
+  useEffect(() => {
+    setHearts(initialHearts);
+    setGameOver(initialHearts <= 0);
+  }, [initialHearts, initialHeartsResetDate]);
+
+  useEffect(() => {
+    setDiamonds(initialDiamonds);
+  }, [initialDiamonds]);
+
   const question = queue[index];
   const progress = Math.min(100, Math.round(((index + (feedback ? 1 : 0)) / Math.max(queue.length, 1)) * 100));
   const score = useMemo(() => Math.round((firstTryCorrect / Math.max(questions.length, 1)) * 100), [firstTryCorrect, questions.length]);
@@ -117,11 +157,13 @@ export default function PracticeClient({
     const correct = normalizeArabic(selected) === normalizeArabic(question.correct_answer);
 
     if (correct) {
+      playAnswerChime(true);
+      playPraiseSound();
       if (!wrongIds.includes(question.id)) setFirstTryCorrect((value) => value + 1);
       setWrongIds((items) => items.filter((id) => id !== question.id));
       setFeedback({ correct: true, message: "Mumtaz! Jawabanmu tepat.", answer: question.correct_answer });
-      playPraiseSound();
     } else {
+      playAnswerChime(false);
       // Every incorrect check consumes one heart, including a retry of the same question.
       let remainingHearts = Math.max(0, hearts - 1);
       try {

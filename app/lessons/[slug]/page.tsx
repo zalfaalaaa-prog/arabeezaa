@@ -69,6 +69,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+  await supabase.rpc("refresh_daily_hearts");
 
   const [{ data: lesson }, { data: vocab }, { data: dialogues }, { data: profile }] = await Promise.all([
     supabase.from("lessons").select("*").eq("slug", slug).eq("is_published", true).single(),

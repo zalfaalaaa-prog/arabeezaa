@@ -107,6 +107,20 @@ export async function saveQuizResult(input: QuizResult) {
   return { ok: true };
 }
 
+export async function refreshDailyHearts() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, hearts: 0, reset: false };
+
+  const { data, error } = await supabase.rpc("refresh_daily_hearts");
+  if (error) return { ok: false, hearts: 0, reset: false, error: error.message };
+  return {
+    ok: true,
+    hearts: Number(data?.hearts ?? 5),
+    reset: Boolean(data?.reset)
+  };
+}
+
 export async function loseHeart() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

@@ -12,6 +12,7 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+  await supabase.rpc("refresh_daily_hearts");
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
   if (!profile || !["teacher", "admin"].includes(profile.role)) redirect("/dashboard");
 

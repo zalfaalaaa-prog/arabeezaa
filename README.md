@@ -11,7 +11,7 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 - Dashboard menampilkan jalur visual 7 tahap dengan ikon ilustratif dan warna dari palet Arabeeza.
 - Jawaban tidak langsung dikoreksi saat dipilih. Siswa harus menekan tombol **Periksa jawaban**.
 - Soal yang meminta arti kosakata tidak menampilkan ulang teks Arab yang merupakan petunjuk jawaban.
-- Setiap jawaban salah mengurangi satu nyawa dan tersimpan di Supabase; isi ulang 5 nyawa memerlukan 25 berlian. Jalankan migration 002 dan 003 pada database yang sudah ada.
+- Setiap jawaban salah mengurangi satu nyawa dan tersimpan di Supabase; isi ulang 5 nyawa memerlukan 25 berlian. Jalankan migration 002, 003, dan 004 pada database yang sudah ada.
 - Avatar mendapat opsi karakter laki-laki/perempuan, model rambut, kerudung, dan ekspresi wajah.
 - Capaian At-Ta‘āruf dilengkapi tujuh target pembelajaran sesuai dokumen revisi.
 
@@ -226,9 +226,9 @@ Versi ini mengganti jalur latihan menjadi 7 tahap dengan 15 soal unik per tahap 
 
 Setelah `001_init.sql`, `002_arabeeza_revision.sql`, dan `seed.sql` pernah dijalankan, jalankan file berikut satu kali melalui Supabase → SQL Editor:
 
-`supabase/migrations/003_materi1_105_questions_and_lives.sql`
+`supabase/migrations/003_materi1_105_questions_and_lives.sql` dan setelah itu `supabase/migrations/004_daily_hearts_reset.sql`
 
-Migration ini mengganti bank soal `mixed` Materi 1 dengan 105 butir dan membuat RPC `consume_heart()` untuk menyimpan pengurangan nyawa setiap jawaban salah. Isi ulang 5 nyawa tetap menggunakan 25 berlian.
+Migration 003 mengganti bank soal `mixed` Materi 1 dengan 105 butir dan membuat RPC `consume_heart()` untuk menyimpan pengurangan nyawa setiap jawaban salah. Migration 004 menambahkan reset otomatis 5 nyawa pada pergantian hari pukul 00.00 WIB. Isi ulang manual tetap menggunakan 25 berlian.
 
 Verifikasi jumlah soal:
 
@@ -248,5 +248,11 @@ Jalankan berurutan:
 2. `supabase/migrations/002_arabeeza_revision.sql`
 3. `supabase/seed.sql`
 4. `supabase/migrations/003_materi1_105_questions_and_lives.sql`
+5. `supabase/migrations/004_daily_hearts_reset.sql`
 
 Setelah database siap, unggah seluruh isi ZIP ke root repository GitHub lalu lakukan redeploy di Vercel. Tidak ada environment variable baru untuk revisi ini.
+
+
+### Regenerasi nyawa harian (revisi v4)
+
+Migration `004_daily_hearts_reset.sql` menambahkan `hearts_reset_date` dan RPC `refresh_daily_hearts()`. Setiap akun mendapat 5 nyawa lagi pada pergantian tanggal pukul 00.00 WIB (Asia/Jakarta), tanpa mengurangi berlian. Jika siswa tidak membuka aplikasi tepat tengah malam, reset tetap diterapkan saat siswa membuka halaman atau kembali ke tab. Efek suara singkat dimainkan setiap kali jawaban diperiksa; jawaban benar juga tetap mendapat ucapan apresiasi Bagus/Mumtaz/Keren.

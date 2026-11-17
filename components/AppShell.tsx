@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BookOpen, Flame, Gem, Heart, Home, ShoppingBag, UserRound, GraduationCap } from "lucide-react";
 import { signOut } from "@/app/actions";
 import CatMascot from "@/components/CatMascot";
+import DailyHeartSync from "@/components/DailyHeartSync";
 
 const links = [
   { href: "/dashboard", label: "Beranda", icon: Home },
@@ -23,6 +24,7 @@ export default function AppShell({
 }) {
   return (
     <div className="min-h-screen">
+      <DailyHeartSync />
       <header className="sticky top-0 z-30 border-b border-[#e7eee8] bg-white/95 backdrop-blur">
         <div className="page-wrap flex min-h-[72px] items-center justify-between gap-4">
           <Link href="/dashboard" className="flex items-center gap-2">

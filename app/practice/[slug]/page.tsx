@@ -18,6 +18,7 @@ export default async function PracticePage({ params, searchParams }: { params: P
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+  await supabase.rpc("refresh_daily_hearts");
 
   const [{ data: lesson }, { data: profile }] = await Promise.all([
     supabase.from("lessons").select("*").eq("slug", slug).eq("is_published", true).single(),
@@ -55,7 +56,7 @@ export default async function PracticePage({ params, searchParams }: { params: P
 
   return (
     <AppShell stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }} role={profile?.role || "student"}>
-      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={questions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} />
+      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={questions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} initialHeartsResetDate={profile?.hearts_reset_date ?? ""} />
     </AppShell>
   );
 }

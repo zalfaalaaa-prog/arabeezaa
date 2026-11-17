@@ -28,6 +28,7 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+  await supabase.rpc("refresh_daily_hearts");
 
   const [{ data: profileData }, { data: lessonsData }, { data: progressData }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),

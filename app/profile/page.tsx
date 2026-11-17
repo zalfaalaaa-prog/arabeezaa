@@ -12,6 +12,7 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+  await supabase.rpc("refresh_daily_hearts");
   const [{ data: profile }, { data: teacherNotes }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("teacher_notes").select("*, lesson:lessons(title)").eq("student_id", user.id).order("created_at", { ascending: false }).limit(10)

@@ -12,6 +12,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+  await supabase.rpc("refresh_daily_hearts");
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
   const p = profile || { role: "student", streak_count: 0, diamonds: 0, hearts: 5 };
 
