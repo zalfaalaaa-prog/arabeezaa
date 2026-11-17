@@ -107,6 +107,15 @@ export async function saveQuizResult(input: QuizResult) {
   return { ok: true };
 }
 
+export async function loseHeart() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, hearts: 0, error: "Sesi login berakhir. Silakan login kembali." };
+  const { data, error } = await supabase.rpc("consume_heart");
+  if (error) return { ok: false, hearts: 0, error: error.message };
+  return { ok: Boolean(data?.ok), hearts: Number(data?.hearts ?? 0), error: data?.message as string | undefined };
+}
+
 export async function buyHearts() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

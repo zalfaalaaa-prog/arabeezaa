@@ -1,23 +1,34 @@
-# Catatan revisi Arabeeza
+# Catatan revisi Arabeeza — pembaruan lanjutan
 
-## Perubahan yang diterapkan
-- Navigasi bawah untuk perangkat mobile dengan label menu.
-- Maskot kucing SVG Arabeeza digunakan pada landing page, dashboard, dan sesi latihan; ikon logo SVG diperbarui.
-- Dashboard memiliki jalur visual 10 level dengan label mudah, menengah, dan menantang.
-- Sesi latihan memakai pola pilih jawaban -> Periksa jawaban -> tampilkan koreksi. Jawaban tidak langsung dinilai saat diklik.
-- Pengurangan nyawa dilakukan ketika jawaban diperiksa dan dinyatakan salah.
-- Petunjuk Arab yang menduplikasi kata target disembunyikan pada prompt yang meminta arti kata/kosakata.
-- Biaya isi ulang 5 nyawa menjadi 25 berlian.
-- Avatar memiliki opsi gender, rambut, kerudung, ekspresi, warna kulit, dan warna pakaian.
-- Capaian At-Ta'aruf mencantumkan tujuh target pembelajaran dari dokumen revisi.
+## Perubahan pada versi ini
+- Jalur belajar Materi 1 diubah menjadi **7 bulatan** dengan ikon ilustratif (tanpa angka dan tanpa label mudah/menengah/menantang).
+- Warna jalur dan kartu materi mengikuti palet referensi: cream `#FFEDD6`, sage `#A5AF79`, cokelat `#827148`, dan salmon `#E8A07C` beserta turunannya.
+- Judul akses panduan diubah menjadi **Materi 1**.
+- Halaman Materi 1 diperluas: tujuan pembelajaran, pertanyaan pemantik, salam dan perkenalan, kosakata, adawatul istifham, dhamir, dhamir munfashil/muttashil, dialog, bacaan, penerapan, dan empat maharah.
+- Materi 1 memiliki **105 soal unik**, dibagi menjadi 7 tahap dengan 15 soal per tahap.
+- Setiap tahap menggabungkan keterampilan menyimak, berbicara, membaca, dan menulis.
+- Pertanyaan listening tidak menampilkan stimulus Arab sebelum tombol audio ditekan. Soal terjemahan tidak menampilkan jawaban pada teks pertanyaan.
+- Alur jawaban tetap menggunakan tombol **Periksa jawaban**; koreksi baru muncul setelah diperiksa.
+- Setiap jawaban salah mengurangi satu nyawa, termasuk ketika siswa mengulang soal yang sebelumnya salah.
+- Pengurangan nyawa disimpan ke profil Supabase melalui RPC `consume_heart`.
+- Saat nyawa habis, muncul dialog dengan dua pilihan: isi ulang 5 nyawa menggunakan 25 berlian atau akhiri pelajaran.
+- Jawaban benar memicu suara apresiasi “Bagus”, “Mumtaz”, atau “Keren” menggunakan suara perangkat/browser.
+- Setelah menyelesaikan satu tahap, siswa dapat mengulang tahap tersebut atau lanjut ke tahap berikutnya.
 
 ## Wajib dilakukan setelah update
-1. Jalankan `supabase/migrations/002_arabeeza_revision.sql` pada Supabase SQL Editor.
-2. Commit dan push isi ZIP ke root repository GitHub.
-3. Redeploy project pada Vercel. Environment variable yang lama tetap digunakan.
+1. Buka Supabase → SQL Editor.
+2. Jalankan `supabase/migrations/003_materi1_105_questions_and_lives.sql` setelah migration `001`, migration `002`, dan seed awal sudah dijalankan.
+3. Pastikan query berikut mengembalikan 105 baris untuk Materi 1:
+   ```sql
+   select count(*)
+   from public.questions q
+   join public.lessons l on l.id = q.lesson_id
+   where l.slug = 'at-taaruf' and q.mode = 'mixed' and q.is_published = true;
+   ```
+4. Commit dan push seluruh isi ZIP ke root repository GitHub (folder `app/` dan `package.json` harus langsung berada di root).
+5. Redeploy project pada Vercel. Environment variables Supabase yang sudah ada tetap digunakan.
 
-## Batasan yang masih ada
-- ZIP sumber hanya berisi 15 soal Materi 1. Sepuluh tombol level telah ditambahkan, tetapi tiap level sementara memakai bank soal 15 butir yang sama. Bank soal unik 15 butir per level (150 butir) belum tersedia.
-- Materi 2–5 dalam dokumen revisi sudah dicantumkan sebagai cakupan pembelajaran/panduan, tetapi belum dibuat menjadi bank soal dan halaman materi terpisah.
-- PDF revisi menampilkan contoh karakter kucing dan palet warna di dalam screenshot, bukan aset gambar terpisah beresolusi tinggi. Maskot kucing pada paket ini dibuat sebagai ilustrasi SVG baru, bukan foto kucing referensi.
-- Build penuh belum dapat dijalankan di lingkungan pengerjaan karena dependensi npm tidak berhasil diunduh. Jalankan `npm install`, `npm run typecheck`, dan `npm run build` setelah ZIP diunduh pada lingkungan yang memiliki akses registry npm.
+## Catatan penggunaan
+- Suara apresiasi dan audio Bahasa Arab memakai Speech Synthesis browser/perangkat. Suara yang tersedia dapat berbeda antarperangkat.
+- Latihan berbicara memakai Speech Recognition jika browser mendukungnya. Jika tidak, siswa tetap dapat memilih jawaban secara manual.
+- Soal dibuat mengikuti cakupan materi At-Ta‘āruf pada LKS yang dilampirkan. Guru tetap disarankan meninjau redaksi dan kunci sebelum digunakan sebagai asesmen resmi.

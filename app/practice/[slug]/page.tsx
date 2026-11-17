@@ -6,14 +6,15 @@ import type { Question } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-
-const allowedModes = ["mixed", "listening", "reading", "conversation"];
-
 export default async function PracticePage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ mode?: string; level?: string }> }) {
   const { slug } = await params;
   const query = await searchParams;
-  const mode = allowedModes.includes(query.mode || "") ? (query.mode || "mixed") : "mixed";
-  const level = Math.min(10, Math.max(1, Number.parseInt(query.level || "1", 10) || 1));
+  // All seven learning stages use the integrated 4-maharah question bank.
+  const mode = "mixed";
+  const level = Math.min(7, Math.max(1, Number.parseInt(query.level || "1", 10) || 1));
+  const firstQuestion = mode === "mixed" ? ((level - 1) * 15) + 1 : 1;
+  const lastQuestion = mode === "mixed" ? level * 15 : 15;
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -24,17 +25,37 @@ export default async function PracticePage({ params, searchParams }: { params: P
   ]);
   if (!lesson) notFound();
 
-  let { data: questionData } = await supabase.from("questions").select("*").eq("lesson_id", lesson.id).eq("mode", mode).eq("is_published", true).order("sort_order").limit(15);
+  let { data: questionData } = await supabase
+    .from("questions")
+    .select("*")
+    .eq("lesson_id", lesson.id)
+    .eq("mode", mode)
+    .eq("is_published", true)
+    .gte("sort_order", firstQuestion)
+    .lte("sort_order", lastQuestion)
+    .order("sort_order")
+    .limit(15);
+
   if (!questionData || questionData.length === 0) {
-    const fallback = await supabase.from("questions").select("*").eq("lesson_id", lesson.id).eq("mode", "mixed").eq("is_published", true).order("sort_order").limit(15);
+    const fallback = await supabase
+      .from("questions")
+      .select("*")
+      .eq("lesson_id", lesson.id)
+      .eq("mode", "mixed")
+      .eq("is_published", true)
+      .gte("sort_order", firstQuestion)
+      .lte("sort_order", lastQuestion)
+      .order("sort_order")
+      .limit(15);
     questionData = fallback.data;
   }
+
   const questions = (questionData || []) as Question[];
-  if (questions.length === 0) notFound();
+  if (questions.length !== 15) notFound();
 
   return (
     <AppShell stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }} role={profile?.role || "student"}>
-      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={questions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0}/>
+      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={questions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} />
     </AppShell>
   );
 }

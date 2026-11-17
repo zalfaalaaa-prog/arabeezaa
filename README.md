@@ -8,27 +8,27 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 
 - Navigasi mobile menampilkan label Beranda, Capaian, Toko, dan Profil.
 - Maskot kucing Arabeeza tampil di beranda dan selama latihan; logo SVG juga diganti menjadi kucing.
-- Dashboard menampilkan jalur visual 10 level dengan label kesulitan.
+- Dashboard menampilkan jalur visual 7 tahap dengan ikon ilustratif dan warna dari palet Arabeeza.
 - Jawaban tidak langsung dikoreksi saat dipilih. Siswa harus menekan tombol **Periksa jawaban**.
 - Soal yang meminta arti kosakata tidak menampilkan ulang teks Arab yang merupakan petunjuk jawaban.
-- Isi ulang 5 nyawa diturunkan menjadi 25 berlian; jalankan migration 002 pada database yang sudah ada.
+- Setiap jawaban salah mengurangi satu nyawa dan tersimpan di Supabase; isi ulang 5 nyawa memerlukan 25 berlian. Jalankan migration 002 dan 003 pada database yang sudah ada.
 - Avatar mendapat opsi karakter laki-laki/perempuan, model rambut, kerudung, dan ekspresi wajah.
 - Capaian At-Ta‘āruf dilengkapi tujuh target pembelajaran sesuai dokumen revisi.
 
-**Catatan bank soal:** ZIP sumber hanya menyediakan 15 butir soal untuk Materi 1. Karena itu 10 bulatan level sudah disediakan pada tampilan, tetapi bank soal unik 15 butir untuk masing-masing level (150 butir) belum tersedia dan belum boleh dianggap sudah dibuat. Saat ini level-level tersebut masih mengarah ke bank soal 15 butir yang sama. Materi 2–5 pada dokumen sudah ditampilkan sebagai cakupan panduan/capaian, tetapi belum dibuat menjadi sesi bank soal terpisah.
+**Bank soal:** Materi 1 kini memiliki 105 butir unik, dibagi ke dalam 7 tahap dengan 15 soal per tahap. Setiap tahap menggabungkan menyimak, berbicara, membaca, dan menulis. Materi 2–5 merupakan bagian/topik di dalam cakupan Materi 1 sesuai LKS yang dilampirkan, bukan empat bab terpisah di database.
 
 ## Fitur pada paket awal
 
 - Landing page ARABEEZA, registrasi, login, dan logout.
 - Dashboard siswa: XP, berlian, 5 nyawa, streak harian, dan jalur materi.
-- Materi 1 At-Ta‘āruf: kosakata berharakat, transliterasi, terjemahan, contoh kalimat, kata tanya, kata ganti, dan dialog.
-- Empat pilihan latihan: campuran 4 maharah, menyimak, membaca/pelafalan, dan percakapan.
-- Sesi latihan maksimal 15 soal, umpan balik benar/salah, serta pengulangan soal yang belum benar.
+- Materi 1 At-Ta‘āruf: tujuan pembelajaran, salam dan perkenalan, kosakata, kata tanya, dhamir munfashil/muttashil, dialog, bacaan, penerapan, dan empat maharah.
+- Latihan terintegrasi 4 maharah pada setiap tahap: menyimak, berbicara, membaca, dan menulis.
+- Tujuh tahap latihan dengan 15 soal per tahap, umpan balik setelah tombol Periksa, serta pengulangan soal yang belum benar.
 - Hadiah XP dan berlian berdasarkan skor; toko untuk menukar 25 berlian menjadi 5 nyawa.
 - Profil dan pengaturan avatar dasar.
 - Halaman capaian pembelajaran Fase E.
 - Dashboard guru untuk melihat siswa dan menulis catatan pembelajaran.
-- Supabase Row Level Security (RLS), migration, seed materi, dan fungsi database untuk menyimpan hasil sesi.
+- Supabase Row Level Security (RLS), migration, seed materi, fungsi menyimpan hasil sesi, dan RPC pengurangan nyawa.
 - Tampilan responsif dan struktur navigasi mobile.
 
 > Catatan cakupan: katalog avatar lanjutan, fitur mengikuti teman, animasi video streak, serta editor bank soal visual belum termasuk pada paket tahap awal. Struktur database dan aplikasi dapat dikembangkan untuk fitur tersebut.
@@ -217,3 +217,36 @@ Pastikan juga:
 - Pendekatan: komunikatif dan desain pembelajaran inklusif
 - Penyusun: Wahda Lathifa Zalfa
 - Tahun pengembangan: 2026
+
+## Pembaruan lanjutan Materi 1 — 7 tahap dan 105 soal
+
+Versi ini mengganti jalur latihan menjadi 7 tahap dengan 15 soal unik per tahap (105 soal total). Halaman **Materi 1** juga memuat salam dan perkenalan, kosakata, kata tanya, dhamir, dialog, bacaan, penerapan, serta latihan empat maharah.
+
+### Update database Supabase yang sudah ada
+
+Setelah `001_init.sql`, `002_arabeeza_revision.sql`, dan `seed.sql` pernah dijalankan, jalankan file berikut satu kali melalui Supabase → SQL Editor:
+
+`supabase/migrations/003_materi1_105_questions_and_lives.sql`
+
+Migration ini mengganti bank soal `mixed` Materi 1 dengan 105 butir dan membuat RPC `consume_heart()` untuk menyimpan pengurangan nyawa setiap jawaban salah. Isi ulang 5 nyawa tetap menggunakan 25 berlian.
+
+Verifikasi jumlah soal:
+
+```sql
+select count(*)
+from public.questions q
+join public.lessons l on l.id = q.lesson_id
+where l.slug = 'at-taaruf' and q.mode = 'mixed' and q.is_published = true;
+```
+
+Hasil yang diharapkan: `105`.
+
+### Untuk instalasi Supabase baru
+
+Jalankan berurutan:
+1. `supabase/migrations/001_init.sql`
+2. `supabase/migrations/002_arabeeza_revision.sql`
+3. `supabase/seed.sql`
+4. `supabase/migrations/003_materi1_105_questions_and_lives.sql`
+
+Setelah database siap, unggah seluruh isi ZIP ke root repository GitHub lalu lakukan redeploy di Vercel. Tidak ada environment variable baru untuk revisi ini.
