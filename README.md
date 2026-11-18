@@ -226,7 +226,7 @@ Versi ini mengganti jalur latihan menjadi 7 tahap dengan 15 soal unik per tahap 
 
 Setelah `001_init.sql`, `002_arabeeza_revision.sql`, dan `seed.sql` pernah dijalankan, jalankan file berikut satu kali melalui Supabase → SQL Editor:
 
-`supabase/migrations/003_materi1_105_questions_and_lives.sql` dan setelah itu `supabase/migrations/004_daily_hearts_reset.sql`
+`supabase/migrations/003_materi1_105_questions_and_lives.sql`, `supabase/migrations/004_daily_hearts_reset.sql`, dan `supabase/migrations/005_stage_progress.sql`
 
 Migration 003 mengganti bank soal `mixed` Materi 1 dengan 105 butir dan membuat RPC `consume_heart()` untuk menyimpan pengurangan nyawa setiap jawaban salah. Migration 004 menambahkan reset otomatis 5 nyawa pada pergantian hari pukul 00.00 WIB. Isi ulang manual tetap menggunakan 25 berlian.
 
@@ -249,6 +249,7 @@ Jalankan berurutan:
 3. `supabase/seed.sql`
 4. `supabase/migrations/003_materi1_105_questions_and_lives.sql`
 5. `supabase/migrations/004_daily_hearts_reset.sql`
+6. `supabase/migrations/005_stage_progress.sql`
 
 Setelah database siap, unggah seluruh isi ZIP ke root repository GitHub lalu lakukan redeploy di Vercel. Tidak ada environment variable baru untuk revisi ini.
 
@@ -256,3 +257,8 @@ Setelah database siap, unggah seluruh isi ZIP ke root repository GitHub lalu lak
 ### Regenerasi nyawa harian (revisi v4)
 
 Migration `004_daily_hearts_reset.sql` menambahkan `hearts_reset_date` dan RPC `refresh_daily_hearts()`. Setiap akun mendapat 5 nyawa lagi pada pergantian tanggal pukul 00.00 WIB (Asia/Jakarta), tanpa mengurangi berlian. Jika siswa tidak membuka aplikasi tepat tengah malam, reset tetap diterapkan saat siswa membuka halaman atau kembali ke tab. Efek suara singkat dimainkan setiap kali jawaban diperiksa; jawaban benar juga tetap mendapat ucapan apresiasi Bagus/Mumtaz/Keren.
+
+
+### Progres level dan bintang (Revisi v5)
+
+Jalankan migration `005_stage_progress.sql` setelah migration 001–004. Tujuh tahap akan terbuka secara berurutan; tahap terkunci berwarna abu-abu. Setiap tahap menampilkan tiga bintang berdasarkan jawaban benar pada percobaan pertama (15 benar = 3 bintang; 10–14 benar = 2 bintang; 0–9 benar = 1 bintang). Saat mengulang tahap, skor dan bintang terbaik tidak akan diturunkan.

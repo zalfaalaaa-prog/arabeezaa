@@ -82,6 +82,7 @@ export async function signOut() {
 
 type QuizResult = {
   lessonSlug: string;
+  levelNo: number;
   score: number;
   correctCount: number;
   questionCount: number;
@@ -96,15 +97,25 @@ export async function saveQuizResult(input: QuizResult) {
 
   const safe = {
     p_lesson_slug: input.lessonSlug,
+    p_level_no: Math.max(1, Math.min(7, Math.round(input.levelNo))),
     p_score: Math.max(0, Math.min(100, Math.round(input.score))),
     p_correct_count: Math.max(0, Math.min(15, Math.round(input.correctCount))),
     p_question_count: Math.max(1, Math.min(15, Math.round(input.questionCount))),
     p_xp_earned: Math.max(0, Math.min(1000, Math.round(input.xpEarned))),
     p_diamonds_earned: Math.max(0, Math.min(100, Math.round(input.diamondsEarned)))
   };
-  const { error } = await supabase.rpc("record_quiz_result", safe);
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  const { data, error } = await supabase.rpc("record_stage_quiz_result", safe);
+  if (error) {
+    const migrationHint = error.message.toLowerCase().includes("record_stage_quiz_result") || error.message.toLowerCase().includes("stage_progress")
+      ? " Jalankan migration 005_stage_progress.sql di Supabase terlebih dahulu."
+      : "";
+    return { ok: false, error: `${error.message}${migrationHint}` };
+  }
+  return {
+    ok: true,
+    bestStars: Number(data?.best_stars ?? 0),
+    bestScore: Number(data?.best_score ?? input.score)
+  };
 }
 
 export async function refreshDailyHearts() {

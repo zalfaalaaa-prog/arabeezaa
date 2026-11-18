@@ -26,6 +26,28 @@ export default async function PracticePage({ params, searchParams }: { params: P
   ]);
   if (!lesson) notFound();
 
+  // Keep locked stages protected on the server as well as in the dashboard UI.
+  if (level > 1) {
+    const { data: previousStage, error: stageProgressError } = await supabase
+      .from("stage_progress")
+      .select("completed_sessions")
+      .eq("user_id", user.id)
+      .eq("lesson_id", lesson.id)
+      .eq("level_no", level - 1)
+      .maybeSingle();
+    if (stageProgressError || !previousStage || Number(previousStage.completed_sessions) < 1) {
+      redirect("/dashboard?locked=1");
+    }
+  }
+
+  const { data: currentStage } = await supabase
+    .from("stage_progress")
+    .select("best_stars")
+    .eq("user_id", user.id)
+    .eq("lesson_id", lesson.id)
+    .eq("level_no", level)
+    .maybeSingle();
+
   let { data: questionData } = await supabase
     .from("questions")
     .select("*")
@@ -56,7 +78,7 @@ export default async function PracticePage({ params, searchParams }: { params: P
 
   return (
     <AppShell stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }} role={profile?.role || "student"}>
-      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={questions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} initialHeartsResetDate={profile?.hearts_reset_date ?? ""} />
+      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={questions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} initialHeartsResetDate={profile?.hearts_reset_date ?? ""} initialBestStars={Number(currentStage?.best_stars || 0)} />
     </AppShell>
   );
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   Flame, Gem, Heart, Sparkles, Trophy, MessageCircle, Handshake,
-  UserRound, CircleHelp, BookOpen, Headphones, PencilLine
+  UserRound, CircleHelp, BookOpen, Headphones, PencilLine, Lock, Star
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import LessonCard from "@/components/LessonCard";
@@ -30,16 +30,20 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
   await supabase.rpc("refresh_daily_hearts");
 
-  const [{ data: profileData }, { data: lessonsData }, { data: progressData }] = await Promise.all([
+  const [{ data: profileData }, { data: lessonsData }, { data: progressData }, stageProgressResult] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("lessons").select("*").eq("is_published", true).order("sort_order"),
-    supabase.from("lesson_progress").select("*").eq("user_id", user.id)
+    supabase.from("lesson_progress").select("*").eq("user_id", user.id),
+    supabase.from("stage_progress").select("lesson_id,level_no,completed_sessions,best_score,best_stars").eq("user_id", user.id)
   ]);
 
   const profile = (profileData || { display_name: user.user_metadata?.display_name || "Teman Arabeeza", role: "student", xp: 0, diamonds: 0, hearts: 5, streak_count: 0 }) as Profile;
   const lessons = (lessonsData || []) as Lesson[];
   const progress = progressData || [];
+  const stageProgress = stageProgressResult.data || [];
+  const activeLesson = lessons[0];
   const getProgress = (lessonId: string) => progress.find((item: any) => item.lesson_id === lessonId);
+  const getStageProgress = (levelNo: number) => stageProgress.find((item: any) => item.lesson_id === activeLesson?.id && item.level_no === levelNo);
 
   return (
     <AppShell active="/dashboard" role={profile.role} stats={{ streak: profile.streak_count, diamonds: profile.diamonds, hearts: profile.hearts }}>
@@ -75,19 +79,47 @@ export default async function DashboardPage() {
       ) : (
         <div className="grid gap-5 lg:grid-cols-[1.3fr_.7fr]">
           <section className="surface p-5 md:p-7">
-            <div className="mb-5 flex items-center gap-3"><CatMascot mood="happy" size={76} /><div><p className="text-xs font-black tracking-[.16em] text-[#827148]">MATERI 1 · التَّعَارُفُ</p><h3 className="text-xl font-black">At-Ta‘āruf (Perkenalan)</h3><p className="text-xs text-[#718078]">Ikuti jalur belajar dan kumpulkan bintang!</p></div></div>
+            <div className="unit-banner mb-6">
+              <div className="min-w-0">
+                <p className="unit-banner-kicker">BAGIAN 1 · UNIT 1</p>
+                <h3 className="mt-1 text-xl font-black">At-Ta‘āruf</h3>
+                <p className="mt-1 text-sm font-semibold text-white/90">Perkenalan · التَّعَارُفُ</p>
+                <p className="mt-2 text-xs leading-5 text-white/85">Ikuti jalur belajar, buka tahap baru, dan kumpulkan tiga bintang emas!</p>
+              </div>
+              <div className="unit-banner-icon"><BookOpen size={31} strokeWidth={2.5} /></div>
+            </div>
             <div className="learning-path" aria-label="Tujuh tahap latihan">
               {levelSteps.map((step, index) => {
                 const Icon = step.icon;
+                const stage = getStageProgress(step.level);
+                const completed = Number(stage?.completed_sessions || 0) > 0;
+                const previousStage = step.level === 1 ? null : getStageProgress(step.level - 1);
+                const unlocked = step.level === 1 || Number(previousStage?.completed_sessions || 0) > 0;
+                const stars = Number(stage?.best_stars || 0);
+                const target = `/practice/${activeLesson?.slug}?mode=mixed&level=${step.level}`;
                 return (
-                  <Link key={step.level} href={`/practice/${lessons[0].slug}?mode=mixed&level=${step.level}`} className={`level-node level-node-${step.level}`} style={{ marginLeft: `calc(50% + ${levelOffsets[index]}px - 32px)` }} aria-label={`Tahap ${step.level}: ${step.label}`} title={step.label}>
-                    <Icon size={26} strokeWidth={2.7} aria-hidden="true" />
-                    <span className="sr-only">{step.label}</span>
-                  </Link>
+                  <div key={step.level} className={`level-step ${completed ? "is-completed" : unlocked ? "is-unlocked" : "is-locked"}`} style={{ marginLeft: `calc(50% + ${levelOffsets[index]}px - 58px)` }}>
+                    {unlocked ? (
+                      <Link href={target} className={`level-node level-node-${step.level} ${completed ? "has-played" : "is-current"}`} aria-label={`${completed ? "Ulangi" : "Mulai"} tahap ${step.level}: ${step.label}`} title={step.label}>
+                        {completed ? <Icon size={25} strokeWidth={2.7} aria-hidden="true" /> : <Icon size={27} strokeWidth={2.7} aria-hidden="true" />}
+                      </Link>
+                    ) : (
+                      <div className="level-node is-locked" aria-disabled="true" title="Selesaikan tahap sebelumnya untuk membuka tahap ini">
+                        <Lock size={22} strokeWidth={2.7} aria-hidden="true" />
+                      </div>
+                    )}
+                    <div className="level-stars" aria-label={`${stars} dari 3 bintang`}>
+                      {[1, 2, 3].map((star) => <Star key={star} size={17} className={star <= stars ? "level-star earned" : "level-star"} fill={star <= stars ? "currentColor" : "none"} />)}
+                    </div>
+                    <span className="level-label">{step.label}</span>
+                  </div>
                 );
               })}
             </div>
-            <p className="mt-5 text-center text-xs leading-5 text-[#89968f]">7 tahap latihan · 15 soal di setiap tahap · 105 soal seluruhnya. Setiap tahap memadukan menyimak, berbicara, membaca, dan menulis.</p>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-semibold text-[#89968f]">
+              <span>7 tahap · 15 soal setiap tahap</span><span>•</span><span>105 soal · 4 maharah</span>
+            </div>
+            {stageProgressResult.error && <p className="mt-4 rounded-xl bg-[#fff6df] p-3 text-xs leading-5 text-[#98702b]">Fitur bintang dan pembukaan level memerlukan migration 005. Jalankan file <strong>supabase/migrations/005_stage_progress.sql</strong> di Supabase SQL Editor.</p>}
           </section>
 
           <div className="space-y-4">

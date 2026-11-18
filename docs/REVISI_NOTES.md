@@ -41,3 +41,17 @@
 - Jika aplikasi tetap terbuka melewati tengah malam, komponen sinkronisasi akan memeriksa reset dan memperbarui tampilan. Jika tab tertidur/ditutup, reset diproses saat pengguna kembali membuka aplikasi.
 - Setiap jawaban yang diperiksa menghasilkan bunyi chime: nada naik untuk benar dan nada turun lembut untuk salah. Jawaban benar tetap mendapat suara apresiasi Bagus/Mumtaz/Keren.
 - Database update: jalankan migration `004_daily_hearts_reset.sql` satu kali di Supabase SQL Editor.
+
+
+## Revisi v5 — jalur level, bintang, audio Maryam, dan animasi
+
+- Peta belajar memakai tampilan unit bergaya Duolingo dengan tujuh node berbentuk bulat. Tahap 1 terbuka sejak awal; tahap berikutnya baru terbuka setelah tahap sebelumnya diselesaikan. Tahap terkunci tampil abu-abu dan tidak dapat dibuka, termasuk jika URL tahap diketik langsung.
+- Setiap node menampilkan tiga bintang. Aturan bintang berdasarkan jawaban benar pada percobaan pertama: 15/15 = 3 bintang; 10–14/15 = 2 bintang; 0–9/15 = 1 bintang.
+- Setiap tahap dapat diulang. Skor terbaik dan bintang terbaik disimpan per pengguna, materi, dan tahap. Hasil pengulangan yang lebih rendah tidak menurunkan bintang yang sudah diperoleh.
+- Layar latihan mendapat animasi karakter, balon percakapan, pilihan jawaban, panel feedback yang naik dari bawah, dan layar selebrasi. Dialog dengan label pembicara ditampilkan per baris.
+- Audio menggunakan suara Arab yang tersedia pada browser/perangkat, memprioritaskan nama voice yang terindikasi perempuan, menaikkan pitch dan mengatur tempo agar lebih lembut. Audio memiliki kontrol berhenti dan batas waktu otomatis untuk mencegah pemutaran tersangkut.
+- Suara Speech Synthesis tetap bergantung pada voice yang terpasang di perangkat/browser. Jika perangkat tidak menyediakan voice perempuan Bahasa Arab, browser dapat memakai voice Arab yang tersedia dengan pitch lebih tinggi; hasil gender suara tidak dapat dijamin sama pada semua perangkat.
+
+### Database update v5
+
+Setelah migration 001–004 sudah diterapkan, jalankan satu kali `supabase/migrations/005_stage_progress.sql` melalui Supabase → SQL Editor. Migration ini membuat tabel `stage_progress`, menyimpan skor/bintang terbaik per tahap, dan menambahkan RPC `record_stage_quiz_result()` untuk memvalidasi pembukaan tahap di sisi server. Tanpa migration 005, fitur simpan bintang dan buka tahap berikutnya belum aktif. Progres versi sebelumnya hanya tersimpan sebagai ringkasan per materi, bukan per tahap, sehingga bintang tahap mulai direkam sejak revisi ini; tahap tetap dibuka berurutan dari tahap 1.
