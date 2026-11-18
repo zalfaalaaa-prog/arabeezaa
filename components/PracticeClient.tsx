@@ -124,7 +124,7 @@ export default function PracticeClient({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechMessage, setSpeechMessage] = useState("");
   const voiceListRef = useRef<SpeechSynthesisVoice[]>([]);
-  const speechTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const speechTimerRef = useRef<number | null>(null);
   const speechTokenRef = useRef(0);
 
   useEffect(() => {
