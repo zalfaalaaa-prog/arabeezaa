@@ -70,3 +70,21 @@ Setelah migration 001–004 sudah diterapkan, jalankan satu kali `supabase/migra
 - Audio latihan diberi safety timeout yang lebih longgar agar pelafalan Arab tidak terpotong terlalu cepat.
 - Latihan berbicara sekarang melakukan pencocokan toleran terhadap hasil Speech Recognition. Jika browser menangkap ucapan yang sedikit berbeda karena variasi tanda baca, huruf, atau hasil transkripsi, jawaban tetap dapat dikenali sebagai benar bila kemiripannya cukup tinggi.
 - Jika hasil Speech Recognition cocok dengan salah satu pilihan jawaban, sistem otomatis memilih opsi tersebut sehingga siswa tidak langsung dianggap salah hanya karena transkripsi browser sedikit berbeda.
+
+
+## Revisi v8 — layout mobile, navigasi profil, warna lebih cerah, dan karakter kucing tambahan
+
+- Memperbaiki aturan lebar `.page-wrap` pada layar kecil menggunakan nilai `calc()` yang valid, menahan overflow horizontal, dan memastikan header, navigasi, konten utama, serta footer menggunakan lebar viewport yang tersedia.
+- Header mobile dirapikan agar logo dan indikator streak/berlian/nyawa tetap muat tanpa mendorong halaman melebar ke samping.
+- Tombol **Keluar** dihapus dari header dan dipindahkan ke halaman **Profil** sebagai tombol “Keluar dari akun”.
+- Warna jalur level dibuat lebih cerah dan beragam: hijau, teal, ungu, kuning, coral, biru langit, dan pink. Tahap terkunci memakai biru pastel agar tetap terlihat terkunci tanpa blok abu-abu kusam.
+- Warna banner unit diperbarui menjadi hijau yang lebih segar dan tetap konsisten dengan warna latihan.
+- Pilihan karakter profil tidak lagi menampilkan nama karakter. Pilihan ditampilkan sebagai ilustrasi kucing saja.
+- Jumlah karakter kucing bertambah menjadi sepuluh. Empat karakter tambahan memiliki tampilan lebih maskulin melalui variasi pola bulu, topi, headphone, bandana, dan aksesori dasi kupu-kupu.
+- Pilihan kucing menyimpan kombinasi nilai avatar yang sudah diizinkan oleh migration 002. Tidak ada migration Supabase baru yang diperlukan.
+
+### Setelah update v8
+
+- Tidak perlu menjalankan SQL migration baru.
+- Ganti isi repository GitHub dengan isi ZIP v8, commit ke branch `main`, lalu tunggu deployment Vercel.
+- Setelah deployment, cek tampilan pada lebar ponsel dan buka halaman Profil untuk mencoba seluruh pilihan karakter serta tombol Keluar.

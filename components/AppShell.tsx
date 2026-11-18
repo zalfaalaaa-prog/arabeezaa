@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BookOpen, Flame, Gem, Heart, Home, ShoppingBag, UserRound, GraduationCap } from "lucide-react";
-import { signOut } from "@/app/actions";
 import CatMascot from "@/components/CatMascot";
 import DailyHeartSync from "@/components/DailyHeartSync";
 
@@ -24,14 +23,14 @@ export default function AppShell({
   stats?: { streak?: number; diamonds?: number; hearts?: number };
 }) {
   return (
-    <div className="min-h-screen">
+    <div className="app-shell-root min-h-screen">
       <DailyHeartSync />
-      <header className="sticky top-0 z-30 border-b border-[#e7eee8] bg-white/95 backdrop-blur">
-        <div className="page-wrap flex min-h-[72px] items-center justify-between gap-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <CatMascot size={48}/>
-            <span className="text-xl font-black tracking-tight">arabeeza<span className="text-[#7e9d7b]">.</span></span>
-            <span className="ml-1 rounded-lg bg-[#f7faf6] px-2 py-1 text-sm" aria-label="Bahasa Arab" title="Bahasa Arab">🇸🇦</span>
+      <header className="app-header sticky top-0 z-30 border-b border-[#e7eee8] bg-white/95 backdrop-blur">
+        <div className="page-wrap app-header-main">
+          <Link href="/dashboard" className="app-brand" aria-label="Arabeeza beranda">
+            <CatMascot size={44}/>
+            <span className="app-brand-name">arabeeza<span className="text-[#45ad78]">.</span></span>
+            <span className="language-badge" aria-label="Bahasa Arab" title="Bahasa Arab">🇸🇦</span>
           </Link>
           <nav className="desktop-nav flex items-center gap-5">
             {links.map((item) => {
@@ -41,23 +40,22 @@ export default function AppShell({
             })}
             {role === "teacher" || role === "admin" ? <Link href="/teacher" className={`nav-link ${active === "/teacher" ? "active" : ""}`}><BookOpen size={17} />Guru</Link> : null}
           </nav>
-          <div className="flex items-center gap-2">
-            {stats?.streak !== undefined && <span className="stat-pill text-orange-600"><Flame size={16} />{stats.streak}</span>}
-            {stats?.diamonds !== undefined && <span className="stat-pill text-sky-600"><Gem size={16} />{stats.diamonds}</span>}
-            {stats?.hearts !== undefined && <span className="stat-pill text-rose-500"><Heart size={16} fill="currentColor" />{stats.hearts}</span>}
-            <form action={signOut}><button className="ml-1 rounded-xl border border-[#e7eee8] px-3 py-2 text-xs font-bold text-[#718078] hover:bg-[#f7faf6]">Keluar</button></form>
+          <div className="header-stats">
+            {stats?.streak !== undefined && <span className="stat-pill header-stat-pill text-orange-600" aria-label={`${stats.streak} hari streak`}><Flame size={16} />{stats.streak}</span>}
+            {stats?.diamonds !== undefined && <span className="stat-pill header-stat-pill text-sky-600" aria-label={`${stats.diamonds} berlian`}><Gem size={16} />{stats.diamonds}</span>}
+            {stats?.hearts !== undefined && <span className="stat-pill header-stat-pill text-rose-500" aria-label={`${stats.hearts} nyawa`}><Heart size={16} fill="currentColor" />{stats.hearts}</span>}
           </div>
         </div>
-        <div className="flex items-center justify-around border-t border-[#edf2ee] bg-white px-1 py-2 md:hidden">
+        <nav className="mobile-nav border-t border-[#edf2ee] bg-white px-1 py-2 md:hidden" aria-label="Navigasi utama">
           {links.map((item) => {
             const Icon = item.icon;
             const isActive = active === item.href || (item.href === "/lessons/at-taaruf" && active?.startsWith("/lessons/"));
-            return <Link key={item.href} href={item.href} aria-label={item.label} className={`flex min-w-[56px] flex-1 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-extrabold ${isActive ? "bg-[#eaf7ef] text-[#2e8b62]" : "text-[#718078]"}`}><Icon size={19} /><span>{item.label}</span></Link>;
+            return <Link key={item.href} href={item.href} aria-label={item.label} className={`mobile-nav-link ${isActive ? "active" : ""}`}><Icon size={19} /><span>{item.label}</span></Link>;
           })}
-        </div>
+        </nav>
       </header>
-      <main className="page-wrap py-7 md:py-9">{children}</main>
-      <footer className="page-wrap border-t border-[#e7eee8] py-6 text-center text-xs text-[#89968f]">
+      <main className="page-wrap app-main py-7 md:py-9">{children}</main>
+      <footer className="page-wrap app-footer border-t border-[#e7eee8] py-6 text-center text-xs text-[#89968f]">
         Arabeeza · Belajar Bahasa Arab dengan menyenangkan
       </footer>
     </div>

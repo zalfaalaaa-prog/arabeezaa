@@ -9,13 +9,8 @@ import CatAvatar, {
   type CatAvatarPreset
 } from "@/components/CatAvatar";
 
-const catOptions: Array<{ value: CatAvatarPreset; name: string; note: string }> = [
-  { value: "moka", name: "Moka", note: "Pita kecil · ramah" },
-  { value: "luna", name: "Luna", note: "Kacamata · ceria" },
-  { value: "cici", name: "Cici", note: "Topi biru · aktif" },
-  { value: "nala", name: "Nala", note: "Bunga · kalem" },
-  { value: "mimi", name: "Mimi", note: "Syal pink · manis" },
-  { value: "oyen", name: "Oyen", note: "Lonceng · playful" }
+const catOptions: CatAvatarPreset[] = [
+  "moka", "luna", "cici", "nala", "mimi", "oyen", "bimo", "leo", "kiko", "raka"
 ];
 
 export default function AvatarEditor({
@@ -40,7 +35,7 @@ export default function AvatarEditor({
   const [preset, setPreset] = useState<CatAvatarPreset>(initialPreset);
   const [s, setS] = useState(skin);
   const [o, setO] = useState(outfit);
-  const [g] = useState(gender);
+  const [g, setG] = useState(gender);
   const [h] = useState(hair);
   const [v] = useState(hijab);
   const [e, setE] = useState(expression);
@@ -51,45 +46,41 @@ export default function AvatarEditor({
     setS(values.skin);
     setO(values.outfit);
     setE(values.expression);
+    setG(values.gender);
   }
 
   return (
-    <form action={updateAvatar} className="surface p-5 md:p-6">
-      <div className="mb-5 rounded-[24px] bg-[#f7faf6] p-5 text-center">
+    <form action={updateAvatar} className="surface avatar-editor p-5 md:p-6">
+      <div className="avatar-preview-panel mb-5 rounded-[24px] p-5 text-center">
         <CatAvatar preset={preset} size={160} className="mx-auto cat-avatar-preview" />
-        <p className="mt-2 text-xs font-black tracking-[.14em] text-[#7e9d7b]">KARAKTER ARABEEZA</p>
-        <h3 className="mt-1 text-xl font-black">{catOptions.find((item) => item.value === preset)?.name}</h3>
-        <p className="mt-1 text-sm text-[#718078]">{catOptions.find((item) => item.value === preset)?.note}</p>
+        <p className="mt-2 text-xs font-black tracking-[.14em] text-[#348f68]">KARAKTER PILIHANMU</p>
+        <p className="mt-1 text-sm font-bold text-[#536b5e]">Siap menemanimu belajar!</p>
       </div>
 
       <div>
         <div className="mb-3">
           <p className="text-sm font-black">Pilih teman belajarmu</p>
-          <p className="mt-1 text-xs leading-5 text-[#89968f]">Semua karakter memakai gaya kucing Arabeeza, tetapi warna, ekspresi, dan aksesorinya berbeda.</p>
+          <p className="mt-1 text-xs leading-5 text-[#6f8177]">Pilih kucing dengan warna bulu, ekspresi, dan aksesori yang paling kamu suka.</p>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {catOptions.map((item) => {
-            const selected = preset === item.value;
+          {catOptions.map((item, index) => {
+            const selected = preset === item;
             return (
               <button
                 type="button"
-                key={item.value}
-                onClick={() => choosePreset(item.value)}
-                className={`relative rounded-2xl border-2 p-3 text-center transition ${
-                  selected
-                    ? "border-[#7e9d7b] bg-[#edf4e8] shadow-sm"
-                    : "border-[#e7eee8] bg-white hover:-translate-y-0.5 hover:border-[#b9cdb6]"
-                }`}
+                key={item}
+                onClick={() => choosePreset(item)}
+                className={`cat-choice-card relative rounded-2xl border-2 p-3 text-center transition ${selected ? "selected" : ""}`}
+                aria-label={`Pilih karakter kucing ${index + 1}`}
                 aria-pressed={selected}
+                title={`Pilih karakter kucing ${index + 1}`}
               >
                 {selected && (
-                  <span className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#7e9d7b] text-white">
+                  <span className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#329a6a] text-white shadow-sm">
                     <Check size={14} strokeWidth={3} />
                   </span>
                 )}
-                <CatAvatar preset={item.value} size={88} className="mx-auto" />
-                <p className="mt-1 text-sm font-black">{item.name}</p>
-                <p className="mt-0.5 text-[10px] font-semibold text-[#89968f]">{item.note}</p>
+                <CatAvatar preset={item} size={96} className="mx-auto" />
               </button>
             );
           })}

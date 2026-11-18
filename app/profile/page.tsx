@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
-import { Gem, Flame, Heart } from "lucide-react";
+import { Gem, Flame, Heart, LogOut } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import AvatarEditor from "@/components/AvatarEditor";
+import { signOut } from "@/app/actions";
 import CatAvatar, { getCatPresetFromAvatar } from "@/components/CatAvatar";
 import { createClient } from "@/lib/supabase/server";
 
@@ -52,9 +53,14 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
           </div>
           <h2 className="mt-4 text-center text-2xl font-black">{p.display_name}</h2>
           <p className="text-center text-sm text-[#89968f]">{user.email}</p>
-          <p className="mx-auto mt-2 max-w-[240px] text-center text-xs font-semibold leading-5 text-[#718078]">
+          <p className="mx-auto mt-2 max-w-[240px] text-center text-xs font-semibold leading-5 text-[#6f8177]">
             Teman kucingmu akan menemanimu di perjalanan belajar Arabeeza.
           </p>
+          <form action={signOut} className="mt-5">
+            <button type="submit" className="profile-signout-button w-full">
+              <LogOut size={17} /> Keluar dari akun
+            </button>
+          </form>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <div className="rounded-2xl bg-[#f7faf6] p-4">
