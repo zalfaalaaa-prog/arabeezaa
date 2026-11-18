@@ -1,24 +1,109 @@
 "use client";
-import { useState } from "react";
+
+import { useMemo, useState } from "react";
+import { Check } from "lucide-react";
 import { updateAvatar } from "@/app/actions";
-const skins=[{value:"sawo-matang",label:"Sawo matang",color:"#9b6040"},{value:"kuning-langsat",label:"Kuning langsat",color:"#e3b58c"},{value:"cokelat",label:"Cokelat",color:"#6f432f"},{value:"cerah",label:"Cerah",color:"#f1c9a7"}];
-const outfits=[{value:"hijau",label:"Hijau",color:"#2e8b62"},{value:"biru",label:"Biru",color:"#4b8ecb"},{value:"oranye",label:"Oranye",color:"#f39a32"},{value:"ungu",label:"Ungu",color:"#9270c7"}];
-function Picker({label,value,items,onChange}:{label:string;value:string;items:{value:string;label:string}[];onChange:(v:string)=>void}){return <div className="mt-4"><label className="mb-2 block text-sm font-black">{label}</label><div className="flex flex-wrap gap-2">{items.map(x=><button type="button" key={x.value} onClick={()=>onChange(x.value)} className={`rounded-xl border px-3 py-2 text-xs font-bold ${value===x.value?"border-[#2e8b62] bg-[#eaf7ef] text-[#236e4d]":"border-[#e7eee8] bg-white"}`}>{x.label}</button>)}</div></div>}
-export default function AvatarEditor({skin,outfit,gender="perempuan",hair="panjang",hijab="tidak",expression="senyum"}:{skin:string;outfit:string;gender?:string;hair?:string;hijab?:string;expression?:string}){
- const [s,setS]=useState(skin),[o,setO]=useState(outfit),[g,setG]=useState(gender),[h,setH]=useState(hair),[v,setV]=useState(hijab),[e,setE]=useState(expression);
- const face=skins.find(x=>x.value===s)?.color||skins[0].color, shirt=outfits.find(x=>x.value===o)?.color||outfits[0].color;
- return <form action={updateAvatar} className="surface p-5">
-  <div className="mx-auto mb-5 flex h-40 w-40 items-center justify-center rounded-[30px] bg-gradient-to-br from-[#fff1d8] to-[#eaf7ef]"><div className="relative flex flex-col items-center">
-   <div className="relative z-10 flex h-[76px] w-[76px] items-center justify-center rounded-full border-[5px] border-white text-3xl shadow-sm" style={{background:face}}><span>{e==="ceria"?"😄":e==="serius"?"😐":"😊"}</span>{v==="ya"&&<span className="absolute -top-2 -left-2 text-3xl">🧕</span>}{v!=="ya"&&<span className="absolute -top-5 text-3xl">{h==="pendek"?"〰️":h==="keriting"?"🌀":"💇"}</span>}</div>
-   <div className="-mt-1 h-16 w-24 rounded-t-[30px] rounded-b-2xl border-4 border-white" style={{background:shirt}}/><span className="absolute -bottom-1 text-[10px] font-black text-white">{g==="laki-laki"?"✦":"♥"}</span>
-  </div></div>
-  <Picker label="Karakter" value={g} onChange={setG} items={[{value:"laki-laki",label:"Laki-laki"},{value:"perempuan",label:"Perempuan"}]}/>
-  <Picker label="Warna kulit" value={s} onChange={setS} items={skins}/>
-  <Picker label="Model rambut" value={h} onChange={setH} items={[{value:"pendek",label:"Pendek"},{value:"panjang",label:"Panjang"},{value:"keriting",label:"Keriting"}]}/>
-  <Picker label="Kerudung" value={v} onChange={setV} items={[{value:"tidak",label:"Tanpa kerudung"},{value:"ya",label:"Pakai kerudung"}]}/>
-  <Picker label="Ekspresi wajah" value={e} onChange={setE} items={[{value:"senyum",label:"Senyum"},{value:"ceria",label:"Ceria"},{value:"serius",label:"Serius"}]}/>
-  <Picker label="Warna pakaian" value={o} onChange={setO} items={outfits}/>
-  <input type="hidden" name="avatar_skin" value={s}/><input type="hidden" name="avatar_outfit" value={o}/><input type="hidden" name="avatar_gender" value={g}/><input type="hidden" name="avatar_hair" value={h}/><input type="hidden" name="avatar_hijab" value={v}/><input type="hidden" name="avatar_expression" value={e}/>
-  <button type="submit" className="btn-primary mt-6 w-full">Simpan karakter</button>
- </form>
+import CatAvatar, {
+  getCatPresetFromAvatar,
+  getCatPresetValues,
+  type CatAvatarPreset
+} from "@/components/CatAvatar";
+
+const catOptions: Array<{ value: CatAvatarPreset; name: string; note: string }> = [
+  { value: "moka", name: "Moka", note: "Pita kecil · ramah" },
+  { value: "luna", name: "Luna", note: "Kacamata · ceria" },
+  { value: "cici", name: "Cici", note: "Topi biru · aktif" },
+  { value: "nala", name: "Nala", note: "Bunga · kalem" },
+  { value: "mimi", name: "Mimi", note: "Syal pink · manis" },
+  { value: "oyen", name: "Oyen", note: "Lonceng · playful" }
+];
+
+export default function AvatarEditor({
+  skin,
+  outfit,
+  gender = "perempuan",
+  hair = "panjang",
+  hijab = "tidak",
+  expression = "senyum"
+}: {
+  skin: string;
+  outfit: string;
+  gender?: string;
+  hair?: string;
+  hijab?: string;
+  expression?: string;
+}) {
+  const initialPreset = useMemo(
+    () => getCatPresetFromAvatar(skin, outfit, expression),
+    [skin, outfit, expression]
+  );
+  const [preset, setPreset] = useState<CatAvatarPreset>(initialPreset);
+  const [s, setS] = useState(skin);
+  const [o, setO] = useState(outfit);
+  const [g] = useState(gender);
+  const [h] = useState(hair);
+  const [v] = useState(hijab);
+  const [e, setE] = useState(expression);
+
+  function choosePreset(next: CatAvatarPreset) {
+    const values = getCatPresetValues(next);
+    setPreset(next);
+    setS(values.skin);
+    setO(values.outfit);
+    setE(values.expression);
+  }
+
+  return (
+    <form action={updateAvatar} className="surface p-5 md:p-6">
+      <div className="mb-5 rounded-[24px] bg-[#f7faf6] p-5 text-center">
+        <CatAvatar preset={preset} size={160} className="mx-auto cat-avatar-preview" />
+        <p className="mt-2 text-xs font-black tracking-[.14em] text-[#7e9d7b]">KARAKTER ARABEEZA</p>
+        <h3 className="mt-1 text-xl font-black">{catOptions.find((item) => item.value === preset)?.name}</h3>
+        <p className="mt-1 text-sm text-[#718078]">{catOptions.find((item) => item.value === preset)?.note}</p>
+      </div>
+
+      <div>
+        <div className="mb-3">
+          <p className="text-sm font-black">Pilih teman belajarmu</p>
+          <p className="mt-1 text-xs leading-5 text-[#89968f]">Semua karakter memakai gaya kucing Arabeeza, tetapi warna, ekspresi, dan aksesorinya berbeda.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {catOptions.map((item) => {
+            const selected = preset === item.value;
+            return (
+              <button
+                type="button"
+                key={item.value}
+                onClick={() => choosePreset(item.value)}
+                className={`relative rounded-2xl border-2 p-3 text-center transition ${
+                  selected
+                    ? "border-[#7e9d7b] bg-[#edf4e8] shadow-sm"
+                    : "border-[#e7eee8] bg-white hover:-translate-y-0.5 hover:border-[#b9cdb6]"
+                }`}
+                aria-pressed={selected}
+              >
+                {selected && (
+                  <span className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#7e9d7b] text-white">
+                    <Check size={14} strokeWidth={3} />
+                  </span>
+                )}
+                <CatAvatar preset={item.value} size={88} className="mx-auto" />
+                <p className="mt-1 text-sm font-black">{item.name}</p>
+                <p className="mt-0.5 text-[10px] font-semibold text-[#89968f]">{item.note}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <input type="hidden" name="avatar_skin" value={s} />
+      <input type="hidden" name="avatar_outfit" value={o} />
+      <input type="hidden" name="avatar_gender" value={g} />
+      <input type="hidden" name="avatar_hair" value={h} />
+      <input type="hidden" name="avatar_hijab" value={v} />
+      <input type="hidden" name="avatar_expression" value={e} />
+
+      <button type="submit" className="btn-primary mt-6 w-full">Simpan karakter</button>
+    </form>
+  );
 }

@@ -82,7 +82,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   const conversations = (dialogues || []).filter((item: any) => item.lesson_id === lesson.id);
 
   return (
-    <AppShell role={profile?.role || "student"} stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }}>
+    <AppShell active={`/lessons/${slug}`} role={profile?.role || "student"} stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }}>
       <Link href="/dashboard" className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-[#827148]"><ArrowLeft size={17} /> Kembali ke beranda</Link>
 
       <section className="relative overflow-hidden rounded-[28px] bg-[#fff0d9] p-6 md:p-8">

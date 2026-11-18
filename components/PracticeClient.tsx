@@ -21,10 +21,47 @@ function starsForScore(score: number) {
   return 1;
 }
 
+function normalizeSpeechArabic(value: string) {
+  return normalizeArabic(value)
+    .toLowerCase()
+    .replace(/[ة]/g, "ه")
+    .replace(/[ؤ]/g, "و")
+    .replace(/[ئ]/g, "ي")
+    .replace(/[^\p{L}\p{N}\s]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function editDistance(a: string, b: string) {
+  const previous = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i += 1) {
+    const current = [i];
+    for (let j = 1; j <= b.length; j += 1) {
+      const insertion = current[j - 1] + 1;
+      const deletion = previous[j] + 1;
+      const substitution = previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1);
+      current[j] = Math.min(insertion, deletion, substitution);
+    }
+    for (let j = 0; j <= b.length; j += 1) previous[j] = current[j];
+  }
+  return previous[b.length];
+}
+
+function speechMatchesAnswer(spoken: string, expected: string) {
+  const a = normalizeSpeechArabic(spoken);
+  const b = normalizeSpeechArabic(expected);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if (a.length < 4 || b.length < 4) return false;
+  const distance = editDistance(a, b);
+  const similarity = 1 - distance / Math.max(a.length, b.length);
+  return similarity >= (Math.min(a.length, b.length) <= 8 ? 0.78 : 0.72);
+}
+
 function findExpressiveVoice(voices: SpeechSynthesisVoice[], language: string) {
   const prefix = language.toLowerCase().split("-")[0];
   const matching = voices.filter((voice) => voice.lang.toLowerCase().startsWith(prefix));
-  const feminineNames = /(female|woman|zira|sara|maryam|mariam|hoda|laila|layla|salma|noura|noor|farah|heba|maha|amira|amina|aisha|ayesha|reem|reema|lina|dalia|sanaa|nada|microsoft.*(salma|hoda|amira))/i;
+  const feminineNames = /(female|woman|zira|sara|maryam|mariam|hoda|laila|layla|salma|noura|noor|farah|heba|maha|amira|amina|aisha|ayesha|reem|reema|lina|dalia|sanaa|nada|google.*female|microsoft.*(salma|hoda|amira|zira)|indonesia.*female|id.*female)/i;
   return matching.find((voice) => feminineNames.test(voice.name))
     || matching.find((voice) => /google/i.test(voice.name))
     || matching[0]
@@ -177,8 +214,10 @@ export default function PracticeClient({
     const voice = findExpressiveVoice(availableVoices, language);
     utterance.lang = voice?.lang || language;
     if (voice) utterance.voice = voice;
-    utterance.rate = language.toLowerCase().startsWith("ar") ? 0.88 : 1.02;
-    utterance.pitch = 1.2;
+    const isArabic = language.toLowerCase().startsWith("ar");
+    const isPraise = /bagu|keren|mumtaz/i.test(text);
+    utterance.rate = isPraise ? 0.72 : (isArabic ? 0.86 : 0.96);
+    utterance.pitch = isPraise ? 1.3 : 1.18;
     utterance.volume = 1;
 
     const finishSpeech = () => {
@@ -202,17 +241,18 @@ export default function PracticeClient({
       }
     };
 
-    // A short delay after cancel helps Chromium browsers restart speech cleanly.
+    // Jeda kecil setelah cancel membantu Chromium memulai suara tanpa menumpuk utterance.
     window.setTimeout(() => {
       if (speechTokenRef.current !== token) return;
       synth.speak(utterance);
+      // Safety timeout dibuat cukup longgar agar suara Arab tidak terpotong saat pelafalan lambat.
       speechTimerRef.current = window.setTimeout(() => {
         if (speechTokenRef.current !== token) return;
         synth.cancel();
         setIsSpeaking(false);
-        setSpeechMessage("Audio dihentikan otomatis agar latihan tidak macet. Tekan dengarkan untuk mengulang.");
-      }, Math.min(24000, Math.max(5000, text.length * 170)));
-    }, 90);
+        setSpeechMessage("Audio dihentikan otomatis setelah terlalu lama. Tekan dengarkan untuk mengulang.");
+      }, Math.min(45000, Math.max(12000, text.length * 300)));
+    }, 120);
   }
 
   const question = queue[index];
@@ -230,11 +270,13 @@ export default function PracticeClient({
     if (!question || feedback || !selected || verifying || gameOver) return;
     setVerifying(true);
     setBuyMessage("");
-    const correct = normalizeArabic(selected) === normalizeArabic(question.correct_answer);
+    const correct = question.skill === "speaking"
+      ? speechMatchesAnswer(selected, question.correct_answer)
+      : normalizeArabic(selected) === normalizeArabic(question.correct_answer);
 
     if (correct) {
       playAnswerChime(true);
-      const praise = ["Bagus!", "Mumtaz!", "Keren!"][Math.floor(Math.random() * 3)];
+      const praise = ["Baguuuuus!", "Mumtaz! Baguuuuus!", "Kereeen!"][Math.floor(Math.random() * 3)];
       speakText(praise, "id-ID");
       if (!wrongIds.includes(question.id)) setFirstTryCorrect((value) => value + 1);
       setWrongIds((items) => items.filter((id) => id !== question.id));
@@ -336,9 +378,17 @@ export default function PracticeClient({
     recognition.onend = () => setRecording(false);
     recognition.onerror = () => { setRecording(false); setVoiceMessage("Suara belum tertangkap. Coba lagi atau pilih jawaban secara manual."); };
     recognition.onresult = (event: any) => {
-      const transcript = event.results?.[0]?.[0]?.transcript ?? "";
-      setSelected(transcript);
-      setVoiceMessage(transcript ? `Terdengar: ${transcript}` : "Suara belum terbaca. Silakan coba lagi.");
+      const transcript = String(event.results?.[0]?.[0]?.transcript ?? "").trim();
+      const matchingOption = (question?.options || []).find((option) => speechMatchesAnswer(transcript, option));
+      const accepted = matchingOption || transcript;
+      setSelected(accepted || null);
+      setVoiceMessage(
+        transcript
+          ? matchingOption
+            ? `Terdengar: ${transcript} · cocok dengan jawaban pilihanmu.`
+            : `Terdengar: ${transcript}`
+          : "Suara belum terbaca. Silakan coba lagi."
+      );
     };
     recognition.start();
   }

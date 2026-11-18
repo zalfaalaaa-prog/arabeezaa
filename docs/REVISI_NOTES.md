@@ -55,3 +55,18 @@
 ### Database update v5
 
 Setelah migration 001–004 sudah diterapkan, jalankan satu kali `supabase/migrations/005_stage_progress.sql` melalui Supabase → SQL Editor. Migration ini membuat tabel `stage_progress`, menyimpan skor/bintang terbaik per tahap, dan menambahkan RPC `record_stage_quiz_result()` untuk memvalidasi pembukaan tahap di sisi server. Tanpa migration 005, fitur simpan bintang dan buka tahap berikutnya belum aktif. Progres versi sebelumnya hanya tersimpan sebagai ringkasan per materi, bukan per tahap, sehingga bintang tahap mulai direkam sejak revisi ini; tahap tetap dibuka berurutan dari tahap 1.
+
+
+## Revisi v7 — sticky unit, menu lebih rapi, audio lebih natural, dan karakter kucing
+
+- Judul bab/unit pada jalur belajar sekarang **sticky**. Banner Materi 1 tetap terlihat di bagian atas ketika tujuh level di-scroll, mengikuti pola referensi video.
+- Warna banner unit tidak lagi oranye terang; palet jalur dibuat senada dengan tema Arabeeza: sage, teal lembut, dusty rose, olive, dan cream.
+- Garis putus-putus vertikal pada jalur level dihapus agar tampilan lebih bersih.
+- Area klik level diperbesar menjadi sekitar 90px sehingga lebih mudah disentuh di ponsel.
+- Level yang terkunci tetap abu-abu dan tidak dapat diklik. Level yang sudah selesai dapat dimainkan ulang.
+- Materi dan Capaian tidak lagi ditampilkan sebagai kartu duplikat di Beranda. Keduanya tersedia langsung dari menu navigasi, termasuk menu mobile.
+- Halaman Profil tidak lagi menggunakan avatar manusia/toga. Pengguna dapat memilih enam karakter kucing Arabeeza dengan warna, ekspresi, dan aksesori berbeda.
+- Panel apresiasi jawaban dibuat lebih lebar/full-width dan suara apresiasi diperlambat serta dibuat lebih ekspresif, misalnya “Baguuuuus!”.
+- Audio latihan diberi safety timeout yang lebih longgar agar pelafalan Arab tidak terpotong terlalu cepat.
+- Latihan berbicara sekarang melakukan pencocokan toleran terhadap hasil Speech Recognition. Jika browser menangkap ucapan yang sedikit berbeda karena variasi tanda baca, huruf, atau hasil transkripsi, jawaban tetap dapat dikenali sebagai benar bila kemiripannya cukup tinggi.
+- Jika hasil Speech Recognition cocok dengan salah satu pilihan jawaban, sistem otomatis memilih opsi tersebut sehingga siswa tidak langsung dianggap salah hanya karena transkripsi browser sedikit berbeda.

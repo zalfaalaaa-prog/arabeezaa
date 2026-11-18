@@ -6,7 +6,7 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 
 ## Pembaruan pada revisi ini
 
-- Navigasi mobile menampilkan label Beranda, Capaian, Toko, dan Profil.
+- Navigasi mobile menampilkan label Beranda, Materi, Capaian, Toko, dan Profil.
 - Maskot kucing Arabeeza tampil di beranda dan selama latihan; logo SVG juga diganti menjadi kucing.
 - Dashboard menampilkan jalur visual 7 tahap dengan ikon ilustratif dan warna dari palet Arabeeza.
 - Jawaban tidak langsung dikoreksi saat dipilih. Siswa harus menekan tombol **Periksa jawaban**.
@@ -262,3 +262,14 @@ Migration `004_daily_hearts_reset.sql` menambahkan `hearts_reset_date` dan RPC `
 ### Progres level dan bintang (Revisi v5)
 
 Jalankan migration `005_stage_progress.sql` setelah migration 001–004. Tujuh tahap akan terbuka secara berurutan; tahap terkunci berwarna abu-abu. Setiap tahap menampilkan tiga bintang berdasarkan jawaban benar pada percobaan pertama (15 benar = 3 bintang; 10–14 benar = 2 bintang; 0–9 benar = 1 bintang). Saat mengulang tahap, skor dan bintang terbaik tidak akan diturunkan.
+
+
+## Revisi v7
+
+- Banner judul bab/unit pada jalur level bersifat sticky saat level di-scroll.
+- Jalur level memakai palet pastel sage/teal/dusty rose/olive yang lebih konsisten; garis putus-putus dihapus.
+- Area klik level diperbesar untuk ponsel.
+- Materi dan Capaian dipindahkan menjadi menu navigasi agar Beranda lebih fokus pada jalur belajar.
+- Profil memakai enam karakter kucing Arabeeza dengan aksesori dan ekspresi berbeda.
+- Audio apresiasi dibuat lebih lambat dan ekspresif; audio latihan memiliki safety timeout yang lebih longgar.
+- Speech Recognition untuk latihan berbicara memakai pencocokan toleran agar transkripsi yang sedikit berbeda tidak langsung dianggap salah.
