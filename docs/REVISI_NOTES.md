@@ -98,3 +98,28 @@ Setelah migration 001–004 sudah diterapkan, jalankan satu kali `supabase/migra
 - Urutan pilihan pengecoh juga diacak. Isi soal dan kunci jawaban di database tidak diubah.
 - Pilihan jawaban menampilkan penanda A, B, dan C sehingga posisi opsi mudah dibaca. Penanda akan mengikuti urutan hasil pengacakan.
 - Tidak ada migration Supabase baru yang diperlukan untuk revisi ini.
+
+
+## Revisi v10 — tema dashboard, animasi level, dan variasi bentuk soal
+
+- Banner judul unit di dashboard berubah dari hijau menjadi biru indigo `#344B78`, sehingga tidak menyatu dengan lingkaran level pertama yang tetap hijau.
+- Tujuh lingkaran level memiliki animasi mengambang naik-turun dan perubahan bayangan secara bergantian. Animasi dibuat lembut, tidak serempak, dan berhenti untuk perangkat yang mengaktifkan `prefers-reduced-motion`.
+- Bank soal Materi 1 disusun ulang menjadi 105 soal (7 tahap × 15 soal) berdasarkan Bab 1 At-Ta'aruf pada buku yang dilampirkan: salam dan perkenalan, identitas dan keluarga, dhamir, adawatul istifham, mufradat, dialog Faris–Zaid, serta pemahaman bacaan Abdullah dan Khalid.
+- Soal dalam setiap tahap mencampurkan pilihan ganda, menjodohkan kosakata, menyusun keping kata, listening dengan susunan kata, speaking-repeat, dan pilihan kosakata bergambar/piktogram. Urutan opsi dan keping kata diacak.
+- Model menjodohkan menggunakan status abu-abu sebelum dipasangkan, hijau saat cocok, dan merah sesaat saat salah lalu kembali abu-abu untuk dicoba ulang.
+- Latihan speaking-repeat memakai audio browser dan Speech Recognition jika tersedia. Tombol **Tidak bisa bicara sekarang** melewati latihan tanpa mengurangi nyawa; soal yang dilewati tidak dihitung sebagai jawaban benar.
+- Pilihan gambar menggunakan piktogram/emoji agar ringan dan tetap tampil baik di ponsel tanpa mengunduh aset gambar eksternal.
+- Tidak ada perubahan pada sistem autentikasi, akun, nyawa harian, XP, berlian, maupun progres tahap.
+
+### Database update v10
+
+Untuk project Supabase yang sudah menjalankan migration 001–005 dan seed, jalankan satu kali file `supabase/migrations/006_interactive_question_types.sql` melalui Supabase → SQL Editor. Migration ini memperbarui isi 105 soal Materi 1 dan menyimpan tipe soal interaktif pada kolom `question_type` serta data terstruktur pada `options` (JSONB). Migration tidak menghapus profil, hasil kuis, nyawa, atau progres/bintang siswa.
+
+### Pemeriksaan setelah update
+
+- Pastikan jumlah soal Materi 1 adalah 105 (7 × 15).
+- Uji setiap tipe soal: pilihan ganda, matching, word order, listening word order, speaking repeat, dan image choice.
+- Pastikan posisi jawaban dan keping kata berubah ketika sesi baru dimulai.
+- Uji salah satu pasangan matching: status salah harus merah sebentar lalu kembali abu-abu.
+- Uji tombol skip speaking: soal dilewati tanpa mengurangi nyawa dan tidak menambah skor benar.
+- Uji dashboard di ponsel dan desktop; animasi level harus halus dan tidak berjalan pada preferensi reduced motion.

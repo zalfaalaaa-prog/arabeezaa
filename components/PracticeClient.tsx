@@ -5,15 +5,35 @@ import Link from "next/link";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Gem, Heart, Mic,
   Volume2, VolumeX, XCircle, Headphones, BookOpen,
-  PencilLine, Star
+  PencilLine, Star, MessageCircle
 } from "lucide-react";
 import { buyHearts, loseHeart, saveQuizResult } from "@/app/actions";
 import { normalizeArabic } from "@/lib/utils";
 import type { Question } from "@/lib/types";
 import CatMascot from "@/components/CatMascot";
 
-type Feedback = { correct: boolean; message: string; answer: string };
+type Feedback = { correct: boolean; message: string; answer: string; skipped?: boolean };
 type DialogueLine = { speaker: string; text: string };
+
+type MatchingPairOption = { id: string; arabic: string; meaning: string };
+type ImageChoiceOption = { label: string; emoji: string };
+
+function shuffleItems<T>(items: T[]): T[] {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [result[index], result[randomIndex]] = [result[randomIndex], result[index]];
+  }
+  return result;
+}
+
+function isMatchingPair(option: unknown): option is MatchingPairOption {
+  return Boolean(option && typeof option === "object" && "id" in option && "arabic" in option && "meaning" in option);
+}
+
+function isImageChoice(option: unknown): option is ImageChoiceOption {
+  return Boolean(option && typeof option === "object" && "label" in option && "emoji" in option);
+}
 
 function starsForScore(score: number) {
   if (score >= 100) return 3;
@@ -117,7 +137,10 @@ const skillMeta: Record<string, { label: string; icon: typeof Headphones; color:
   listening: { label: "Menyimak", icon: Headphones, color: "bg-[#eaf2df] text-[#74834f]" },
   speaking: { label: "Berbicara", icon: Mic, color: "bg-[#f8e6dc] text-[#bd795a]" },
   reading: { label: "Membaca", icon: BookOpen, color: "bg-[#f1eadb] text-[#827148]" },
-  writing: { label: "Menulis", icon: PencilLine, color: "bg-[#fff0d9] text-[#bd795a]" }
+  writing: { label: "Menulis", icon: PencilLine, color: "bg-[#fff0d9] text-[#bd795a]" },
+  vocabulary: { label: "Kosakata", icon: BookOpen, color: "bg-[#edf3fc] text-[#506b99]" },
+  grammar: { label: "Tata bahasa", icon: PencilLine, color: "bg-[#f1eafa] text-[#8060a8]" },
+  conversation: { label: "Percakapan", icon: MessageCircle, color: "bg-[#edf0fa] text-[#50638e]" }
 };
 
 export default function PracticeClient({
@@ -160,6 +183,13 @@ export default function PracticeClient({
   const [verifying, setVerifying] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechMessage, setSpeechMessage] = useState("");
+  const [wordTokens, setWordTokens] = useState<string[]>([]);
+  const [leftMatchChoice, setLeftMatchChoice] = useState<string | null>(null);
+  const [rightMatchChoice, setRightMatchChoice] = useState<string | null>(null);
+  const [matchedPairIds, setMatchedPairIds] = useState<string[]>([]);
+  const [wrongPairIds, setWrongPairIds] = useState<string[]>([]);
+  const [matchingMistakes, setMatchingMistakes] = useState(0);
+  const [speakingSkipped, setSpeakingSkipped] = useState(false);
   const voiceListRef = useRef<SpeechSynthesisVoice[]>([]);
   const speechTimerRef = useRef<number | null>(null);
   const speechTokenRef = useRef(0);
@@ -256,6 +286,30 @@ export default function PracticeClient({
   }
 
   const question = queue[index];
+  const matchingPairs = useMemo(
+    () => question?.question_type === "matching_pairs"
+      ? question.options.filter(isMatchingPair)
+      : [],
+    [question?.id, question?.options]
+  );
+  const matchingRightOrder = useMemo(() => shuffleItems(matchingPairs), [question?.id, matchingPairs]);
+  const imageOptions = question?.options.filter(isImageChoice) || [];
+  const stringOptions = question?.options.filter((option): option is string => typeof option === "string") || [];
+
+  useEffect(() => {
+    setWordTokens([]);
+    setLeftMatchChoice(null);
+    setRightMatchChoice(null);
+    setMatchedPairIds([]);
+    setWrongPairIds([]);
+    setMatchingMistakes(0);
+    setSpeakingSkipped(false);
+    setSelected(null);
+    setFeedback(null);
+    setVoiceMessage("");
+    setSpeechMessage("");
+  }, [question?.id]);
+
   const progress = Math.min(100, Math.round(((index + (feedback ? 1 : 0)) / Math.max(queue.length, 1)) * 100));
   const score = useMemo(() => Math.round((firstTryCorrect / Math.max(questions.length, 1)) * 100), [firstTryCorrect, questions.length]);
   const modeLabel = mode === "listening" ? "Menyimak" : mode === "reading" ? "Membaca" : mode === "conversation" ? "Percakapan" : "Campuran 4 Maharah";
@@ -270,17 +324,53 @@ export default function PracticeClient({
     if (!question || feedback || !selected || verifying || gameOver) return;
     setVerifying(true);
     setBuyMessage("");
-    const correct = question.skill === "speaking"
-      ? speechMatchesAnswer(selected, question.correct_answer)
-      : normalizeArabic(selected) === normalizeArabic(question.correct_answer);
+    const isSkipped = question.question_type === "speaking_repeat" && selected === "__SPEAKING_SKIPPED__";
+    const isWordOrder = question.question_type === "word_order" || question.question_type === "listen_word_order";
+    const correct = isSkipped
+      ? true
+      : question.question_type === "matching_pairs"
+        ? matchingPairs.length > 0 && matchedPairIds.length === matchingPairs.length
+        : isWordOrder
+          ? normalizeArabic(selected) === normalizeArabic(question.correct_answer)
+          : question.skill === "speaking"
+            ? speechMatchesAnswer(selected, question.correct_answer)
+            : normalizeArabic(selected) === normalizeArabic(question.correct_answer);
 
-    if (correct) {
+    if (isSkipped) {
+      setFeedback({
+        correct: true,
+        skipped: true,
+        message: "Latihan berbicara dilewati tanpa mengurangi nyawa. Kamu bisa berlatih lagi kapan saja.",
+        answer: question.correct_answer
+      });
+    } else if (correct) {
       playAnswerChime(true);
       const praise = ["Baguuuuus!", "Mumtaz! Baguuuuus!", "Kereeen!"][Math.floor(Math.random() * 3)];
       speakText(praise, "id-ID");
-      if (!wrongIds.includes(question.id)) setFirstTryCorrect((value) => value + 1);
+      const recoveredMatching = question.question_type === "matching_pairs" && matchingMistakes > 0;
+      if (!wrongIds.includes(question.id) && !recoveredMatching) setFirstTryCorrect((value) => value + 1);
       setWrongIds((items) => items.filter((id) => id !== question.id));
-      setFeedback({ correct: true, message: "Mumtaz! Jawabanmu tepat.", answer: question.correct_answer });
+      if (recoveredMatching) {
+        // Satu kesalahan pada satu latihan matching mengurangi satu nyawa;
+        // pasangan tetap dapat diperbaiki sampai seluruhnya berwarna hijau.
+        let remainingHearts = Math.max(0, hearts - 1);
+        try {
+          const result = await loseHeart();
+          if (result.ok) remainingHearts = result.hearts;
+          else if (result.error) setBuyMessage(`Nyawa belum tersimpan ke akun: ${result.error}`);
+        } catch {
+          setBuyMessage("Koneksi belum stabil. Pengurangan nyawa hanya berlaku pada sesi ini.");
+        }
+        setHearts(remainingHearts);
+        if (remainingHearts <= 0) setGameOver(true);
+      }
+      setFeedback({
+        correct: true,
+        message: recoveredMatching
+          ? "Semua pasangan sudah tepat. Pasangan yang sempat keliru berhasil kamu perbaiki."
+          : "Mumtaz! Jawabanmu tepat.",
+        answer: question.correct_answer
+      });
     } else {
       playAnswerChime(false);
       // Every incorrect check consumes one heart, including a retry of the same question.
@@ -294,7 +384,13 @@ export default function PracticeClient({
       }
       setHearts(remainingHearts);
       setWrongIds((items) => items.includes(question.id) ? items : [...items, question.id]);
-      setFeedback({ correct: false, message: "Belum tepat. Tidak apa-apa, kita coba lagi!", answer: question.correct_answer });
+      setFeedback({
+        correct: false,
+        message: question.question_type === "matching_pairs"
+          ? "Ada pasangan yang belum tepat. Perhatikan kembali pasangan kata dan artinya."
+          : "Belum tepat. Tidak apa-apa, kita coba lagi!",
+        answer: question.question_type === "matching_pairs" ? "Pasangkan semua kata Arab dengan arti yang benar." : question.correct_answer
+      });
       if (remainingHearts <= 0) setGameOver(true);
     }
     setVerifying(false);
@@ -316,6 +412,15 @@ export default function PracticeClient({
     if (pending.length > 0) {
       setQueue(pending);
       setIndex(0);
+      setWordTokens([]);
+      setLeftMatchChoice(null);
+      setRightMatchChoice(null);
+      setMatchedPairIds([]);
+      setWrongPairIds([]);
+      setMatchingMistakes(0);
+      setSpeakingSkipped(false);
+      setSelected(null);
+      setFeedback(null);
       return;
     }
 
@@ -379,18 +484,81 @@ export default function PracticeClient({
     recognition.onerror = () => { setRecording(false); setVoiceMessage("Suara belum tertangkap. Coba lagi atau pilih jawaban secara manual."); };
     recognition.onresult = (event: any) => {
       const transcript = String(event.results?.[0]?.[0]?.transcript ?? "").trim();
-      const matchingOption = (question?.options || []).find((option) => speechMatchesAnswer(transcript, option));
-      const accepted = matchingOption || transcript;
+      const textOptions = (question?.options || []).filter((option): option is string => typeof option === "string");
+      const matchingOption = textOptions.find((option) => speechMatchesAnswer(transcript, option));
+      const matchesSpeakingTarget = question?.question_type === "speaking_repeat"
+        && speechMatchesAnswer(transcript, question.correct_answer);
+      const accepted = matchingOption || (matchesSpeakingTarget ? question?.correct_answer : transcript);
       setSelected(accepted || null);
       setVoiceMessage(
         transcript
-          ? matchingOption
-            ? `Terdengar: ${transcript} · cocok dengan jawaban pilihanmu.`
+          ? matchingOption || matchesSpeakingTarget
+            ? `Terdengar: ${transcript} · pelafalan cocok.`
             : `Terdengar: ${transcript}`
           : "Suara belum terbaca. Silakan coba lagi."
       );
     };
     recognition.start();
+  }
+
+  function chooseWordToken(token: string) {
+    if (feedback || wordTokens.includes(token)) return;
+    const next = [...wordTokens, token];
+    setWordTokens(next);
+    setSelected(next.join(" "));
+  }
+
+  function removeWordToken(tokenIndex: number) {
+    if (feedback) return;
+    const next = wordTokens.filter((_, indexValue) => indexValue !== tokenIndex);
+    setWordTokens(next);
+    setSelected(next.join(" ") || null);
+  }
+
+  function matchPair(leftId: string, rightId: string) {
+    if (leftId === rightId) {
+      const nextMatched = [...matchedPairIds, leftId];
+      setMatchedPairIds(nextMatched);
+      setLeftMatchChoice(null);
+      setRightMatchChoice(null);
+      if (nextMatched.length === matchingPairs.length && matchingPairs.length > 0) {
+        setSelected(question?.correct_answer || "ALL_MATCHED");
+      }
+      return;
+    }
+
+    setWrongPairIds([leftId, rightId]);
+    setMatchingMistakes((value) => value + 1);
+    window.setTimeout(() => {
+      setWrongPairIds([]);
+      setLeftMatchChoice(null);
+      setRightMatchChoice(null);
+    }, 700);
+  }
+
+  function chooseLeftPair(id: string) {
+    if (feedback || matchedPairIds.includes(id) || wrongPairIds.length > 0) return;
+    if (rightMatchChoice) {
+      matchPair(id, rightMatchChoice);
+    } else {
+      setLeftMatchChoice(id);
+    }
+  }
+
+  function chooseRightPair(id: string) {
+    if (feedback || matchedPairIds.includes(id) || wrongPairIds.length > 0) return;
+    if (leftMatchChoice) {
+      matchPair(leftMatchChoice, id);
+    } else {
+      setRightMatchChoice(id);
+    }
+  }
+
+  function skipSpeakingPractice() {
+    if (feedback || recording) return;
+    setSpeakingSkipped(true);
+    setSelected("__SPEAKING_SKIPPED__");
+    setVoiceMessage("Latihan berbicara dilewati. Kamu tetap bisa melanjutkan ke soal berikutnya.");
   }
 
   if (finished) {
@@ -425,7 +593,7 @@ export default function PracticeClient({
     );
   }
 
-  if (!question) return <div className="surface p-8 text-center">Soal belum tersedia. Jalankan migration 003 di Supabase terlebih dahulu.</div>;
+  if (!question) return <div className="surface p-8 text-center">Soal belum tersedia. Pastikan migration 003 dan 006 sudah dijalankan di Supabase.</div>;
 
   return (
     <div className={`practice-page mx-auto max-w-3xl ${feedback ? "has-feedback" : ""}`}>
@@ -446,10 +614,10 @@ export default function PracticeClient({
         </div>
 
         <div className="mascot-coach mb-5 flex items-center gap-3 rounded-2xl p-3">
-          <CatMascot mood={feedback ? (feedback.correct ? "celebrate" : "thinking") : "happy"} size={76} className="mascot-float shrink-0" />
+          <CatMascot mood={feedback ? (feedback.skipped ? "happy" : feedback.correct ? "celebrate" : "thinking") : "happy"} size={76} className="mascot-float shrink-0" />
           <div className="mascot-speech-bubble">
             <p className="text-[10px] font-black tracking-[.12em] text-[#a76d50]">ARABEEZA MENEMANIMU</p>
-            <p className="mt-1 text-sm font-bold leading-5 text-[#6d604c]">{feedback ? (feedback.correct ? "Yeay! Kamu berhasil. Pertahankan semangatmu!" : "Tidak apa-apa. Yuk, perhatikan petunjuknya.") : "Ayo pikirkan jawabannya. Kamu pasti bisa!"}</p>
+            <p className="mt-1 text-sm font-bold leading-5 text-[#6d604c]">{feedback ? (feedback.skipped ? "Latihan ini bisa kamu coba lagi lain waktu." : feedback.correct ? "Yeay! Kamu berhasil. Pertahankan semangatmu!" : "Tidak apa-apa. Yuk, perhatikan petunjuknya.") : "Ayo pikirkan jawabannya. Kamu pasti bisa!"}</p>
           </div>
         </div>
 
@@ -475,7 +643,7 @@ export default function PracticeClient({
         {question.skill === "listening" && question.audio_text && (
           <div className="audio-card mt-4">
             <div className="audio-card-icon"><Volume2 size={21} /></div>
-            <div className="min-w-0 flex-1"><p className="text-sm font-black text-[#705b3c]">Dengarkan suara Maryam</p><p className="mt-0.5 text-xs text-[#9a8a70]">Pelafalan Bahasa Arab dengan intonasi lebih lembut</p></div>
+            <div className="min-w-0 flex-1"><p className="text-sm font-black text-[#705b3c]">Dengarkan ungkapan berikut</p><p className="mt-0.5 text-xs text-[#9a8a70]">Putar audio, simak dengan saksama, lalu jawab pertanyaan.</p></div>
             <button type="button" onClick={() => isSpeaking ? stopSpeech() : speakText(question.audio_text || "", "ar-SA")} className="audio-play-button" aria-label={isSpeaking ? "Hentikan audio" : "Putar audio"}>
               {isSpeaking ? <VolumeX size={19} /> : <Volume2 size={19} />}
             </button>
@@ -488,7 +656,35 @@ export default function PracticeClient({
         )}
         {speechMessage && <p className="mt-2 rounded-xl bg-[#fff6df] px-3 py-2 text-xs font-semibold text-[#98702b]" role="status">{speechMessage}</p>}
 
-        {question.skill === "speaking" && (
+        {question.question_type === "speaking_repeat" && (
+          <div className="speaking-repeat-card mt-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-black text-[#425579]">Dengarkan, lalu ulangi</p>
+                <p className="mt-1 text-xs text-[#74819a]">Tekan mikrofon dan ucapkan kalimat dalam Bahasa Arab.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => isSpeaking ? stopSpeech() : speakText(question.audio_text || question.correct_answer, "ar-SA")}
+                className="audio-play-button"
+                aria-label={isSpeaking ? "Hentikan contoh audio" : "Putar contoh audio"}
+              >
+                {isSpeaking ? <VolumeX size={19} /> : <Volume2 size={19} />}
+              </button>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button type="button" onClick={startVoicePractice} disabled={recording || !!feedback || speakingSkipped} className="inline-flex items-center gap-2 rounded-xl bg-[#3d5a91] px-4 py-3 text-sm font-extrabold text-white disabled:opacity-50">
+                <Mic size={17} />{recording ? "Mendengarkan..." : "Mulai berbicara"}
+              </button>
+              <button type="button" onClick={skipSpeakingPractice} disabled={!!feedback || recording || speakingSkipped} className="rounded-xl border border-[#d7dfed] bg-white px-4 py-3 text-sm font-bold text-[#60708b] disabled:opacity-50">
+                Tidak bisa bicara sekarang
+              </button>
+            </div>
+            {voiceMessage && <p className="mt-3 text-xs font-semibold text-[#60708b]" role="status">{voiceMessage}</p>}
+          </div>
+        )}
+
+        {question.skill === "speaking" && question.question_type !== "speaking_repeat" && (
           <div className="mt-4 rounded-2xl bg-[#f8e6dc] p-4">
             <p className="text-sm font-bold text-[#785a4a]">Coba ucapkan jawabanmu dalam Bahasa Arab sebelum memilih.</p>
             <button type="button" onClick={startVoicePractice} disabled={recording || !!feedback} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-[#a76d50] disabled:opacity-50"><Mic size={17} />{recording ? "Mendengarkan..." : "Latihan berbicara"}</button>
@@ -496,23 +692,137 @@ export default function PracticeClient({
           </div>
         )}
 
-        <div className="mt-6 grid gap-3">
-          {(question.options || []).map((option, optionIndex) => {
-            const isCorrect = Boolean(feedback) && normalizeArabic(option) === normalizeArabic(question.correct_answer);
-            const isWrong = Boolean(feedback) && selected === option && !feedback?.correct;
-            return (
-              <button key={option} type="button" dir="auto" disabled={!!feedback} onClick={() => setSelected(option)} className={`choice choice-animated ${selected === option ? "is-selected" : ""} ${isCorrect ? "correct" : ""} ${isWrong ? "wrong" : ""}`} style={{ animationDelay: `${optionIndex * 45}ms` }} aria-pressed={selected === option}>
-                <span className="flex items-center justify-between gap-3" dir="ltr">
-                  <span className="flex min-w-0 items-center gap-3">
-                    <span className="choice-letter" aria-hidden="true">{String.fromCharCode(65 + optionIndex)}</span>
-                    <span className="min-w-0" dir="auto">{option}</span>
+        {question.question_type === "matching_pairs" && (
+          <div className="matching-game mt-6">
+            <div className="mb-3 flex items-center justify-between gap-2 text-xs font-bold text-[#77849a]">
+              <span>Pilih kata Arab, lalu pilih artinya.</span>
+              <span>{matchedPairIds.length}/{matchingPairs.length} cocok</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="grid content-start gap-2">
+                <p className="text-center text-[11px] font-black uppercase tracking-wide text-[#7d8796]">Bahasa Arab</p>
+                {matchingPairs.map((pair) => (
+                  <button
+                    key={`left-${pair.id}`}
+                    type="button"
+                    dir="rtl"
+                    disabled={!!feedback || matchedPairIds.includes(pair.id) || wrongPairIds.length > 0}
+                    onClick={() => chooseLeftPair(pair.id)}
+                    className={`match-tile ${leftMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(pair.id) ? "is-wrong" : ""}`}
+                  >
+                    {pair.arabic}
+                  </button>
+                ))}
+              </div>
+              <div className="grid content-start gap-2">
+                <p className="text-center text-[11px] font-black uppercase tracking-wide text-[#7d8796]">Artinya</p>
+                {matchingRightOrder.map((pair) => (
+                  <button
+                    key={`right-${pair.id}`}
+                    type="button"
+                    disabled={!!feedback || matchedPairIds.includes(pair.id) || wrongPairIds.length > 0}
+                    onClick={() => chooseRightPair(pair.id)}
+                    className={`match-tile match-tile-meaning ${rightMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(pair.id) ? "is-wrong" : ""}`}
+                  >
+                    {pair.meaning}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {matchedPairIds.length === matchingPairs.length && matchingPairs.length > 0 && (
+              <p className="mt-3 rounded-xl bg-[#e7f7e9] px-3 py-2 text-center text-xs font-bold text-[#26834c]">
+                Semua pasangan sudah dipasangkan. Tekan Periksa jawaban.
+              </p>
+            )}
+          </div>
+        )}
+
+        {(question.question_type === "word_order" || question.question_type === "listen_word_order") && (
+          <div className="word-builder mt-6">
+            <p className="mb-2 text-xs font-bold text-[#7c8796]">Susunan jawabanmu</p>
+            <div className="word-answer-zone" dir="rtl" aria-live="polite">
+              {wordTokens.length === 0 ? (
+                <span className="text-xs font-semibold text-[#9aa4b2]">Ketuk keping kata di bawah untuk menyusun kalimat.</span>
+              ) : wordTokens.map((token, tokenIndex) => (
+                <button
+                  key={`${token}-${tokenIndex}`}
+                  type="button"
+                  disabled={!!feedback}
+                  onClick={() => removeWordToken(tokenIndex)}
+                  className="word-token word-token-selected"
+                  dir="auto"
+                  aria-label={`Hapus kata ${token}`}
+                >
+                  {token}
+                </button>
+              ))}
+            </div>
+            <div className="word-bank" dir="rtl">
+              {stringOptions.map((token, tokenIndex) => {
+                const used = wordTokens.includes(token);
+                return (
+                  <button
+                    key={`${token}-${tokenIndex}`}
+                    type="button"
+                    disabled={used || !!feedback}
+                    onClick={() => chooseWordToken(token)}
+                    className="word-token"
+                    dir="auto"
+                  >
+                    {token}
+                  </button>
+                );
+              })}
+            </div>
+            <button type="button" onClick={() => { setWordTokens([]); setSelected(null); }} disabled={!wordTokens.length || !!feedback} className="mt-3 text-xs font-bold text-[#72809a] underline disabled:opacity-40">
+              Ulangi susunan
+            </button>
+          </div>
+        )}
+
+        {question.question_type === "image_choice" && (
+          <div className="image-choice-grid mt-6">
+            {imageOptions.map((option, optionIndex) => {
+              const isCorrect = Boolean(feedback) && normalizeArabic(option.label) === normalizeArabic(question.correct_answer);
+              const isWrong = Boolean(feedback) && selected === option.label && !feedback?.correct;
+              return (
+                <button
+                  key={option.label}
+                  type="button"
+                  disabled={!!feedback}
+                  onClick={() => setSelected(option.label)}
+                  className={`image-choice-card ${selected === option.label ? "is-selected" : ""} ${isCorrect ? "correct" : ""} ${isWrong ? "wrong" : ""}`}
+                  style={{ animationDelay: `${optionIndex * 55}ms` }}
+                  aria-pressed={selected === option.label}
+                >
+                  <span className="image-choice-emoji" aria-hidden="true">{option.emoji}</span>
+                  <span className="image-choice-label">{option.label}</span>
+                  {isCorrect ? <CheckCircle2 size={18} /> : isWrong ? <XCircle size={18} /> : null}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {!["matching_pairs", "word_order", "listen_word_order", "speaking_repeat", "image_choice"].includes(question.question_type) && (
+          <div className="mt-6 grid gap-3">
+            {stringOptions.map((option, optionIndex) => {
+              const isCorrect = Boolean(feedback) && normalizeArabic(option) === normalizeArabic(question.correct_answer);
+              const isWrong = Boolean(feedback) && selected === option && !feedback?.correct;
+              return (
+                <button key={`${option}-${optionIndex}`} type="button" dir="auto" disabled={!!feedback} onClick={() => setSelected(option)} className={`choice choice-animated ${selected === option ? "is-selected" : ""} ${isCorrect ? "correct" : ""} ${isWrong ? "wrong" : ""}`} style={{ animationDelay: `${optionIndex * 45}ms` }} aria-pressed={selected === option}>
+                  <span className="flex items-center justify-between gap-3" dir="ltr">
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span className="choice-letter" aria-hidden="true">{String.fromCharCode(65 + optionIndex)}</span>
+                      <span className="min-w-0" dir="auto">{option}</span>
+                    </span>
+                    {isCorrect ? <CheckCircle2 size={19} /> : isWrong ? <XCircle size={19} /> : null}
                   </span>
-                  {isCorrect ? <CheckCircle2 size={19} /> : isWrong ? <XCircle size={19} /> : null}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {!feedback && (
           <div className="mt-6">
@@ -524,13 +834,13 @@ export default function PracticeClient({
       <div className="mt-4 text-center text-xs text-[#89968f]">Materi: {lessonTitle} · Tahap {level} · 15 soal</div>
 
       {feedback && (
-        <div className={`feedback-dock ${feedback.correct ? "feedback-correct" : "feedback-try"}`} role="status" aria-live="polite">
+        <div className={`feedback-dock ${feedback.correct ? "feedback-correct" : "feedback-try"} ${feedback.skipped ? "feedback-skip" : ""}`} role="status" aria-live="polite">
           <div className="feedback-dock-inner">
             <div className="feedback-dock-top">
               <CatMascot mood={feedback.correct ? "celebrate" : "thinking"} size={66} className="mascot-feedback" />
               <div className="min-w-0 flex-1">
-                <p className="feedback-eyebrow">{feedback.correct ? "✦ JAWABAN TEPAT ✦" : "YUK, COBA LAGI"}</p>
-                <h2 className="text-xl font-black">{feedback.correct ? "Keren!" : "Belum tepat, tidak apa-apa!"}</h2>
+                <p className="feedback-eyebrow">{feedback.skipped ? "LATIHAN DILEWATI" : feedback.correct ? "✦ JAWABAN TEPAT ✦" : "YUK, COBA LAGI"}</p>
+                <h2 className="text-xl font-black">{feedback.skipped ? "Lanjutkan belajar!" : feedback.correct ? "Keren!" : "Belum tepat, tidak apa-apa!"}</h2>
                 <p className="mt-1 text-sm leading-5">{feedback.message}</p>
               </div>
             </div>

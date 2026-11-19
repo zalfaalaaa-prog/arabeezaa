@@ -4,7 +4,7 @@
 - `lessons`: learning units (initially At-Ta‘āruf).
 - `vocabulary`: Arabic vocabulary with harakat and Indonesian meanings.
 - `dialogues`: short Arabic conversations and translations.
-- `questions`: 105 mixed questions for Materi 1 (7 levels × 15 questions), plus focused practice modes.
+- `questions`: 105 mixed questions for Materi 1 (7 levels × 15 questions). Kolom `question_type` membedakan pilihan ganda, matching pairs, word order, listening word order, speaking repeat, dan image choice; kolom `options` menyimpan string atau objek JSONB sesuai tipe soal.
 - `lesson_progress`: session count and best score per lesson.
 - `stage_progress`: completion count, best score, and best stars for each of the seven stages.
 - `quiz_attempts`: score and reward history.
@@ -19,5 +19,6 @@ Run migrations in order:
 4. `003_materi1_105_questions_and_lives.sql` (105-question bank and persistent heart deduction)
 5. `004_daily_hearts_reset.sql` (daily 00:00 WIB heart reset; answer sound is handled in the web app)
 6. `005_stage_progress.sql` (per-stage completion, level unlocking and best-star tracking)
+7. `006_interactive_question_types.sql` (105 soal bertingkat dengan variasi matching, susun kata, listening, speaking, dan kosakata bergambar)
 
-For an existing project that already has migrations 001–004 and the seed, do not recreate the database. Run only migration `005_stage_progress.sql` in Supabase SQL Editor to enable the new level unlocking and star progress.
+For an existing project that already has migrations 001–005 and the seed, do not recreate the database. Run only migration `006_interactive_question_types.sql` in Supabase SQL Editor to update the interactive question bank.

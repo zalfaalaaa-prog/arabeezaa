@@ -25,6 +25,7 @@
 - [ ] Migration `supabase/migrations/003_materi1_105_questions_and_lives.sql` telah dijalankan.
 - [ ] Migration `supabase/migrations/004_daily_hearts_reset.sql` telah dijalankan.
 - [ ] Migration `supabase/migrations/005_stage_progress.sql` telah dijalankan.
+- [ ] Migration `supabase/migrations/006_interactive_question_types.sql` telah dijalankan.
 - [ ] Site URL dan Redirect URLs memuat domain Vercel.
 
 ## Setelah deploy
@@ -62,3 +63,10 @@ Efek suara jawaban dibuat melalui Web Audio API di browser: bunyi chime berbeda 
 Untuk database yang sudah menjalankan migration 001–004, jalankan satu kali `supabase/migrations/005_stage_progress.sql` di Supabase → SQL Editor sebelum menggunakan fitur bintang dan pembukaan tahap. Tahap 1 terbuka; tahap 2–7 baru terbuka setelah tahap sebelumnya diselesaikan. Skor dan bintang terbaik per tahap disimpan di tabel `stage_progress`. Bintang dihitung dari jawaban benar percobaan pertama: 15/15 = 3 bintang, 10–14/15 = 2 bintang, dan 0–9/15 = 1 bintang. Progres v4 yang sebelumnya hanya direkap per materi tetap tersimpan, tetapi tidak dapat dipetakan secara akurat ke tujuh tahap; pencatatan bintang per tahap dimulai pada revisi ini.
 
 Audio Arab menggunakan Speech Synthesis bawaan browser dan memprioritaskan voice Bahasa Arab yang namanya mengindikasikan suara perempuan. Ketersediaan voice bergantung pada perangkat/browser; untuk hasil terbaik gunakan Chrome atau Edge terbaru dengan voice Arabic yang terpasang. Kontrol audio dapat menghentikan pemutaran, dan pemutaran otomatis dihentikan bila terlalu lama agar tidak membuat latihan tersangkut.
+
+
+## Revisi v10 — bank soal interaktif
+
+Untuk database yang sudah menjalankan migration 001–005, jalankan satu kali `supabase/migrations/006_interactive_question_types.sql` melalui Supabase SQL Editor. Migration ini memperbarui 105 soal Materi 1 tanpa menghapus data akun atau progres siswa. Setelah itu push source code ke GitHub dan tunggu deployment Vercel selesai.
+
+Uji setelah deploy: matching Arab–Indonesia, susun kata, audio listening, speaking-repeat dengan tombol skip, pilihan kosakata bergambar, dan pengacakan posisi jawaban.

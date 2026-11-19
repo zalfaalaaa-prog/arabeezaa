@@ -8,14 +8,14 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 
 - Navigasi mobile menampilkan label Beranda, Materi, Capaian, Toko, dan Profil.
 - Maskot kucing Arabeeza tampil di beranda dan selama latihan; logo SVG juga diganti menjadi kucing.
-- Dashboard menampilkan jalur visual 7 tahap dengan ikon ilustratif dan warna dari palet Arabeeza.
+- Dashboard menampilkan jalur visual 7 tahap dengan ikon ilustratif; banner unit memakai indigo agar berbeda dari level pertama yang hijau, dan bulatan level bergerak naik-turun secara halus.
 - Jawaban tidak langsung dikoreksi saat dipilih. Siswa harus menekan tombol **Periksa jawaban**.
 - Soal yang meminta arti kosakata tidak menampilkan ulang teks Arab yang merupakan petunjuk jawaban.
 - Setiap jawaban salah mengurangi satu nyawa dan tersimpan di Supabase; isi ulang 5 nyawa memerlukan 25 berlian. Jalankan migration 002, 003, dan 004 pada database yang sudah ada.
 - Avatar mendapat opsi karakter laki-laki/perempuan, model rambut, kerudung, dan ekspresi wajah.
 - Capaian At-Ta‘āruf dilengkapi tujuh target pembelajaran sesuai dokumen revisi.
 
-**Bank soal:** Materi 1 kini memiliki 105 butir unik, dibagi ke dalam 7 tahap dengan 15 soal per tahap. Setiap tahap menggabungkan menyimak, berbicara, membaca, dan menulis. Materi 2–5 merupakan bagian/topik di dalam cakupan Materi 1 sesuai LKS yang dilampirkan, bukan empat bab terpisah di database.
+**Bank soal:** Materi 1 memiliki 105 butir unik (7 tahap × 15 soal) berdasarkan Bab 1 At-Ta'aruf. Setiap tahap mencampurkan pilihan ganda, menjodohkan arti Arab–Indonesia, menyusun keping kata, listening, speaking-repeat, dan kosakata bergambar. Tingkat kesulitan bergerak dari salam/perkenalan dasar menuju dhamir, kata tanya, kosakata, dialog, dan pemahaman bacaan. Materi 2–5 merupakan bagian/topik di dalam cakupan Materi 1 sesuai LKS yang dilampirkan, bukan empat bab terpisah di database.
 
 ## Fitur pada paket awal
 
@@ -23,7 +23,7 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 - Dashboard siswa: XP, berlian, 5 nyawa, streak harian, dan jalur materi.
 - Materi 1 At-Ta‘āruf: tujuan pembelajaran, salam dan perkenalan, kosakata, kata tanya, dhamir munfashil/muttashil, dialog, bacaan, penerapan, dan empat maharah.
 - Latihan terintegrasi 4 maharah pada setiap tahap: menyimak, berbicara, membaca, dan menulis.
-- Tujuh tahap latihan dengan 15 soal per tahap, umpan balik setelah tombol Periksa, serta pengulangan soal yang belum benar.
+- Tujuh tahap latihan dengan 15 soal per tahap; variasi menjodohkan, word bank, listening, speaking-repeat (dengan opsi skip), kosakata bergambar, dan pilihan ganda; umpan balik setelah tombol Periksa; serta pengulangan soal yang belum benar.
 - Hadiah XP dan berlian berdasarkan skor; toko untuk menukar 25 berlian menjadi 5 nyawa.
 - Profil dan pengaturan avatar dasar.
 - Halaman capaian pembelajaran Fase E.
@@ -107,7 +107,9 @@ Buka `http://localhost:3000`.
 3. Buka **SQL Editor**.
 4. Jalankan seluruh isi `supabase/migrations/001_init.sql`.
 5. Jalankan seluruh isi `supabase/migrations/002_arabeeza_revision.sql` untuk harga isi ulang nyawa 25 berlian dan opsi avatar lanjutan.
-6. Jalankan seluruh isi `supabase/seed.sql` untuk memasukkan Materi 1, kosakata, dialog, dan bank soal.
+6. Jalankan seluruh isi `supabase/seed.sql` untuk memasukkan Materi 1, kosakata, dialog, dan bank soal awal.
+7. Jalankan migration `003_materi1_105_questions_and_lives.sql`, `004_daily_hearts_reset.sql`, dan `005_stage_progress.sql` secara berurutan.
+8. Jalankan migration `006_interactive_question_types.sql` untuk bank soal terbaru dengan tipe interaktif. Untuk database lama yang sudah menjalankan migration 001–005, cukup jalankan migration 006 satu kali.
 
 Jalankan migration sebelum seed. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
 

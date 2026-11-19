@@ -22,6 +22,19 @@ export type Lesson = {
   sort_order: number;
 };
 
+export type MatchingPairOption = {
+  id: string;
+  arabic: string;
+  meaning: string;
+};
+
+export type ImageChoiceOption = {
+  label: string;
+  emoji: string;
+};
+
+export type QuestionOption = string | MatchingPairOption | ImageChoiceOption;
+
 export type Question = {
   id: string;
   mode: string;
@@ -29,7 +42,7 @@ export type Question = {
   question_type: string;
   prompt: string;
   prompt_arabic: string | null;
-  options: string[];
+  options: QuestionOption[];
   correct_answer: string;
   explanation: string | null;
   audio_text: string | null;
