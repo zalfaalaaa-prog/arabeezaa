@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AccessibilityTools from "@/components/AccessibilityTools";
 
 export const metadata: Metadata = {
   title: "ARABEEZA — Belajar Bahasa Arab Jadi Seru",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body><AccessibilityTools>{children}</AccessibilityTools></body>
     </html>
   );
 }

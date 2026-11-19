@@ -1,6 +1,6 @@
 export default function CatMascot({ mood = "happy", size = 76, className = "" }: { mood?: "happy" | "thinking" | "celebrate" | "sad"; size?: number; className?: string }) {
   const mouth = mood === "sad" ? "M43 61 Q50 54 57 61" : mood === "thinking" ? "M44 60 Q50 56 56 60" : "M42 57 Q50 68 58 57";
-  return <svg className={className} width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Maskot kucing Arabeeza">
+  return <svg className={className} width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Maskot kucing Arabeeza" focusable="false">
     <ellipse cx="50" cy="88" rx="29" ry="6" fill="#263b35" opacity=".12"/>
     <path d="M19 38 23 10 43 26 Q51 23 59 26 L78 10 81 42 Q88 53 83 70 Q75 91 50 91 Q25 91 17 70 Q12 52 19 38Z" fill="#fff" stroke="#34423d" strokeWidth="3" strokeLinejoin="round"/>
     <path d="M25 31 27 17 39 29Z M64 29 76 17 77 33Z" fill="#f3a4b3"/>

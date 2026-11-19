@@ -17,6 +17,24 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 
 **Bank soal:** Materi 1 memiliki 105 butir unik (7 tahap × 15 soal) berdasarkan Bab 1 At-Ta'aruf. Setiap tahap mencampurkan pilihan ganda, menjodohkan arti Arab–Indonesia, menyusun keping kata, listening, speaking-repeat, dan kosakata bergambar. Tingkat kesulitan bergerak dari salam/perkenalan dasar menuju dhamir, kata tanya, kosakata, dialog, dan pemahaman bacaan. Materi 2–5 merupakan bagian/topik di dalam cakupan Materi 1 sesuai LKS yang dilampirkan, bukan empat bab terpisah di database.
 
+## Aksesibilitas dan pembelajaran inklusif (V11)
+
+ARABEEZA menyediakan panel **Aksesibilitas** yang tersedia di seluruh halaman. Pengaturan disimpan secara lokal pada perangkat/browser yang digunakan, sehingga siswa dapat menyesuaikan pengalaman belajar tanpa harus membuat profil disabilitas. Fitur V11 meliputi:
+
+- Ukuran teks Normal, Besar, dan Lebih besar.
+- Kontras tinggi untuk memperjelas teks, batas, tombol, dan fokus.
+- Huruf antarmuka yang lebih sederhana serta jarak teks yang lebih lega.
+- Garis bawah tautan agar tautan tidak dibedakan hanya berdasarkan warna.
+- Pengurangan animasi, termasuk dukungan preferensi `prefers-reduced-motion` dari sistem operasi.
+- Tombol untuk membacakan teks yang dipilih melalui Web Speech API jika browser mendukungnya.
+- Tautan lewati navigasi untuk pengguna keyboard dan pembaca layar.
+- Label, nama aksesibel, status, progress bar, dan grup kontrol pada elemen pembelajaran.
+- Transkrip audio opsional pada soal menyimak sebagai alternatif bagi siswa yang tidak dapat mendengar audio.
+- Alternatif mengetik jawaban pada latihan speaking-repeat jika mikrofon tidak dapat digunakan; opsi melewati latihan tetap tersedia.
+- Latihan menjodohkan tetap berbasis tombol, sehingga dapat dioperasikan dengan keyboard dan tidak bergantung pada drag-and-drop. Status pasangan benar/salah juga diumumkan melalui teks aksesibel dan ikon.
+
+Pengaturan aksesibilitas berlaku lintas halaman pada browser/perangkat yang sama. Pengaturan belum disinkronkan ke akun Supabase dan tidak otomatis berpindah ke perangkat lain. Fitur pembaca suara bergantung pada dukungan suara yang tersedia di browser/perangkat. Panel ini merupakan fondasi aksesibilitas; audit manual dengan pembaca layar, keyboard, dan perangkat bantu tetap perlu dilakukan sebelum menyatakan kesesuaian WCAG secara penuh.
+
 ## Fitur pada paket awal
 
 - Landing page ARABEEZA, registrasi, login, dan logout.

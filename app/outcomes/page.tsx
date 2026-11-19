@@ -47,9 +47,9 @@ export default async function OutcomesPage() {
           {semesterThemes.map((item, index) => (
             <article key={item.title} className={`surface p-5 ${item.active ? "border-[#9bd2ad]" : "opacity-90"}`}>
               <div className="flex items-start justify-between gap-3"><span className="rounded-full bg-[#f7faf6] px-3 py-1 text-xs font-black text-[#718078]">MATERI {index + 1}</span><span className={`rounded-full px-3 py-1 text-[11px] font-black ${item.active ? "bg-[#eaf7ef] text-[#2e8b62]" : "bg-[#f4f4f1] text-[#89968f]"}`}>{item.status}</span></div>
-              <p className="arabic mt-4 text-right text-2xl font-bold">{item.arabic}</p>
+              <p lang="ar" dir="rtl" className="arabic mt-4 text-right text-2xl font-bold">{item.arabic}</p>
               <h3 className="mt-1 font-black">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#718078]">Fokus gramatika: <span className="arabic font-semibold text-[#50645a]">{item.grammar}</span></p>
+              <p className="mt-2 text-sm leading-6 text-[#718078]">Fokus gramatika: <span lang="ar" dir="rtl" className="arabic font-semibold text-[#50645a]">{item.grammar}</span></p>
             </article>
           ))}
         </div>
@@ -58,7 +58,7 @@ export default async function OutcomesPage() {
       <section className="surface mt-7 p-5 md:p-6">
         <div className="mb-4 flex items-center gap-3"><span className="rounded-2xl bg-[#fff0d9] p-3 text-2xl">🐱</span><div><p className="text-xs font-black tracking-[.14em] text-[#2e8b62]">TARGET PEMBELAJARAN</p><h2 className="text-xl font-black">Capaian Materi At-Ta‘āruf</h2></div></div>
         <p className="mb-4 text-sm leading-6 text-[#718078]">Bahan ajar ini berfokus pada satu tema, yaitu At-Ta‘āruf, dengan cakupan kemampuan berikut:</p>
-        <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-[#50645a]"><li>Mengidentifikasi kosakata dan ungkapan Bahasa Arab yang berkaitan dengan tema At-Ta‘āruf.</li><li>Memahami dan menggunakan kata tanya <span className="arabic font-bold">أَدَوَاتُ الِاسْتِفْهَامِ</span> sesuai konteks kalimat.</li><li>Mengidentifikasi dan menggunakan kata ganti <span className="arabic font-bold">الضَّمَائِرُ</span>.</li><li>Memahami informasi tersurat dan tersirat dari dialog perkenalan sederhana.</li><li>Membaca dan memahami teks pendek berbahasa Arab tentang perkenalan.</li><li>Melakukan percakapan sederhana menggunakan ungkapan perkenalan.</li><li>Menulis kalimat sederhana tentang identitas diri dalam Bahasa Arab.</li></ul>
+        <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-[#50645a]"><li>Mengidentifikasi kosakata dan ungkapan Bahasa Arab yang berkaitan dengan tema At-Ta‘āruf.</li><li>Memahami dan menggunakan kata tanya <span lang="ar" dir="rtl" className="arabic font-bold">أَدَوَاتُ الِاسْتِفْهَامِ</span> sesuai konteks kalimat.</li><li>Mengidentifikasi dan menggunakan kata ganti <span lang="ar" dir="rtl" className="arabic font-bold">الضَّمَائِرُ</span>.</li><li>Memahami informasi tersurat dan tersirat dari dialog perkenalan sederhana.</li><li>Membaca dan memahami teks pendek berbahasa Arab tentang perkenalan.</li><li>Melakukan percakapan sederhana menggunakan ungkapan perkenalan.</li><li>Menulis kalimat sederhana tentang identitas diri dalam Bahasa Arab.</li></ul>
       </section>
       <section className="mt-7">
         <h2 className="mb-4 text-xl font-black">Keterampilan berbahasa</h2>

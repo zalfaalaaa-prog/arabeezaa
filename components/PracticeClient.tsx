@@ -190,6 +190,8 @@ export default function PracticeClient({
   const [wrongPairIds, setWrongPairIds] = useState<string[]>([]);
   const [matchingMistakes, setMatchingMistakes] = useState(0);
   const [speakingSkipped, setSpeakingSkipped] = useState(false);
+  const [showAudioTranscript, setShowAudioTranscript] = useState(false);
+  const [manualSpeakingAnswer, setManualSpeakingAnswer] = useState("");
   const voiceListRef = useRef<SpeechSynthesisVoice[]>([]);
   const speechTimerRef = useRef<number | null>(null);
   const speechTokenRef = useRef(0);
@@ -304,6 +306,8 @@ export default function PracticeClient({
     setWrongPairIds([]);
     setMatchingMistakes(0);
     setSpeakingSkipped(false);
+    setShowAudioTranscript(false);
+    setManualSpeakingAnswer("");
     setSelected(null);
     setFeedback(null);
     setVoiceMessage("");
@@ -575,8 +579,8 @@ export default function PracticeClient({
         <p className="mt-2 text-xs font-black uppercase tracking-[.18em] text-[#827148]">LEVEL {level} SELESAI</p>
         <h1 className="mt-2 text-3xl font-black">مُمْتَازٌ! Hebat!</h1>
         <p className="mt-2 text-sm text-[#718078]">Kamu telah menuntaskan 15 soal pada {lessonTitle}.</p>
-        <div className="finish-star-row" aria-label={`${bestStars} dari 3 bintang terbaik`}>
-          {[1, 2, 3].map((star) => <Star key={star} size={38} className={star <= bestStars ? "finish-star earned" : "finish-star"} fill={star <= bestStars ? "currentColor" : "none"} />)}
+        <div className="finish-star-row" role="img" aria-label={`${bestStars} dari 3 bintang terbaik`}>
+          {[1, 2, 3].map((star) => <Star key={star} size={38} className={star <= bestStars ? "finish-star earned" : "finish-star"} fill={star <= bestStars ? "currentColor" : "none"} aria-hidden="true" />)}
         </div>
         <p className="mt-2 text-sm font-extrabold text-[#9b7a2e]">{bestStars} dari 3 bintang terbaik</p>
         <div className="my-7 grid grid-cols-3 gap-3">
@@ -600,7 +604,7 @@ export default function PracticeClient({
       <div className="mb-6 flex items-center gap-4">
         <Link href="/dashboard" aria-label="Kembali" className="practice-back rounded-full bg-white p-2 text-[#827148] shadow-sm"><ArrowLeft size={22} /></Link>
         <div className="flex-1">
-          <div className="progress-track practice-progress"><div className="progress-fill" style={{ width: `${progress}%` }} /></div>
+          <div className="progress-track practice-progress" role="progressbar" aria-label="Kemajuan latihan" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><div className="progress-fill" style={{ width: `${progress}%` }} /></div>
           <p className="mt-1 text-[10px] font-extrabold tracking-wide text-[#9a9b8d]">TAHAP {level} · SOAL {Math.min(index + 1, questions.length)} / 15</p>
         </div>
         <span className="flex items-center gap-1 font-black text-rose-500"><Heart size={19} fill="currentColor" />{hearts}</span>
@@ -625,19 +629,19 @@ export default function PracticeClient({
           <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-black ${currentSkill.color}`}><SkillIcon size={15} />{currentSkill.label}</span>
           <span className="text-xs font-semibold text-[#89968f]">Jawaban salah mengurangi 1 nyawa</span>
         </div>
-        <h1 className="text-xl font-black leading-8 md:text-2xl">{promptLabel}</h1>
+        <h1 id="practice-question-title" aria-live="polite" aria-atomic="true" className="text-xl font-black leading-8 md:text-2xl">{promptLabel}</h1>
 
         {dialogueLines ? (
-          <div className="dialogue-list mt-5" aria-label="Dialog percakapan">
+          <div className="dialogue-list mt-5" role="group" aria-label="Dialog percakapan">
             {dialogueLines.map((line, lineIndex) => (
               <div className="dialogue-line" key={`${line.speaker}-${lineIndex}`}>
                 <span className="dialogue-speaker">{line.speaker}</span>
-                <p className="arabic text-right text-2xl font-bold">{line.text}</p>
+                <p lang="ar" dir="rtl" className="arabic text-right text-2xl font-bold">{line.text}</p>
               </div>
             ))}
           </div>
         ) : question.prompt_arabic && (
-          <p className="arabic mt-5 rounded-2xl bg-[#fffaf3] px-4 py-5 text-center text-3xl font-bold">{question.prompt_arabic}</p>
+          <p lang="ar" dir="rtl" className="arabic mt-5 rounded-2xl bg-[#fffaf3] px-4 py-5 text-center text-3xl font-bold">{question.prompt_arabic}</p>
         )}
 
         {question.skill === "listening" && question.audio_text && (
@@ -647,6 +651,22 @@ export default function PracticeClient({
             <button type="button" onClick={() => isSpeaking ? stopSpeech() : speakText(question.audio_text || "", "ar-SA")} className="audio-play-button" aria-label={isSpeaking ? "Hentikan audio" : "Putar audio"}>
               {isSpeaking ? <VolumeX size={19} /> : <Volume2 size={19} />}
             </button>
+          </div>
+        )}
+        {question.skill === "listening" && question.audio_text && (
+          <div className="mt-3">
+            <button
+              type="button"
+              className="audio-transcript-toggle"
+              aria-expanded={showAudioTranscript}
+              aria-controls="listening-transcript"
+              onClick={() => setShowAudioTranscript((value) => !value)}
+            >
+              {showAudioTranscript ? "Sembunyikan transkrip audio" : "Tampilkan transkrip audio (alternatif aksesibilitas)"}
+            </button>
+            {showAudioTranscript && (
+              <p id="listening-transcript" className="audio-transcript" lang={/[\u0600-\u06FF]/.test(question.audio_text) ? "ar" : "id"} dir="auto">{question.audio_text}</p>
+            )}
           </div>
         )}
         {question.skill === "reading" && question.prompt_arabic && (
@@ -680,6 +700,21 @@ export default function PracticeClient({
                 Tidak bisa bicara sekarang
               </button>
             </div>
+            <div className="mt-4 rounded-xl border border-[#dce5f3] bg-white p-3">
+              <label htmlFor="manual-speaking-answer" className="mb-2 block text-xs font-bold text-[#425579]">Alternatif: ketik jawaban jika tidak dapat menggunakan mikrofon</label>
+              <input
+                id="manual-speaking-answer"
+                type="text"
+                dir="auto"
+                lang="ar"
+                value={manualSpeakingAnswer}
+                onChange={(event) => { setManualSpeakingAnswer(event.target.value); setSelected(event.target.value.trim() || null); }}
+                disabled={!!feedback || speakingSkipped}
+                className="input"
+                placeholder="Ketik kalimat Bahasa Arab di sini"
+                autoComplete="off"
+              />
+            </div>
             {voiceMessage && <p className="mt-3 text-xs font-semibold text-[#60708b]" role="status">{voiceMessage}</p>}
           </div>
         )}
@@ -688,15 +723,15 @@ export default function PracticeClient({
           <div className="mt-4 rounded-2xl bg-[#f8e6dc] p-4">
             <p className="text-sm font-bold text-[#785a4a]">Coba ucapkan jawabanmu dalam Bahasa Arab sebelum memilih.</p>
             <button type="button" onClick={startVoicePractice} disabled={recording || !!feedback} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-[#a76d50] disabled:opacity-50"><Mic size={17} />{recording ? "Mendengarkan..." : "Latihan berbicara"}</button>
-            {voiceMessage && <p className="mt-2 text-xs text-[#785a4a]">{voiceMessage}</p>}
+            {voiceMessage && <p className="mt-2 text-xs text-[#785a4a]" role="status" aria-live="polite">{voiceMessage}</p>}
           </div>
         )}
 
         {question.question_type === "matching_pairs" && (
-          <div className="matching-game mt-6">
+          <div className="matching-game mt-6" role="group" aria-label="Latihan menjodohkan kata Arab dengan arti Bahasa Indonesia">
             <div className="mb-3 flex items-center justify-between gap-2 text-xs font-bold text-[#77849a]">
               <span>Pilih kata Arab, lalu pilih artinya.</span>
-              <span>{matchedPairIds.length}/{matchingPairs.length} cocok</span>
+              <span aria-live="polite" aria-atomic="true">{matchedPairIds.length} dari {matchingPairs.length} pasangan cocok</span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid content-start gap-2">
@@ -709,8 +744,12 @@ export default function PracticeClient({
                     disabled={!!feedback || matchedPairIds.includes(pair.id) || wrongPairIds.length > 0}
                     onClick={() => chooseLeftPair(pair.id)}
                     className={`match-tile ${leftMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(pair.id) ? "is-wrong" : ""}`}
+                    aria-pressed={leftMatchChoice === pair.id || matchedPairIds.includes(pair.id)}
+                    aria-label={`${pair.arabic}${matchedPairIds.includes(pair.id) ? ", sudah cocok" : wrongPairIds.includes(pair.id) ? ", pasangan belum tepat" : leftMatchChoice === pair.id ? ", dipilih" : ", pilih kata Arab"}`}
+                    lang="ar"
                   >
-                    {pair.arabic}
+                    <span>{pair.arabic}</span>
+                    {matchedPairIds.includes(pair.id) ? <CheckCircle2 size={16} aria-hidden="true" /> : wrongPairIds.includes(pair.id) ? <XCircle size={16} aria-hidden="true" /> : null}
                   </button>
                 ))}
               </div>
@@ -723,14 +762,20 @@ export default function PracticeClient({
                     disabled={!!feedback || matchedPairIds.includes(pair.id) || wrongPairIds.length > 0}
                     onClick={() => chooseRightPair(pair.id)}
                     className={`match-tile match-tile-meaning ${rightMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(pair.id) ? "is-wrong" : ""}`}
+                    aria-pressed={rightMatchChoice === pair.id || matchedPairIds.includes(pair.id)}
+                    aria-label={`${pair.meaning}${matchedPairIds.includes(pair.id) ? ", sudah cocok" : wrongPairIds.includes(pair.id) ? ", pasangan belum tepat" : rightMatchChoice === pair.id ? ", dipilih" : ", pilih arti"}`}
                   >
-                    {pair.meaning}
+                    <span>{pair.meaning}</span>
+                    {matchedPairIds.includes(pair.id) ? <CheckCircle2 size={16} aria-hidden="true" /> : wrongPairIds.includes(pair.id) ? <XCircle size={16} aria-hidden="true" /> : null}
                   </button>
                 ))}
               </div>
             </div>
+            {wrongPairIds.length > 0 && (
+              <p className="mt-3 rounded-xl bg-[#fff0f0] px-3 py-2 text-center text-xs font-bold text-[#a33c45]" role="status" aria-live="assertive">Pasangan belum tepat. Coba pasangkan kembali.</p>
+            )}
             {matchedPairIds.length === matchingPairs.length && matchingPairs.length > 0 && (
-              <p className="mt-3 rounded-xl bg-[#e7f7e9] px-3 py-2 text-center text-xs font-bold text-[#26834c]">
+              <p className="mt-3 rounded-xl bg-[#e7f7e9] px-3 py-2 text-center text-xs font-bold text-[#26834c]" role="status" aria-live="polite">
                 Semua pasangan sudah dipasangkan. Tekan Periksa jawaban.
               </p>
             )}
@@ -740,7 +785,7 @@ export default function PracticeClient({
         {(question.question_type === "word_order" || question.question_type === "listen_word_order") && (
           <div className="word-builder mt-6">
             <p className="mb-2 text-xs font-bold text-[#7c8796]">Susunan jawabanmu</p>
-            <div className="word-answer-zone" dir="rtl" aria-live="polite">
+            <div className="word-answer-zone" dir="rtl" aria-live="polite" aria-label="Susunan jawaban saat ini">
               {wordTokens.length === 0 ? (
                 <span className="text-xs font-semibold text-[#9aa4b2]">Ketuk keping kata di bawah untuk menyusun kalimat.</span>
               ) : wordTokens.map((token, tokenIndex) => (
@@ -768,6 +813,8 @@ export default function PracticeClient({
                     onClick={() => chooseWordToken(token)}
                     className="word-token"
                     dir="auto"
+                    aria-pressed={used}
+                    aria-label={`Tambahkan kata ${token}`}
                   >
                     {token}
                   </button>
@@ -781,7 +828,7 @@ export default function PracticeClient({
         )}
 
         {question.question_type === "image_choice" && (
-          <div className="image-choice-grid mt-6">
+          <div className="image-choice-grid mt-6" role="group" aria-label="Pilih gambar yang sesuai dengan kosakata">
             {imageOptions.map((option, optionIndex) => {
               const isCorrect = Boolean(feedback) && normalizeArabic(option.label) === normalizeArabic(question.correct_answer);
               const isWrong = Boolean(feedback) && selected === option.label && !feedback?.correct;
@@ -805,7 +852,7 @@ export default function PracticeClient({
         )}
 
         {!["matching_pairs", "word_order", "listen_word_order", "speaking_repeat", "image_choice"].includes(question.question_type) && (
-          <div className="mt-6 grid gap-3">
+          <div className="mt-6 grid gap-3" role="group" aria-labelledby="practice-question-title">
             {stringOptions.map((option, optionIndex) => {
               const isCorrect = Boolean(feedback) && normalizeArabic(option) === normalizeArabic(question.correct_answer);
               const isWrong = Boolean(feedback) && selected === option && !feedback?.correct;

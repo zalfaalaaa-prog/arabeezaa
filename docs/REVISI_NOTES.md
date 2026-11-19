@@ -123,3 +123,18 @@ Untuk project Supabase yang sudah menjalankan migration 001–005 dan seed, jala
 - Uji salah satu pasangan matching: status salah harus merah sebentar lalu kembali abu-abu.
 - Uji tombol skip speaking: soal dilewati tanpa mengurangi nyawa dan tidak menambah skor benar.
 - Uji dashboard di ponsel dan desktop; animasi level harus halus dan tidak berjalan pada preferensi reduced motion.
+
+
+## Revisi v11 — aksesibilitas dan pembelajaran inklusif
+
+- Menambahkan tombol **Aksesibilitas** yang tersedia di seluruh halaman publik dan halaman siswa. Panel dapat dibuka dengan keyboard, ditutup dengan Escape, dan pengaturannya disimpan di localStorage browser.
+- Menambahkan pengaturan ukuran teks Normal/Besar/Lebih besar, kontras tinggi, huruf antarmuka lebih sederhana, jarak teks lebih lega, garis bawah tautan, dan pengurangan animasi. Pengaturan reduce motion juga mengikuti preferensi sistem saat pertama kali digunakan.
+- Menambahkan tautan **Lewati ke konten utama**, indikator fokus keyboard yang jelas, target sentuh minimal 44px pada tombol/form, dan label navigasi utama.
+- Menambahkan progressbar yang memiliki nama dan nilai aksesibel untuk progres XP, skor materi, dan kemajuan latihan.
+- Menambahkan fitur bacakan teks yang dipilih menggunakan Web Speech API jika didukung browser/perangkat.
+- Soal listening menyediakan transkrip opsional untuk siswa yang tidak dapat mendengar audio. Transkrip dapat mengungkap isi audio, sehingga dapat dipakai sebagai alternatif akses sesuai kebutuhan siswa/guru.
+- Speaking-repeat menyediakan input teks sebagai alternatif mikrofon, selain opsi melewati latihan.
+- Latihan matching tetap memakai tombol native (bukan drag-and-drop), dapat dipakai dengan keyboard, mengumumkan progres pasangan, dan memberi label/ikon untuk status benar atau salah.
+- Memperbaiki hubungan label dan input pada halaman login serta menambahkan status/alert pada pesan hasil autentikasi.
+- Tidak ada perubahan skema database atau migration Supabase. Preferensi aksesibilitas disimpan lokal di browser dan belum disinkronkan ke akun siswa.
+- Paket ini merupakan implementasi dasar aksesibilitas, bukan sertifikasi WCAG. Pengujian manual dengan keyboard, NVDA/VoiceOver/TalkBack, pembesaran 200%, dan siswa dengan kebutuhan aksesibilitas tetap diperlukan.

@@ -69,7 +69,7 @@ export default async function DashboardPage() {
               <strong className="text-4xl font-black">{profile.xp.toLocaleString("id-ID")}</strong>
               <span className="pb-1 text-sm font-bold text-[#6f8f70]">XP</span>
             </div>
-            <div className="progress-track mt-4"><div className="progress-fill" style={{ width: `${(profile.xp % 500) / 5}%` }} /></div>
+            <div className="progress-track mt-4" role="progressbar" aria-label="Progres menuju 500 XP berikutnya" aria-valuemin={0} aria-valuemax={500} aria-valuenow={profile.xp % 500}><div className="progress-fill" style={{ width: `${(profile.xp % 500) / 5}%` }} /></div>
             <p className="mt-2 text-xs text-[#8a9890]">Menuju target 500 XP berikutnya</p>
           </div>
           <Link href="/outcomes" className="mt-5 flex items-center gap-2 text-sm font-extrabold text-[#6f8f70]">
@@ -103,7 +103,7 @@ export default async function DashboardPage() {
             <span className="level-scroll-hint">Geser halaman untuk melihat semua tahap ↓</span>
           </div>
 
-          <div className="learning-path" aria-label="Tujuh tahap latihan">
+          <nav className="learning-path" aria-label="Tujuh tahap latihan At-Ta‘āruf">
             {levelSteps.map((step, index) => {
               const Icon = step.icon;
               const stage = getStageProgress(step.level);
@@ -131,20 +131,21 @@ export default async function DashboardPage() {
                       </span>
                     </Link>
                   ) : (
-                    <div className="level-hit-area is-locked" aria-disabled="true" title="Selesaikan tahap sebelumnya untuk membuka tahap ini">
+                    <div className="level-hit-area is-locked" role="group" aria-label={`Tahap ${step.level}: ${step.label}, terkunci. Selesaikan tahap sebelumnya untuk membuka.`} aria-disabled="true" title="Selesaikan tahap sebelumnya untuk membuka tahap ini">
                       <span className="level-node is-locked">
                         <Lock size={23} strokeWidth={2.7} aria-hidden="true" />
                       </span>
                     </div>
                   )}
 
-                  <div className="level-stars" aria-label={`${stars} dari 3 bintang`}>
+                  <div className="level-stars" role="img" aria-label={`${stars} dari 3 bintang`}>
                     {[1, 2, 3].map((star) => (
                       <Star
                         key={star}
                         size={18}
                         className={star <= stars ? "level-star earned" : "level-star"}
                         fill={star <= stars ? "currentColor" : "none"}
+                        aria-hidden="true"
                       />
                     ))}
                   </div>
@@ -152,7 +153,7 @@ export default async function DashboardPage() {
                 </div>
               );
             })}
-          </div>
+          </nav>
 
           <div className="mt-4 rounded-2xl bg-[#f7faf6] px-4 py-3 text-center text-xs font-semibold text-[#89968f]">
             <span>105 soal · 4 maharah</span>

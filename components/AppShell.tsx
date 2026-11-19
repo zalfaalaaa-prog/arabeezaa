@@ -32,11 +32,11 @@ export default function AppShell({
             <span className="app-brand-name">arabeeza<span className="text-[#45ad78]">.</span></span>
             <span className="language-badge" aria-label="Bahasa Arab" title="Bahasa Arab">🇸🇦</span>
           </Link>
-          <nav className="desktop-nav flex items-center gap-5">
+          <nav className="desktop-nav flex items-center gap-5" aria-label="Navigasi utama">
             {links.map((item) => {
               const Icon = item.icon;
               const isActive = active === item.href || (item.href === "/lessons/at-taaruf" && active?.startsWith("/lessons/"));
-              return <Link key={item.href} href={item.href} className={`nav-link ${isActive ? "active" : ""}`}><Icon size={17} />{item.label}</Link>;
+              return <Link key={item.href} href={item.href} className={`nav-link ${isActive ? "active" : ""}`} aria-current={isActive ? "page" : undefined}><Icon size={17} />{item.label}</Link>;
             })}
             {role === "teacher" || role === "admin" ? <Link href="/teacher" className={`nav-link ${active === "/teacher" ? "active" : ""}`}><BookOpen size={17} />Guru</Link> : null}
           </nav>
@@ -50,11 +50,11 @@ export default function AppShell({
           {links.map((item) => {
             const Icon = item.icon;
             const isActive = active === item.href || (item.href === "/lessons/at-taaruf" && active?.startsWith("/lessons/"));
-            return <Link key={item.href} href={item.href} aria-label={item.label} className={`mobile-nav-link ${isActive ? "active" : ""}`}><Icon size={19} /><span>{item.label}</span></Link>;
+            return <Link key={item.href} href={item.href} aria-label={item.label} className={`mobile-nav-link ${isActive ? "active" : ""}`} aria-current={isActive ? "page" : undefined}><Icon size={19} /><span>{item.label}</span></Link>;
           })}
         </nav>
       </header>
-      <main className="page-wrap app-main py-7 md:py-9">{children}</main>
+      <main id="main-content" tabIndex={-1} className="page-wrap app-main py-7 md:py-9">{children}</main>
       <footer className="page-wrap app-footer border-t border-[#e7eee8] py-6 text-center text-xs text-[#89968f]">
         Arabeeza · Belajar Bahasa Arab dengan menyenangkan
       </footer>
