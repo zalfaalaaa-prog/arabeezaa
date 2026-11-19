@@ -70,3 +70,8 @@ Audio Arab menggunakan Speech Synthesis bawaan browser dan memprioritaskan voice
 Untuk database yang sudah menjalankan migration 001–005, jalankan satu kali `supabase/migrations/006_interactive_question_types.sql` melalui Supabase SQL Editor. Migration ini memperbarui 105 soal Materi 1 tanpa menghapus data akun atau progres siswa. Setelah itu push source code ke GitHub dan tunggu deployment Vercel selesai.
 
 Uji setelah deploy: matching Arab–Indonesia, susun kata, audio listening, speaking-repeat dengan tombol skip, pilihan kosakata bergambar, dan pengacakan posisi jawaban.
+
+
+## Migration ARABEEZA V12
+
+Setelah migration 001-006 selesai dijalankan, jalankan satu kali file `supabase/migrations/007_dialogue_xp_refill_and_indonesian_word_order.sql` di Supabase SQL Editor. Migration ini menambahkan dialog Faris-Zaid, memperbarui petunjuk susun kalimat berbasis arti Bahasa Indonesia, dan membuat fungsi isi ulang nyawa dengan 100 XP. Tidak perlu mengubah Environment Variables Vercel.

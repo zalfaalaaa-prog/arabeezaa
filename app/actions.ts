@@ -151,6 +151,29 @@ export async function buyHearts() {
   return { ok: true, hearts: profile?.hearts ?? 5, diamonds: profile?.diamonds ?? 0, message: data?.message };
 }
 
+export async function buyHeartsWithXp() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Silakan login kembali." };
+  const { data, error } = await supabase.rpc("buy_hearts_with_xp");
+  if (error) {
+    const hint = error.message.toLowerCase().includes("buy_hearts_with_xp") ? " Jalankan migration 007_dialogue_xp_refill_and_indonesian_word_order.sql di Supabase terlebih dahulu." : "";
+    return { ok: false, error: `${error.message}${hint}` };
+  }
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("hearts,xp")
+    .eq("id", user.id)
+    .single();
+  if (profileError) return { ok: false, error: profileError.message };
+  return {
+    ok: Boolean(data?.ok),
+    hearts: Number(profile?.hearts ?? 5),
+    xp: Number(profile?.xp ?? 0),
+    message: data?.message as string | undefined
+  };
+}
+
 export async function buyHeartsFromShop() {
   const supabase = await createClient();
   const { error } = await supabase.rpc("buy_hearts", { p_cost: 25 });

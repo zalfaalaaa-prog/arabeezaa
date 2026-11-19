@@ -5,7 +5,7 @@ import DailyHeartSync from "@/components/DailyHeartSync";
 
 const links = [
   { href: "/dashboard", label: "Beranda", icon: Home },
-  { href: "/lessons/at-taaruf", label: "Materi", icon: BookOpen },
+  { href: "/lessons", label: "Materi", icon: BookOpen },
   { href: "/outcomes", label: "Capaian", icon: GraduationCap },
   { href: "/shop", label: "Toko", icon: ShoppingBag },
   { href: "/profile", label: "Profil", icon: UserRound }
@@ -35,7 +35,7 @@ export default function AppShell({
           <nav className="desktop-nav flex items-center gap-5" aria-label="Navigasi utama">
             {links.map((item) => {
               const Icon = item.icon;
-              const isActive = active === item.href || (item.href === "/lessons/at-taaruf" && active?.startsWith("/lessons/"));
+              const isActive = active === item.href || (item.href === "/lessons" && active?.startsWith("/lessons/"));
               return <Link key={item.href} href={item.href} className={`nav-link ${isActive ? "active" : ""}`} aria-current={isActive ? "page" : undefined}><Icon size={17} />{item.label}</Link>;
             })}
             {role === "teacher" || role === "admin" ? <Link href="/teacher" className={`nav-link ${active === "/teacher" ? "active" : ""}`}><BookOpen size={17} />Guru</Link> : null}
@@ -49,7 +49,7 @@ export default function AppShell({
         <nav className="mobile-nav border-t border-[#edf2ee] bg-white px-1 py-2 md:hidden" aria-label="Navigasi utama">
           {links.map((item) => {
             const Icon = item.icon;
-            const isActive = active === item.href || (item.href === "/lessons/at-taaruf" && active?.startsWith("/lessons/"));
+            const isActive = active === item.href || (item.href === "/lessons" && active?.startsWith("/lessons/"));
             return <Link key={item.href} href={item.href} aria-label={item.label} className={`mobile-nav-link ${isActive ? "active" : ""}`} aria-current={isActive ? "page" : undefined}><Icon size={19} /><span>{item.label}</span></Link>;
           })}
         </nav>

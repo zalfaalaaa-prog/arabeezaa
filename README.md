@@ -11,7 +11,7 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 - Dashboard menampilkan jalur visual 7 tahap dengan ikon ilustratif; banner unit memakai indigo agar berbeda dari level pertama yang hijau, dan bulatan level bergerak naik-turun secara halus.
 - Jawaban tidak langsung dikoreksi saat dipilih. Siswa harus menekan tombol **Periksa jawaban**.
 - Soal yang meminta arti kosakata tidak menampilkan ulang teks Arab yang merupakan petunjuk jawaban.
-- Setiap jawaban salah mengurangi satu nyawa dan tersimpan di Supabase; isi ulang 5 nyawa memerlukan 25 berlian. Jalankan migration 002, 003, dan 004 pada database yang sudah ada.
+- Setiap jawaban salah mengurangi satu nyawa dan tersimpan di Supabase; isi ulang hingga 5 nyawa dapat menggunakan 25 berlian atau 100 XP. Jalankan migration 002, 003, dan 004 pada database yang sudah ada.
 - Avatar mendapat opsi karakter laki-laki/perempuan, model rambut, kerudung, dan ekspresi wajah.
 - Capaian At-Ta‘āruf dilengkapi tujuh target pembelajaran sesuai dokumen revisi.
 
@@ -42,7 +42,7 @@ Pengaturan aksesibilitas berlaku lintas halaman pada browser/perangkat yang sama
 - Materi 1 At-Ta‘āruf: tujuan pembelajaran, salam dan perkenalan, kosakata, kata tanya, dhamir munfashil/muttashil, dialog, bacaan, penerapan, dan empat maharah.
 - Latihan terintegrasi 4 maharah pada setiap tahap: menyimak, berbicara, membaca, dan menulis.
 - Tujuh tahap latihan dengan 15 soal per tahap; variasi menjodohkan, word bank, listening, speaking-repeat (dengan opsi skip), kosakata bergambar, dan pilihan ganda; umpan balik setelah tombol Periksa; serta pengulangan soal yang belum benar.
-- Hadiah XP dan berlian berdasarkan skor; toko untuk menukar 25 berlian menjadi 5 nyawa.
+- Hadiah XP dan berlian berdasarkan skor; toko untuk menukar 25 berlian menjadi 5 nyawa, dengan opsi alternatif 100 XP.
 - Profil dan pengaturan avatar dasar.
 - Halaman capaian pembelajaran Fase E.
 - Dashboard guru untuk melihat siswa dan menulis catatan pembelajaran.
@@ -127,9 +127,10 @@ Buka `http://localhost:3000`.
 5. Jalankan seluruh isi `supabase/migrations/002_arabeeza_revision.sql` untuk harga isi ulang nyawa 25 berlian dan opsi avatar lanjutan.
 6. Jalankan seluruh isi `supabase/seed.sql` untuk memasukkan Materi 1, kosakata, dialog, dan bank soal awal.
 7. Jalankan migration `003_materi1_105_questions_and_lives.sql`, `004_daily_hearts_reset.sql`, dan `005_stage_progress.sql` secara berurutan.
-8. Jalankan migration `006_interactive_question_types.sql` untuk bank soal terbaru dengan tipe interaktif. Untuk database lama yang sudah menjalankan migration 001–005, cukup jalankan migration 006 satu kali.
+8. Jalankan migration `006_interactive_question_types.sql` untuk bank soal terbaru dengan tipe interaktif.
+9. Jalankan migration `007_dialogue_xp_refill_and_indonesian_word_order.sql` untuk dialog Faris–Zaid, soal susun kata berbasis arti Indonesia, dan isi ulang nyawa dengan 100 XP.
 
-Jalankan migration sebelum seed. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
+Urutan instalasi untuk database baru: migration 001–002, seed.sql untuk membuat materi/bab, lalu migration 003–007. Pada database yang sudah berisi materi dan menjalankan migration 001–006, cukup jalankan migration 007. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
 
 ## 4. Deploy ke GitHub dan Vercel
 
@@ -248,7 +249,7 @@ Setelah `001_init.sql`, `002_arabeeza_revision.sql`, dan `seed.sql` pernah dijal
 
 `supabase/migrations/003_materi1_105_questions_and_lives.sql`, `supabase/migrations/004_daily_hearts_reset.sql`, dan `supabase/migrations/005_stage_progress.sql`
 
-Migration 003 mengganti bank soal `mixed` Materi 1 dengan 105 butir dan membuat RPC `consume_heart()` untuk menyimpan pengurangan nyawa setiap jawaban salah. Migration 004 menambahkan reset otomatis 5 nyawa pada pergantian hari pukul 00.00 WIB. Isi ulang manual tetap menggunakan 25 berlian.
+Migration 003 mengganti bank soal `mixed` Materi 1 dengan 105 butir dan membuat RPC `consume_heart()` untuk menyimpan pengurangan nyawa setiap jawaban salah. Migration 004 menambahkan reset otomatis 5 nyawa pada pergantian hari pukul 00.00 WIB. Isi ulang manual dapat menggunakan 25 berlian atau 100 XP melalui migration 007.
 
 Verifikasi jumlah soal:
 
@@ -293,3 +294,11 @@ Jalankan migration `005_stage_progress.sql` setelah migration 001–004. Tujuh t
 - Profil memakai enam karakter kucing Arabeeza dengan aksesori dan ekspresi berbeda.
 - Audio apresiasi dibuat lebih lambat dan ekspresif; audio latihan memiliki safety timeout yang lebih longgar.
 - Speech Recognition untuk latihan berbicara memakai pencocokan toleran agar transkripsi yang sedikit berbeda tidak langsung dianggap salah.
+
+
+## ARABEEZA V12 — Revisi materi dan interaksi
+
+V12 menambahkan landing page satu layar, katalog sampul bab, tampilan percakapan per baris, perbaikan penanda pasangan salah, petunjuk susun kalimat berbasis arti Bahasa Indonesia, animasi pemilihan karakter, dan isi ulang nyawa menggunakan XP.
+
+### Database
+Jalankan migration `supabase/migrations/007_dialogue_xp_refill_and_indonesian_word_order.sql` setelah migration 001–006. Fungsi `buy_hearts_with_xp()` menetapkan biaya 100 XP di sisi database dan mengisi nyawa hingga 5.

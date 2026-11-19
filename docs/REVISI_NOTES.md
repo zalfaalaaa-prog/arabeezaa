@@ -138,3 +138,14 @@ Untuk project Supabase yang sudah menjalankan migration 001–005 dan seed, jala
 - Memperbaiki hubungan label dan input pada halaman login serta menambahkan status/alert pada pesan hasil autentikasi.
 - Tidak ada perubahan skema database atau migration Supabase. Preferensi aksesibilitas disimpan lokal di browser dan belum disinkronkan ke akun siswa.
 - Paket ini merupakan implementasi dasar aksesibilitas, bukan sertifikasi WCAG. Pengujian manual dengan keyboard, NVDA/VoiceOver/TalkBack, pembesaran 200%, dan siswa dengan kebutuhan aksesibilitas tetap diperlukan.
+
+
+## V12 — Penyempurnaan konten dan alur belajar
+- Halaman sebelum login diringkas menjadi satu landing page dengan logo Arabeeza, maskot kucing, dan tombol masuk/daftar.
+- Menu Materi diarahkan ke katalog sampul bab; isi lengkap tetap berada di halaman detail bab.
+- Dialog pada materi dan soal ditampilkan per giliran pembicara dalam gelembung percakapan, dengan audio per baris pada materi.
+- Warna merah pada matching hanya diterapkan pada dua tile yang dipilih secara keliru.
+- Ditambahkan pilihan isi ulang hingga lima nyawa dengan 100 XP; pilihan 25 berlian tetap tersedia.
+- Petunjuk soal word-order tertentu diubah menjadi arti Bahasa Indonesia, termasuk contoh kalimat Khalid rajin di sekolah.
+- Pemilihan avatar kucing diberi animasi pop-up dan menghormati pengaturan reduce-motion.
+- Migration tambahan: `007_dialogue_xp_refill_and_indonesian_word_order.sql`.

@@ -7,7 +7,7 @@ import {
   Volume2, VolumeX, XCircle, Headphones, BookOpen,
   PencilLine, Star, MessageCircle
 } from "lucide-react";
-import { buyHearts, loseHeart, saveQuizResult } from "@/app/actions";
+import { buyHearts, buyHeartsWithXp, loseHeart, saveQuizResult } from "@/app/actions";
 import { normalizeArabic } from "@/lib/utils";
 import type { Question } from "@/lib/types";
 import CatMascot from "@/components/CatMascot";
@@ -94,7 +94,7 @@ function getDialogueLines(question: Question): DialogueLine[] | null {
   if (firstArabic < 0) return null;
 
   const arabicText = source.slice(firstArabic);
-  const speakerNames = "(?:أَحْمَدُ|أَحْمَد|أحمد|عَلِيٌّ|عَلِيّ|عَلِي|علي|فَاطِمَةُ|فَاطِمَة|فاطمة|عَائِشَةُ|عَائِشَة|عائشة|مَرْيَمُ|مَرْيَم|مريم|مُحَمَّدٌ|مُحَمَّد|محمد|سَارَةُ|سارة|خَالِدٌ|خالد|زَيْنَبُ|زينب|يُوسُفُ|يوسف|حَسَنٌ|حسن)";
+  const speakerNames = "(?:أَحْمَدُ|أَحْمَد|أحمد|عَلِيٌّ|عَلِيّ|عَلِي|علي|فَاطِمَةُ|فَاطِمَة|فاطمة|عَائِشَةُ|عَائِشَة|عائشة|مَرْيَمُ|مَرْيَم|مريم|مُحَمَّدٌ|مُحَمَّد|محمد|سَارَةُ|سارة|خَالِدٌ|خالد|زَيْنَبُ|زينب|يُوسُفُ|يوسف|حَسَنٌ|حسن|فَارِسٌ|فَارِس|فارس|زَيْدٌ|زَيْد|زيد|عَبْدُاللَّهِ|عَبْدُ اللَّهِ|عبدالله)";
   const pattern = new RegExp(`(${speakerNames})\\s*:\\s*([\\s\\S]*?)(?=\\s+${speakerNames}\\s*:|$)`, "gu");
   const lines = [...arabicText.matchAll(pattern)].map((match) => ({
     speaker: match[1].trim(),
@@ -151,6 +151,7 @@ export default function PracticeClient({
   questions,
   initialHearts,
   initialDiamonds,
+  initialXp,
   initialHeartsResetDate,
   initialBestStars = 0
 }: {
@@ -161,6 +162,7 @@ export default function PracticeClient({
   questions: Question[];
   initialHearts: number;
   initialDiamonds: number;
+  initialXp: number;
   initialHeartsResetDate: string;
   initialBestStars?: number;
 }) {
@@ -168,6 +170,8 @@ export default function PracticeClient({
   const [index, setIndex] = useState(0);
   const [hearts, setHearts] = useState(initialHearts);
   const [diamonds, setDiamonds] = useState(initialDiamonds);
+  const [xp, setXp] = useState(initialXp);
+  const [refilling, setRefilling] = useState(false);
   const [wrongIds, setWrongIds] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -204,6 +208,10 @@ export default function PracticeClient({
   useEffect(() => {
     setDiamonds(initialDiamonds);
   }, [initialDiamonds]);
+
+  useEffect(() => {
+    setXp(initialXp);
+  }, [initialXp]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
@@ -461,14 +469,45 @@ export default function PracticeClient({
 
   async function refillHearts() {
     setBuyMessage("");
-    const result = await buyHearts();
-    if (result.ok) {
-      setHearts(result.hearts ?? 5);
-      setDiamonds(result.diamonds ?? diamonds);
-      setGameOver(false);
-      setBuyMessage("Nyawa berhasil diisi. Lanjutkan pelajaranmu!");
-    } else {
-      setBuyMessage(result.error || "Berlian belum cukup untuk mengisi nyawa.");
+    setRefilling(true);
+    try {
+      const result = await buyHearts();
+      if (result.ok) {
+        setHearts(result.hearts ?? 5);
+        setDiamonds(result.diamonds ?? diamonds);
+        setGameOver(false);
+        setBuyMessage("Nyawa berhasil diisi menggunakan berlian. Lanjutkan pelajaranmu!");
+      } else {
+        setBuyMessage(result.error || "Berlian belum cukup untuk mengisi nyawa.");
+      }
+    } catch {
+      setBuyMessage("Pengisian nyawa belum berhasil. Periksa koneksi lalu coba lagi.");
+    } finally {
+      setRefilling(false);
+    }
+  }
+
+  async function refillHeartsWithXp() {
+    setBuyMessage("");
+    if (xp < 100) {
+      setBuyMessage("XP belum cukup. Kamu membutuhkan 100 XP untuk mengisi nyawa.");
+      return;
+    }
+    setRefilling(true);
+    try {
+      const result = await buyHeartsWithXp();
+      if (result.ok) {
+        setHearts(result.hearts ?? 5);
+        setXp(result.xp ?? Math.max(0, xp - 100));
+        setGameOver(false);
+        setBuyMessage("Nyawa berhasil diisi menggunakan XP. Semangat belajar lagi!");
+      } else {
+        setBuyMessage(result.error || "XP belum cukup untuk mengisi nyawa.");
+      }
+    } catch {
+      setBuyMessage("Pengisian nyawa dengan XP belum berhasil. Coba lagi setelah koneksi stabil.");
+    } finally {
+      setRefilling(false);
     }
   }
 
@@ -531,7 +570,7 @@ export default function PracticeClient({
       return;
     }
 
-    setWrongPairIds([leftId, rightId]);
+    setWrongPairIds([`left:${leftId}`, `right:${rightId}`]);
     setMatchingMistakes((value) => value + 1);
     window.setTimeout(() => {
       setWrongPairIds([]);
@@ -597,7 +636,7 @@ export default function PracticeClient({
     );
   }
 
-  if (!question) return <div className="surface p-8 text-center">Soal belum tersedia. Pastikan migration 003 dan 006 sudah dijalankan di Supabase.</div>;
+  if (!question) return <div className="surface p-8 text-center">Soal atau percakapan belum tersedia. Pastikan migration 003, 006, dan 007 sudah dijalankan di Supabase.</div>;
 
   return (
     <div className={`practice-page mx-auto max-w-3xl ${feedback ? "has-feedback" : ""}`}>
@@ -632,11 +671,14 @@ export default function PracticeClient({
         <h1 id="practice-question-title" aria-live="polite" aria-atomic="true" className="text-xl font-black leading-8 md:text-2xl">{promptLabel}</h1>
 
         {dialogueLines ? (
-          <div className="dialogue-list mt-5" role="group" aria-label="Dialog percakapan">
+          <div className="dialogue-chat-list practice-dialogue mt-5" role="group" aria-label="Dialog percakapan sebagai konteks soal">
             {dialogueLines.map((line, lineIndex) => (
-              <div className="dialogue-line" key={`${line.speaker}-${lineIndex}`}>
-                <span className="dialogue-speaker">{line.speaker}</span>
-                <p lang="ar" dir="rtl" className="arabic text-right text-2xl font-bold">{line.text}</p>
+              <div className={`dialogue-chat-row ${lineIndex % 2 === 0 ? "is-left" : "is-right"}`} key={`${line.speaker}-${lineIndex}`}>
+                <span className={`dialogue-chat-avatar ${lineIndex % 2 === 0 ? "avatar-mint" : "avatar-peach"}`} aria-hidden="true">{line.speaker.trim().slice(0, 1)}</span>
+                <div className="dialogue-chat-bubble">
+                  <div className="dialogue-chat-meta"><span>{line.speaker}</span><button type="button" className="dialogue-audio-button" onClick={() => isSpeaking ? stopSpeech() : speakText(line.text, "ar-SA")} aria-label={`Dengarkan dialog ${line.speaker}`}>{isSpeaking ? <VolumeX size={15}/> : <Volume2 size={15}/>}</button></div>
+                  <p lang="ar" dir="rtl" className="arabic dialogue-chat-arabic">{line.text}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -743,13 +785,13 @@ export default function PracticeClient({
                     dir="rtl"
                     disabled={!!feedback || matchedPairIds.includes(pair.id) || wrongPairIds.length > 0}
                     onClick={() => chooseLeftPair(pair.id)}
-                    className={`match-tile ${leftMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(pair.id) ? "is-wrong" : ""}`}
+                    className={`match-tile ${leftMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(`left:${pair.id}`) ? "is-wrong" : ""}`}
                     aria-pressed={leftMatchChoice === pair.id || matchedPairIds.includes(pair.id)}
-                    aria-label={`${pair.arabic}${matchedPairIds.includes(pair.id) ? ", sudah cocok" : wrongPairIds.includes(pair.id) ? ", pasangan belum tepat" : leftMatchChoice === pair.id ? ", dipilih" : ", pilih kata Arab"}`}
+                    aria-label={`${pair.arabic}${matchedPairIds.includes(pair.id) ? ", sudah cocok" : wrongPairIds.includes(`left:${pair.id}`) ? ", pasangan belum tepat" : leftMatchChoice === pair.id ? ", dipilih" : ", pilih kata Arab"}`}
                     lang="ar"
                   >
                     <span>{pair.arabic}</span>
-                    {matchedPairIds.includes(pair.id) ? <CheckCircle2 size={16} aria-hidden="true" /> : wrongPairIds.includes(pair.id) ? <XCircle size={16} aria-hidden="true" /> : null}
+                    {matchedPairIds.includes(pair.id) ? <CheckCircle2 size={16} aria-hidden="true" /> : wrongPairIds.includes(`left:${pair.id}`) ? <XCircle size={16} aria-hidden="true" /> : null}
                   </button>
                 ))}
               </div>
@@ -761,12 +803,12 @@ export default function PracticeClient({
                     type="button"
                     disabled={!!feedback || matchedPairIds.includes(pair.id) || wrongPairIds.length > 0}
                     onClick={() => chooseRightPair(pair.id)}
-                    className={`match-tile match-tile-meaning ${rightMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(pair.id) ? "is-wrong" : ""}`}
+                    className={`match-tile match-tile-meaning ${rightMatchChoice === pair.id ? "is-selected" : ""} ${matchedPairIds.includes(pair.id) ? "is-matched" : ""} ${wrongPairIds.includes(`right:${pair.id}`) ? "is-wrong" : ""}`}
                     aria-pressed={rightMatchChoice === pair.id || matchedPairIds.includes(pair.id)}
-                    aria-label={`${pair.meaning}${matchedPairIds.includes(pair.id) ? ", sudah cocok" : wrongPairIds.includes(pair.id) ? ", pasangan belum tepat" : rightMatchChoice === pair.id ? ", dipilih" : ", pilih arti"}`}
+                    aria-label={`${pair.meaning}${matchedPairIds.includes(pair.id) ? ", sudah cocok" : wrongPairIds.includes(`right:${pair.id}`) ? ", pasangan belum tepat" : rightMatchChoice === pair.id ? ", dipilih" : ", pilih arti"}`}
                   >
                     <span>{pair.meaning}</span>
-                    {matchedPairIds.includes(pair.id) ? <CheckCircle2 size={16} aria-hidden="true" /> : wrongPairIds.includes(pair.id) ? <XCircle size={16} aria-hidden="true" /> : null}
+                    {matchedPairIds.includes(pair.id) ? <CheckCircle2 size={16} aria-hidden="true" /> : wrongPairIds.includes(`right:${pair.id}`) ? <XCircle size={16} aria-hidden="true" /> : null}
                   </button>
                 ))}
               </div>
@@ -904,11 +946,12 @@ export default function PracticeClient({
             <div className="mb-4 flex items-center justify-between"><span className="rounded-full bg-[#f8e6dc] px-3 py-1 text-xs font-black text-[#a76d50]">ENERGI HABIS</span><Heart className="text-rose-500" fill="currentColor" size={28} /></div>
             <div className="flex items-center gap-3"><CatMascot mood="sad" size={78} /><div><h2 id="life-title" className="text-2xl font-black">Kamu kehabisan nyawa!</h2><p className="mt-1 text-sm leading-5 text-[#718078]">Pelajaran belum selesai. Pilih cara untuk melanjutkan.</p></div></div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <button type="button" onClick={refillHearts} className="rounded-2xl border-2 border-[#e8a07c] bg-white p-4 text-left transition hover:bg-[#fff0d9]"><span className="flex items-center justify-between"><Heart className="text-rose-500" fill="currentColor" size={23} /><span className="rounded-full bg-[#fff0d9] px-2 py-1 text-xs font-black text-[#a76d50]">25 💎</span></span><strong className="mt-3 block text-sm">Isi ulang nyawa</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Isi kembali hingga 5 nyawa menggunakan 25 berlian.</span></button>
-              <Link href="/dashboard" className="rounded-2xl border-2 border-[#d9d3c3] bg-white p-4 text-left transition hover:bg-[#f1eadb]"><span className="flex h-[23px] items-center text-2xl">🏡</span><strong className="mt-3 block text-sm">Akhiri pelajaran</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Simpan dulu latihan dan kembali ke beranda.</span></Link>
+              <button type="button" onClick={refillHearts} disabled={refilling} className="life-refill-option life-refill-diamond" aria-label="Isi ulang hingga lima nyawa dengan 25 berlian"><span className="flex items-center justify-between"><Heart className="text-rose-500" fill="currentColor" size={23} /><span className="rounded-full bg-[#fff0d9] px-2 py-1 text-xs font-black text-[#a76d50]">25 💎</span></span><strong className="mt-3 block text-sm">Isi dengan berlian</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Isi kembali hingga 5 nyawa menggunakan 25 berlian.</span></button>
+              <button type="button" onClick={refillHeartsWithXp} disabled={refilling || xp < 100} className="life-refill-option life-refill-xp" aria-label="Isi ulang hingga lima nyawa dengan 100 XP"><span className="flex items-center justify-between"><span className="text-2xl font-black text-[#bd795a]">✦</span><span className="rounded-full bg-[#f8e6dc] px-2 py-1 text-xs font-black text-[#a76d50]">100 XP</span></span><strong className="mt-3 block text-sm">Isi dengan XP</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Tukarkan 100 XP untuk mengisi kembali hingga 5 nyawa.</span>{xp < 100 && <span className="mt-2 block text-[11px] font-bold text-[#a65d4b]">XP belum cukup</span>}</button>
+              <Link href="/dashboard" className="rounded-2xl border-2 border-[#d9d3c3] bg-white p-4 text-left transition hover:bg-[#f1eadb] sm:col-span-2"><span className="flex h-[23px] items-center text-2xl">🏡</span><strong className="mt-3 block text-sm">Akhiri pelajaran</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Kembali ke beranda dan lanjutkan nanti.</span></Link>
             </div>
-            {buyMessage && <p className="mt-4 rounded-xl bg-[#fff0e9] p-3 text-sm font-bold text-[#a65d4b]">{buyMessage}</p>}
-            <p className="mt-4 text-center text-xs text-[#89968f]">Berlian tersedia: {diamonds} 💎</p>
+            {buyMessage && <p className="mt-4 rounded-xl bg-[#fff0e9] p-3 text-sm font-bold text-[#a65d4b]" role="status">{buyMessage}</p>}
+            <p className="mt-4 text-center text-xs text-[#89968f]">Berlian tersedia: {diamonds} 💎 <span className="mx-1">·</span> XP tersedia: {xp} ✦</p>
           </section>
         </div>
       )}

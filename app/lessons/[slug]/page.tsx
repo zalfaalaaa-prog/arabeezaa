@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import CatMascot from "@/components/CatMascot";
+import DialogueChat, { type DialogueTurn } from "@/components/DialogueChat";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -141,8 +142,8 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
 
       <section className="mt-7">
         <div className="mb-4 flex items-center gap-3"><div className="rounded-2xl bg-[#fff0d9] p-3 text-[#bd795a]"><MessageCircle size={22} /></div><div><p className="material-kicker">Bagian 5</p><h2 className="text-xl font-black">الْحِوَارُ · Dialog perkenalan</h2></div></div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {conversations.map((dialogue: any) => <article key={dialogue.id} className="material-section p-5"><h3 className="font-black">{dialogue.title}</h3><p lang="ar" dir="rtl" className="arabic mt-4 whitespace-pre-line text-right text-xl font-bold leading-[2.2]">{dialogue.arabic_text}</p><p className="mt-4 whitespace-pre-line text-sm leading-7 text-[#718078]">{dialogue.translation}</p></article>)}
+        <div className="grid gap-4 lg:grid-cols-2">
+          {conversations.map((dialogue: any) => <article key={dialogue.id} className="material-section p-4 md:p-5"><DialogueChat title={dialogue.title} turns={parseDialogueTurns(dialogue.arabic_text, dialogue.translation)} /></article>)}
         </div>
         <article className="material-section mt-4 p-5"><div className="flex items-center gap-2"><Volume2 size={19} className="text-[#827148]" /><h3 className="font-black">Teks bacaan: Identitas diri</h3></div><p lang="ar" dir="rtl" className="arabic mt-4 text-right text-xl font-bold leading-[2.2]">اِسْمِي أَحْمَدُ. أَنَا طَالِبٌ فِي الْمَدْرَسَةِ الثَّانَوِيَّةِ. أَسْكُنُ فِي سُورَابَايَا مَعَ أُسْرَتِي. أُحِبُّ تَعَلُّمَ اللُّغَةِ الْعَرَبِيَّةِ.</p><p className="mt-3 text-sm leading-7 text-[#718078]">Nama saya Ahmad. Saya seorang siswa di sekolah menengah. Saya tinggal di Surabaya bersama keluarga saya. Saya suka belajar Bahasa Arab.</p><p className="mt-3 rounded-xl bg-[#fff0d9] p-3 text-sm text-[#78664d]">Saat membaca teks, temukan nama, status, tempat tinggal, anggota keluarga yang disebutkan, dan kegiatan yang disukai tokoh.</p></article>
       </section>
@@ -177,6 +178,24 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
       <section className="mt-7 rounded-[26px] bg-[#eaf2df] p-5 md:p-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-3"><CatMascot mood="celebrate" size={68} /><div><p className="material-kicker">Siap berlatih?</p><h2 className="text-xl font-black">Uji pemahamanmu di 7 tahap</h2><p className="mt-1 text-sm text-[#5f694b]">Setiap tahap berisi 15 soal dengan tingkat tantangan bertahap.</p></div></div><Link href={`/practice/${slug}?mode=mixed&level=1`} className="btn-primary shrink-0">Mulai belajar →</Link></div></section>
     </AppShell>
   );
+}
+
+
+function parseDialogueTurns(arabicText: string, translation: string): DialogueTurn[] {
+  const parseLines = (value: string) => value.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n").split(/\r?\n/).map((line) => {
+    const colon = line.indexOf(":");
+    return colon >= 0
+      ? { speaker: line.slice(0, colon).trim(), text: line.slice(colon + 1).trim() }
+      : { speaker: "", text: line.trim() };
+  }).filter((line) => line.text);
+
+  const arabicLines = parseLines(arabicText || "");
+  const translatedLines = parseLines(translation || "");
+  return arabicLines.map((line, index) => ({
+    speaker: translatedLines[index]?.speaker || line.speaker || `Pembicara ${index + 1}`,
+    arabic: line.text,
+    translation: translatedLines[index]?.text || ""
+  }));
 }
 
 function CircleQuestionIcon() {

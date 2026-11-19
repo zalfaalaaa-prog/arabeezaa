@@ -10,7 +10,7 @@
 - `quiz_attempts`: score and reward history.
 - `teacher_notes`: teacher feedback attached to a student and lesson.
 
-The SQL migrations enable Row Level Security (RLS) and add `record_quiz_result`, `record_stage_quiz_result`, `buy_hearts`, `update_my_avatar`, `update_my_avatar_v2`, `consume_heart`, and `refresh_daily_hearts` RPC functions. Daily hearts are reset to 5 when a student first uses the app on a new calendar day in Asia/Jakarta (WIB). While the app remains open, the shared app shell also checks at midnight and refreshes the displayed balance.
+The SQL migrations enable Row Level Security (RLS) and add `record_quiz_result`, `record_stage_quiz_result`, `buy_hearts`, `update_my_avatar`, `update_my_avatar_v2`, `consume_heart`, `refresh_daily_hearts`, and `buy_hearts_with_xp` RPC functions. Daily hearts are reset to 5 when a student first uses the app on a new calendar day in Asia/Jakarta (WIB). While the app remains open, the shared app shell also checks at midnight and refreshes the displayed balance.
 
 Run migrations in order:
 1. `001_init.sql`
@@ -20,5 +20,6 @@ Run migrations in order:
 5. `004_daily_hearts_reset.sql` (daily 00:00 WIB heart reset; answer sound is handled in the web app)
 6. `005_stage_progress.sql` (per-stage completion, level unlocking and best-star tracking)
 7. `006_interactive_question_types.sql` (105 soal bertingkat dengan variasi matching, susun kata, listening, speaking, dan kosakata bergambar)
+8. `007_dialogue_xp_refill_and_indonesian_word_order.sql` (dialog Faris–Zaid per baris, petunjuk susun kata berbahasa Indonesia, dan isi ulang 5 nyawa dengan 100 XP)
 
-For an existing project that already has migrations 001–005 and the seed, do not recreate the database. Run only migration `006_interactive_question_types.sql` in Supabase SQL Editor to update the interactive question bank.
+For an existing project that already has migrations 001–006 and the seed, do not recreate the database. Run only migration `007_dialogue_xp_refill_and_indonesian_word_order.sql` in Supabase SQL Editor to add the new dialogue, Indonesian word-order prompts, and XP refill option.

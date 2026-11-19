@@ -82,7 +82,7 @@ export default async function PracticePage({ params, searchParams }: { params: P
 
   return (
     <AppShell stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }} role={profile?.role || "student"}>
-      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={randomizedQuestions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} initialHeartsResetDate={profile?.hearts_reset_date ?? ""} initialBestStars={Number(currentStage?.best_stars || 0)} />
+      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={randomizedQuestions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} initialXp={profile?.xp ?? 0} initialHeartsResetDate={profile?.hearts_reset_date ?? ""} initialBestStars={Number(currentStage?.best_stars || 0)} />
     </AppShell>
   );
 }

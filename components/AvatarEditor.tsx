@@ -52,7 +52,7 @@ export default function AvatarEditor({
   return (
     <form action={updateAvatar} className="surface avatar-editor p-5 md:p-6">
       <div className="avatar-preview-panel mb-5 rounded-[24px] p-5 text-center">
-        <CatAvatar preset={preset} size={160} className="mx-auto cat-avatar-preview" />
+        <CatAvatar key={preset} preset={preset} size={160} className="mx-auto cat-avatar-preview avatar-preview-pop" />
         <p className="mt-2 text-xs font-black tracking-[.14em] text-[#348f68]">KARAKTER PILIHANMU</p>
         <p className="mt-1 text-sm font-bold text-[#536b5e]">Siap menemanimu belajar!</p>
       </div>
@@ -70,7 +70,7 @@ export default function AvatarEditor({
                 type="button"
                 key={item}
                 onClick={() => choosePreset(item)}
-                className={`cat-choice-card relative rounded-2xl border-2 p-3 text-center transition ${selected ? "selected" : ""}`}
+                className={`cat-choice-card relative rounded-2xl border-2 p-3 text-center transition ${selected ? "selected avatar-choice-pop" : ""}`}
                 aria-label={`Pilih karakter kucing ${index + 1}`}
                 aria-pressed={selected}
                 title={`Pilih karakter kucing ${index + 1}`}
