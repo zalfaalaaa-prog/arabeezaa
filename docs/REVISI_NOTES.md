@@ -88,3 +88,13 @@ Setelah migration 001–004 sudah diterapkan, jalankan satu kali `supabase/migra
 - Tidak perlu menjalankan SQL migration baru.
 - Ganti isi repository GitHub dengan isi ZIP v8, commit ke branch `main`, lalu tunggu deployment Vercel.
 - Setelah deployment, cek tampilan pada lebar ponsel dan buka halaman Profil untuk mencoba seluruh pilihan karakter serta tombol Keluar.
+
+
+## Revisi v9 — warna jalur lebih tegas dan pilihan jawaban acak
+
+- Banner unit jalur belajar menggunakan warna hijau solid yang lebih kuat; gradasi pada banner dihilangkan agar tampilannya tidak kusam.
+- Tujuh lingkaran tahap menggunakan warna solid yang lebih tegas (hijau, teal, ungu, kuning, coral, biru, dan pink). Efek bayangan dan penanda tahap aktif diperjelas, sedangkan tahap terkunci tetap netral.
+- Pilihan jawaban latihan sekarang diacak pada setiap soal dan setiap sesi. Posisi jawaban benar tidak lagi selalu berada pada pilihan pertama/A.
+- Urutan pilihan pengecoh juga diacak. Isi soal dan kunci jawaban di database tidak diubah.
+- Pilihan jawaban menampilkan penanda A, B, dan C sehingga posisi opsi mudah dibaca. Penanda akan mengikuti urutan hasil pengacakan.
+- Tidak ada migration Supabase baru yang diperlukan untuk revisi ini.

@@ -3,6 +3,7 @@ import AppShell from "@/components/AppShell";
 import PracticeClient from "@/components/PracticeClient";
 import { createClient } from "@/lib/supabase/server";
 import type { Question } from "@/lib/types";
+import { randomizeQuestionOptions } from "@/lib/question-randomizer";
 
 export const dynamic = "force-dynamic";
 
@@ -76,9 +77,12 @@ export default async function PracticePage({ params, searchParams }: { params: P
   const questions = (questionData || []) as Question[];
   if (questions.length !== 15) notFound();
 
+  // Posisi jawaban benar dan urutan pengecoh diacak secara independen pada setiap soal.
+  const randomizedQuestions = randomizeQuestionOptions(questions);
+
   return (
     <AppShell stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }} role={profile?.role || "student"}>
-      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={questions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} initialHeartsResetDate={profile?.hearts_reset_date ?? ""} initialBestStars={Number(currentStage?.best_stars || 0)} />
+      <PracticeClient lessonSlug={slug} lessonTitle={lesson.title} mode={mode} level={level} questions={randomizedQuestions} initialHearts={profile?.hearts ?? 5} initialDiamonds={profile?.diamonds ?? 0} initialHeartsResetDate={profile?.hearts_reset_date ?? ""} initialBestStars={Number(currentStage?.best_stars || 0)} />
     </AppShell>
   );
 }

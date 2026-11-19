@@ -502,7 +502,13 @@ export default function PracticeClient({
             const isWrong = Boolean(feedback) && selected === option && !feedback?.correct;
             return (
               <button key={option} type="button" dir="auto" disabled={!!feedback} onClick={() => setSelected(option)} className={`choice choice-animated ${selected === option ? "is-selected" : ""} ${isCorrect ? "correct" : ""} ${isWrong ? "wrong" : ""}`} style={{ animationDelay: `${optionIndex * 45}ms` }} aria-pressed={selected === option}>
-                <span className="flex items-center justify-between gap-3"><span>{option}</span>{isCorrect ? <CheckCircle2 size={19} /> : isWrong ? <XCircle size={19} /> : null}</span>
+                <span className="flex items-center justify-between gap-3" dir="ltr">
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="choice-letter" aria-hidden="true">{String.fromCharCode(65 + optionIndex)}</span>
+                    <span className="min-w-0" dir="auto">{option}</span>
+                  </span>
+                  {isCorrect ? <CheckCircle2 size={19} /> : isWrong ? <XCircle size={19} /> : null}
+                </span>
               </button>
             );
           })}
