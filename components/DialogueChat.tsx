@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Play, Volume2, VolumeX } from "lucide-react";
+import { normalizeDialogueNamesForSpeech } from "@/lib/dialogue-speech";
 
 export type DialogueTurn = { speaker: string; arabic: string; translation: string };
 
@@ -37,7 +38,7 @@ export default function DialogueChat({ title, turns }: { title: string; turns: D
     const token = playbackTokenRef.current + 1;
     playbackTokenRef.current = token;
     const voices = arabicVoices();
-    const utterance = new SpeechSynthesisUtterance(line);
+    const utterance = new SpeechSynthesisUtterance(normalizeDialogueNamesForSpeech(line));
     utterance.lang = voices[0]?.lang || "ar-SA";
     if (voices[0]) utterance.voice = voices[0];
     utterance.rate = 0.88;
@@ -72,7 +73,7 @@ export default function DialogueChat({ title, turns }: { title: string; turns: D
         return;
       }
       const turn = dialogueTurns[current];
-      const utterance = new SpeechSynthesisUtterance(turn.arabic);
+      const utterance = new SpeechSynthesisUtterance(normalizeDialogueNamesForSpeech(turn.arabic));
       const selectedVoice = dialogueVoices.length > 1 ? dialogueVoices[current % 2] : dialogueVoices[0];
       utterance.lang = selectedVoice?.lang || "ar-SA";
       if (selectedVoice) utterance.voice = selectedVoice;

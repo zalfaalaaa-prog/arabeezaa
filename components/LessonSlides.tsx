@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, useEffect, useRef, useState, type ReactNode, type TouchEvent } from "react";
+import { Children, isValidElement, useEffect, useRef, useState, type ReactNode, type ReactElement, type TouchEvent } from "react";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 
 /**
@@ -11,13 +11,30 @@ import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 export default function LessonSlides({ children, title = "Materi inti" }: { children: ReactNode; title?: string }) {
   const slides = Children.toArray(children);
   const [activeIndex, setActiveIndex] = useState(0);
-  const touchStartX = useRef<number | null>(null);
+  const touchStart = useRef<{ x: number; y: number; ignored: boolean } | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const total = slides.length;
+  const dialogSlideIndex = slides.findIndex((slide) =>
+    isValidElement(slide) && (slide as ReactElement<{ id?: string }>).props.id === "dialog"
+  );
+
+  useEffect(() => {
+    const syncHashToSlide = () => {
+      if (window.location.hash === "#dialog" && dialogSlideIndex >= 0) {
+        setActiveIndex(dialogSlideIndex);
+      }
+    };
+    syncHashToSlide();
+    window.addEventListener("hashchange", syncHashToSlide);
+    return () => window.removeEventListener("hashchange", syncHashToSlide);
+  }, [dialogSlideIndex]);
 
   useEffect(() => {
     if (viewportRef.current) viewportRef.current.scrollTop = 0;
-  }, [activeIndex]);
+    if (window.location.hash === "#dialog" && activeIndex === dialogSlideIndex) {
+      document.getElementById("dialog")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [activeIndex, dialogSlideIndex]);
 
   function previous() {
     setActiveIndex((current) => Math.max(0, current - 1));
@@ -28,19 +45,33 @@ export default function LessonSlides({ children, title = "Materi inti" }: { chil
   }
 
   function onTouchStart(event: TouchEvent<HTMLDivElement>) {
-    touchStartX.current = event.changedTouches[0]?.clientX ?? null;
+    const target = event.target;
+    const interactiveOrScrollable = target instanceof Element
+      ? target.closest("[data-no-slide-swipe], .lesson-table-scroll, table, button, a, input, select, textarea, [role='button'], [contenteditable='true']")
+      : null;
+    const touch = event.changedTouches[0];
+    if (!touch) return;
+    touchStart.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      ignored: Boolean(interactiveOrScrollable)
+    };
   }
 
   function onTouchEnd(event: TouchEvent<HTMLDivElement>) {
-    if (touchStartX.current === null) return;
-    const endX = event.changedTouches[0]?.clientX;
-    if (endX === undefined) return;
-    const delta = endX - touchStartX.current;
-    if (Math.abs(delta) > 55) {
-      if (delta < 0) next();
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start || start.ignored) return;
+    const touch = event.changedTouches[0];
+    if (!touch) return;
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    // Navigasi slide hanya aktif untuk geseran mendatar yang jelas.
+    // Gerakan vertikal tetap dipakai untuk scroll dan gerakan pada tabel diabaikan.
+    if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
+      if (deltaX < 0) next();
       else previous();
     }
-    touchStartX.current = null;
   }
 
   if (!total) return null;

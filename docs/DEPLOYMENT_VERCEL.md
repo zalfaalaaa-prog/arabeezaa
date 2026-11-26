@@ -89,3 +89,10 @@ Untuk database yang sudah menjalankan migration 001–007, jalankan satu kali `s
 ## V14 — tema maroon dan pencapaian terbaik
 
 Untuk database yang sudah menjalankan migration 001–008, jalankan satu kali `supabase/migrations/009_best_stars_persistence.sql`. Migration ini memperkuat penyimpanan bintang terbaik dengan `GREATEST`, sehingga hasil pengulangan yang lebih rendah tidak menimpa pencapaian tertinggi. Toko XP menggunakan RPC `buy_hearts_with_xp` yang sudah dibuat pada migration 007.
+
+
+## V15 — layout dan interaksi
+
+V15 tidak menambahkan migration Supabase. Pastikan migration `009_best_stars_persistence.sql` sudah dijalankan jika database belum menerapkan pencapaian bintang terbaik. Setelah mengunggah isi ZIP V15 ke root repository GitHub, jalankan `npm install` dan `npm run build` secara lokal bila memungkinkan, lalu commit dan push ke branch yang terhubung ke Vercel.
+
+Setelah deployment, uji sidebar desktop, navigasi mobile, pembukaan Bab 2–4 (halaman placeholder), audio nama dalam dialog, scroll horizontal tabel, tombol pilihan jawaban, kontrol audio, dan navigasi slide di HP Android. Tidak perlu mengubah Environment Variables Supabase untuk V15.

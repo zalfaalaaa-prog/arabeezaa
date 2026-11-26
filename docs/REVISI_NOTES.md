@@ -188,3 +188,19 @@ Untuk project Supabase yang sudah menjalankan migration 001–005 dan seed, jala
 - Ditambahkan migration `009_best_stars_persistence.sql` untuk memastikan bintang terbaik menggunakan nilai maksimum antara pencapaian lama dan hasil terbaru. Migration tidak menurunkan bintang yang sudah tersimpan.
 - Maskot utama dan avatar profil diperbarui menjadi bentuk wajah lebih bulat, dengan animasi lembut yang menghormati preferensi reduce-motion. Logo SVG menggunakan aksen maroon.
 - ZIP ini mempertahankan fitur aksesibilitas global V11. Pengaturan aksesibilitas khusus di halaman profil belum ditambahkan pada revisi ini.
+
+
+## V15 — sidebar desktop, katalog bab, audio nama, dan akses sentuh
+
+- Mengubah shell desktop menjadi layout sidebar kiri tetap dengan menu Beranda, Materi, Capaian, Latihan, Dialog & Audio, Toko Hadiah, dan Profil. Pada layar kecil, navigasi berubah menjadi menu ringkas yang dapat disentuh.
+- Menata dashboard desktop menjadi tiga area: sidebar kiri, jalur tujuh tahap di tengah, dan panel sapaan/statistik di kanan. Animasi dekoratif dashboard dibatasi agar level menjadi fokus gerak.
+- Memindahkan sapaan personal ke bagian paling atas panel kanan, sebelum statistik streak, berlian, nyawa, bintang, dan ringkasan XP.
+- Menampilkan katalog Bab 1–4. Bab 1 tetap aktif, sedangkan Bab 2 Al-Usrah, Bab 3 Al-Madrasah, dan Bab 4 Afrād al-Bayt dapat dibuka sebagai placeholder “Materi belum dimasukkan”. Tidak ada konten atau bank soal baru untuk bab tersebut.
+- Menghapus kalimat instruksi berulang dari banner dashboard; banner hanya menampilkan label BAB 1, At-Ta‘āruf, dan terjemahan.
+- Mengganti emoji kucing pada halaman Capaian dengan komponen maskot CatMascot yang sama dengan identitas Arabeeza.
+- Menambahkan ikon SVG bergradasi untuk streak, berlian, hati/nyawa, XP, dan bintang.
+- Menambahkan normalisasi pelafalan nama Faris, Nadia, dan Hana khusus pada audio dialog. Ejaan Arab yang tampil di halaman tetap tidak berubah.
+- Memperbaiki gesture LessonSlides: tabel, tombol, tautan, dan elemen input diabaikan oleh deteksi swipe. Tabel memiliki pembungkus scroll horizontal sendiri dengan dukungan sentuh.
+- Memperbesar target sentuh kontrol utama menjadi sekitar 48px atau lebih, termasuk tombol audio per baris, tombol dialog, tombol navigasi slide, pilihan jawaban, dan navigasi mobile. Tombol aksesibilitas dipindah agar tidak menutupi kontrol bagian bawah pada HP.
+- Tidak menambah atau mengubah skema database. Migration 009 tetap perlu dijalankan satu kali jika belum diterapkan pada proyek Supabase.
+- Build Next.js produksi belum dapat diverifikasi di lingkungan penyusunan ZIP karena instalasi dependency tidak selesai. Jalankan `npm install` lalu `npm run build` sebelum deployment produksi.

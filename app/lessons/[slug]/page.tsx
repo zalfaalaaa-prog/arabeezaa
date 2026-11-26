@@ -9,6 +9,7 @@ import CatMascot from "@/components/CatMascot";
 import DialogueChat, { type DialogueTurn } from "@/components/DialogueChat";
 import LessonSlides from "@/components/LessonSlides";
 import { createClient } from "@/lib/supabase/server";
+import { chapterCatalog } from "@/lib/chapters";
 
 export const dynamic = "force-dynamic";
 
@@ -68,17 +69,41 @@ const maharah = [
 
 export default async function LessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  if (slug !== "at-taaruf") notFound();
+  const catalogChapter = chapterCatalog.find((chapter) => chapter.slug === slug);
+  if (!catalogChapter) notFound();
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   await supabase.rpc("refresh_daily_hearts");
+  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
 
-  const [{ data: lesson }, { data: vocab }, { data: dialogues }, { data: profile }] = await Promise.all([
+  if (!catalogChapter.available) {
+    return (
+      <AppShell active="/lessons" role={profile?.role || "student"} stats={{ streak: profile?.streak_count || 0, diamonds: profile?.diamonds || 0, hearts: profile?.hearts || 0 }}>
+        <Link href="/lessons" className="mb-5 inline-flex min-h-12 items-center gap-2 text-sm font-bold text-[#762b40]"><ArrowLeft size={18} /> Kembali ke perpustakaan</Link>
+        <section className="chapter-placeholder-card">
+          <span className="chapter-cover-label">BAB {catalogChapter.number}</span>
+          <CatMascot mood="thinking" size={126} className="chapter-placeholder-cat" />
+          <p lang="ar" dir="rtl" className="arabic mt-3 text-3xl font-bold text-[#762b40]">{catalogChapter.titleAr}</p>
+          <h1 className="mt-2 text-2xl font-black text-[#4d1c2b]">{catalogChapter.title}</h1>
+          <div className="chapter-placeholder-message">
+            <Sparkles size={22} />
+            <div>
+              <h2>Materi belum dimasukkan</h2>
+              <p>Bab ini sudah tersedia di daftar materi. Isi pembelajaran sedang disiapkan dan akan ditambahkan nanti.</p>
+            </div>
+          </div>
+          <Link href="/lessons" className="btn-primary mt-5">Kembali ke daftar bab <ArrowLeft size={17} /></Link>
+        </section>
+      </AppShell>
+    );
+  }
+
+  const [{ data: lesson }, { data: vocab }, { data: dialogues }] = await Promise.all([
     supabase.from("lessons").select("*").eq("slug", slug).eq("is_published", true).single(),
     supabase.from("vocabulary").select("*").order("sort_order"),
-    supabase.from("dialogues").select("*").order("sort_order"),
-    supabase.from("profiles").select("*").eq("id", user.id).single()
+    supabase.from("dialogues").select("*").order("sort_order")
   ]);
   if (!lesson) notFound();
   const words = (vocab || []).filter((item: any) => item.lesson_id === lesson.id);
@@ -133,17 +158,17 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
       <section className="material-section mt-7 p-5 md:p-6">
         <div className="mb-4 flex items-center gap-3"><div className="rounded-2xl bg-[#f1eadb] p-3 text-[#827148]"><CircleQuestionIcon /></div><div><p className="material-kicker">Bagian 3</p><h2 className="text-xl font-black">أَدَوَاتُ الِاسْتِفْهَامِ · Kata tanya</h2></div></div>
         <p className="mb-4 text-sm leading-6 text-[#718078]">Adawātul istifhām adalah kata atau alat tanya dalam Bahasa Arab yang digunakan untuk meminta informasi. Perhatikan arti dan contoh penggunaannya.</p>
-        <div className="overflow-x-auto"><table className="w-full min-w-[560px] border-collapse text-sm"><thead><tr className="bg-[#fff0d9] text-left"><th className="rounded-l-xl p-3">Kata tanya</th><th className="p-3">Arti</th><th className="p-3">Contoh kalimat</th><th className="rounded-r-xl p-3">Terjemahan</th></tr></thead><tbody>{questionWords.map(([ar, meaning, example, translation]) => <tr key={ar} className="border-b border-[#eee5d7]"><td lang="ar" dir="rtl" className="arabic p-3 text-right text-xl font-bold">{ar}</td><td className="p-3 font-bold">{meaning}</td><td lang="ar" dir="rtl" className="arabic p-3 text-right text-lg">{example}</td><td className="p-3 text-[#718078]">{translation}</td></tr>)}</tbody></table></div>
+        <div className="lesson-table-scroll" data-no-slide-swipe tabIndex={0} role="region" aria-label="Tabel kata tanya, dapat digeser ke samping"><table className="w-full min-w-[560px] border-collapse text-sm"><thead><tr className="bg-[#fff0d9] text-left"><th className="rounded-l-xl p-3">Kata tanya</th><th className="p-3">Arti</th><th className="p-3">Contoh kalimat</th><th className="rounded-r-xl p-3">Terjemahan</th></tr></thead><tbody>{questionWords.map(([ar, meaning, example, translation]) => <tr key={ar} className="border-b border-[#eee5d7]"><td lang="ar" dir="rtl" className="arabic p-3 text-right text-xl font-bold">{ar}</td><td className="p-3 font-bold">{meaning}</td><td lang="ar" dir="rtl" className="arabic p-3 text-right text-lg">{example}</td><td className="p-3 text-[#718078]">{translation}</td></tr>)}</tbody></table></div>
       </section>
 
       <section className="material-section mt-7 p-5 md:p-6">
         <div className="mb-4 flex items-center gap-3"><div className="rounded-2xl bg-[#eaf2df] p-3 text-[#74834f]"><UserRound size={22} /></div><div><p className="material-kicker">Bagian 4</p><h2 className="text-xl font-black">الضَّمَائِرُ · Kata ganti (Dhamir)</h2></div></div>
         <p className="mb-4 text-sm leading-6 text-[#718078]">Dhamir adalah kata ganti yang menggantikan nama orang atau benda. Dhamir dapat menunjukkan orang yang berbicara, lawan bicara, atau orang yang sedang dibicarakan.</p>
-        <div className="overflow-x-auto"><table className="w-full min-w-[520px] border-collapse text-sm"><thead><tr className="bg-[#eaf2df] text-left"><th className="rounded-l-xl p-3">Dhamir</th><th className="p-3">Arti</th><th className="rounded-r-xl p-3">Kelompok</th></tr></thead><tbody>{pronouns.map(([ar, meaning, group]) => <tr key={ar} className="border-b border-[#eee5d7]"><td lang="ar" dir="rtl" className="arabic p-3 text-right text-xl font-bold">{ar}</td><td className="p-3 font-bold">{meaning}</td><td className="p-3 text-[#718078]">{group}</td></tr>)}</tbody></table></div>
+        <div className="lesson-table-scroll" data-no-slide-swipe tabIndex={0} role="region" aria-label="Tabel kata ganti, dapat digeser ke samping"><table className="w-full min-w-[520px] border-collapse text-sm"><thead><tr className="bg-[#eaf2df] text-left"><th className="rounded-l-xl p-3">Dhamir</th><th className="p-3">Arti</th><th className="rounded-r-xl p-3">Kelompok</th></tr></thead><tbody>{pronouns.map(([ar, meaning, group]) => <tr key={ar} className="border-b border-[#eee5d7]"><td lang="ar" dir="rtl" className="arabic p-3 text-right text-xl font-bold">{ar}</td><td className="p-3 font-bold">{meaning}</td><td className="p-3 text-[#718078]">{group}</td></tr>)}</tbody></table></div>
         <div className="mt-4 grid gap-3 md:grid-cols-2"><article className="rounded-2xl bg-[#fffaf3] p-4"><h3 className="font-black">Dhamir munfashil (terpisah)</h3><p className="mt-2 text-sm leading-6 text-[#718078]">Kata ganti berdiri sendiri dan tidak melekat pada kata lain. Contoh: <span lang="ar" dir="rtl" className="arabic text-lg font-bold">أَنَا طَالِبٌ</span> — saya seorang siswa.</p></article><article className="rounded-2xl bg-[#f8e6dc] p-4"><h3 className="font-black">Dhamir muttashil (bersambung)</h3><p className="mt-2 text-sm leading-6 text-[#785a4a]">Kata ganti melekat pada kata lain, misalnya untuk kepemilikan atau objek. Contoh: <span lang="ar" dir="rtl" className="arabic text-lg font-bold">كِتَابُكَ</span> — bukumu; <span lang="ar" dir="rtl" className="arabic text-lg font-bold">قَلَمُهُ</span> — penanya; <span lang="ar" dir="rtl" className="arabic text-lg font-bold">سَاعَدَنِي</span> — dia menolong saya.</p></article></div>
       </section>
 
-      <section className="mt-7">
+      <section id="dialog" className="mt-7 scroll-mt-6">
         <div className="mb-4 flex items-center gap-3"><div className="rounded-2xl bg-[#fff0d9] p-3 text-[#bd795a]"><MessageCircle size={22} /></div><div><p className="material-kicker">Bagian 5</p><h2 className="text-xl font-black">الْحِوَارُ · Dialog perkenalan</h2></div></div>
         <div className="grid gap-4 lg:grid-cols-2">
           {conversations.map((dialogue: any) => <article key={dialogue.id} className="material-section p-4 md:p-5"><DialogueChat title={dialogue.title} turns={parseDialogueTurns(dialogue.arabic_text, dialogue.translation)} /></article>)}

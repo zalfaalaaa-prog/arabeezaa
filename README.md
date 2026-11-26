@@ -4,6 +4,19 @@ ARABEEZA adalah bahan ajar Bahasa Arab inklusif berbasis website untuk siswa kel
 
 Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan Supabase (Auth + PostgreSQL). Struktur ZIP ini sengaja dibuat **langsung di root project**: folder `app/` dan file `package.json` berada sejajar. Karena itu, ketika diunggah ke GitHub, unggah **isi ZIP**, bukan folder pembungkusnya.
 
+## Pembaruan ARABEEZA V15
+
+- Navigasi desktop dipindahkan ke sidebar kiri yang tetap terlihat, dengan menu Beranda, Materi, Capaian, Latihan, Dialog & Audio, Toko Hadiah, dan Profil. Navigasi mobile tetap responsif.
+- Dashboard desktop memakai tiga area: sidebar kiri, jalur belajar tujuh tahap di tengah, serta sapaan siswa dan statistik belajar di kanan. Animasi utama dibatasi pada level.
+- Katalog Materi menampilkan Bab 1 sampai Bab 4. Bab 1 At-Ta‘āruf tetap menjadi satu-satunya bab aktif; Bab 2 Al-Usrah, Bab 3 Al-Madrasah, dan Bab 4 Afrād al-Bayt dapat dibuka sebagai halaman placeholder bertuliskan “Materi belum dimasukkan”.
+- Banner belajar disederhanakan menjadi BAB 1, At-Ta‘āruf, dan terjemahannya tanpa kalimat instruksi yang berulang.
+- Ikon streak, berlian, nyawa, XP, dan bintang menggunakan ilustrasi SVG bergradasi agar lebih konsisten di layar ponsel dan laptop.
+- Ikon kucing pada bagian Capaian menggunakan maskot Arabeeza yang sama, bukan emoji kucing terpisah.
+- Audio dialog menormalkan akhiran nama Faris, Nadia, dan Hana agar tidak dibaca dengan akhiran i‘rab ketika nama dipanggil. Teks Arab yang terlihat di materi tidak diubah.
+- Area tabel kata tanya dan dhamir memiliki scroll horizontal sendiri. Gerakan pada tabel, tombol, dan tautan tidak lagi diperlakukan sebagai gesture pindah slide.
+- Area sentuh tombol utama diperbesar untuk penggunaan HP, termasuk tombol audio, navigasi slide, pilihan jawaban, menu mobile, dan kontrol aksesibilitas.
+- Tidak ada migration database baru pada V15. Migration 009 tetap diperlukan jika database belum menerapkan penyimpanan bintang terbaik.
+
 ## Pembaruan ARABEEZA V14
 
 - Identitas utama menggunakan tema maroon, deep maroon, blush, cream, dan champagne gold. Indikator jawaban benar tetap hijau dan jawaban salah tetap merah.
@@ -27,7 +40,7 @@ Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan
 - Avatar mendapat opsi karakter laki-laki/perempuan, model rambut, kerudung, dan ekspresi wajah.
 - Capaian At-Ta‘āruf dilengkapi tujuh target pembelajaran sesuai dokumen revisi.
 
-**Bank soal:** Materi 1 memiliki 105 butir unik (7 tahap × 15 soal) berdasarkan Bab 1 At-Ta'aruf. Setiap tahap mencampurkan pilihan ganda, menjodohkan arti Arab–Indonesia, menyusun keping kata, listening, speaking-repeat, dan kosakata bergambar. Tingkat kesulitan bergerak dari salam/perkenalan dasar menuju dhamir, kata tanya, kosakata, dialog, dan pemahaman bacaan. Materi 2–5 merupakan bagian/topik di dalam cakupan Materi 1 sesuai LKS yang dilampirkan, bukan empat bab terpisah di database.
+**Bank soal:** Materi 1 memiliki 105 butir unik (7 tahap × 15 soal) berdasarkan Bab 1 At-Ta'aruf. Setiap tahap mencampurkan pilihan ganda, menjodohkan arti Arab–Indonesia, menyusun keping kata, listening, speaking-repeat, dan kosakata bergambar. Tingkat kesulitan bergerak dari salam/perkenalan dasar menuju dhamir, kata tanya, kosakata, dialog, dan pemahaman bacaan. Konten database dan bank soal pada paket ini tetap berfokus pada Bab 1. Kartu Bab 2–4 di katalog merupakan placeholder antarmuka berdasarkan tema yang telah muncul pada rancangan ARABEEZA; kontennya belum disediakan.
 
 ## Aksesibilitas dan pembelajaran inklusif (V11)
 

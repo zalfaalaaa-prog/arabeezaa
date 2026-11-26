@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { buyHearts, buyHeartsWithXp, loseHeart, saveQuizResult } from "@/app/actions";
 import { normalizeArabic } from "@/lib/utils";
+import { normalizeDialogueNamesForSpeech } from "@/lib/dialogue-speech";
 import type { Question } from "@/lib/types";
 import CatMascot from "@/components/CatMascot";
 
@@ -289,7 +290,7 @@ export default function PracticeClient({
       if (speechTokenRef.current !== token) return;
       if (lineIndex >= turns.length) { setIsSpeaking(false); return; }
       const line = turns[lineIndex];
-      const utterance = new SpeechSynthesisUtterance(line.text);
+      const utterance = new SpeechSynthesisUtterance(normalizeDialogueNamesForSpeech(line.text));
       const voice = dialogueVoices.length > 1 ? dialogueVoices[lineIndex % 2] : dialogueVoices[0];
       utterance.lang = voice?.lang || "ar-SA";
       if (voice) utterance.voice = voice;
@@ -712,7 +713,7 @@ export default function PracticeClient({
               <div className={`dialogue-chat-row ${lineIndex % 2 === 0 ? "is-left" : "is-right"}`} key={`${line.speaker}-${lineIndex}`}>
                 <span className={`dialogue-chat-avatar ${lineIndex % 2 === 0 ? "avatar-mint" : "avatar-peach"}`} aria-hidden="true">{line.speaker.trim().slice(0, 1)}</span>
                 <div className="dialogue-chat-bubble">
-                  <div className="dialogue-chat-meta"><span>{line.speaker}</span><button type="button" className="dialogue-audio-button" onClick={() => isSpeaking ? stopSpeech() : speakText(line.text, "ar-SA")} aria-label={`Dengarkan dialog ${line.speaker}`}>{isSpeaking ? <VolumeX size={15}/> : <Volume2 size={15}/>}</button></div>
+                  <div className="dialogue-chat-meta"><span>{line.speaker}</span><button type="button" className="dialogue-audio-button" onClick={() => isSpeaking ? stopSpeech() : speakText(normalizeDialogueNamesForSpeech(line.text), "ar-SA")} aria-label={`Dengarkan dialog ${line.speaker}`}>{isSpeaking ? <VolumeX size={15}/> : <Volume2 size={15}/>}</button></div>
                   <p lang="ar" dir="rtl" className="arabic dialogue-chat-arabic">{line.text}</p>
                 </div>
               </div>
