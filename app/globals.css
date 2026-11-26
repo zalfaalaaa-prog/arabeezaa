@@ -2010,3 +2010,144 @@ html[data-a11y-motion="reduced"] .level-step,
 html[data-a11y-motion="reduced"] .level-node.is-current,
 html[data-a11y-motion="reduced"] .app-brand .cat-mascot-svg,
 html[data-a11y-motion="reduced"] .dashboard-welcome-cat { animation: none !important; }
+
+/* ARABEEZA V16 — sidebar desktop terkunci di kiri; hanya area konten yang bergulir. */
+@media (min-width: 960px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .app-shell-root {
+    display: block;
+    min-height: 100vh;
+    height: 100vh;
+    overflow: visible;
+  }
+
+  .desktop-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 45;
+    width: 244px;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .app-content-area {
+    width: auto;
+    min-width: 0;
+    height: 100vh;
+    min-height: 100vh;
+    margin-left: 244px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .sidebar-bottom-area {
+    display: grid;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .sidebar-bottom-note {
+    margin-top: 0;
+  }
+
+  .sidebar-logout-form {
+    width: 100%;
+    margin: 0;
+  }
+
+  .sidebar-logout-button {
+    display: flex;
+    width: 100%;
+    min-height: 50px;
+    align-items: center;
+    gap: 13px;
+    border: 1px solid #ead2d9;
+    border-radius: 15px;
+    background: #fff8f8;
+    padding: 10px 13px;
+    color: #762b40;
+    font-size: 13px;
+    font-weight: 900;
+    text-align: left;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+    touch-action: manipulation;
+  }
+
+  .sidebar-logout-button:hover {
+    border-color: #d9b5bf;
+    background: #f8edf0;
+  }
+
+  .sidebar-logout-button:active {
+    transform: scale(.985);
+  }
+
+  .profile-signout-form {
+    display: none;
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1199px) {
+  .desktop-sidebar {
+    width: 218px;
+  }
+
+  .app-content-area {
+    margin-left: 218px;
+  }
+}
+
+/* Navigasi utama hanya berisi menu inti; aktivitas tetap berada di halaman Materi. */
+@media (max-width: 959px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .app-shell-root {
+    display: flex;
+    height: auto;
+    min-height: 100svh;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .app-content-area {
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+    margin-left: 0;
+    overflow: visible;
+  }
+
+  .mobile-nav {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .mobile-nav.has-teacher-link {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .sidebar-bottom-area {
+    display: none;
+  }
+
+  .profile-signout-form {
+    display: block;
+  }
+}

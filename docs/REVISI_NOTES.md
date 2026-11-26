@@ -204,3 +204,13 @@ Untuk project Supabase yang sudah menjalankan migration 001–005 dan seed, jala
 - Memperbesar target sentuh kontrol utama menjadi sekitar 48px atau lebih, termasuk tombol audio per baris, tombol dialog, tombol navigasi slide, pilihan jawaban, dan navigasi mobile. Tombol aksesibilitas dipindah agar tidak menutupi kontrol bagian bawah pada HP.
 - Tidak menambah atau mengubah skema database. Migration 009 tetap perlu dijalankan satu kali jika belum diterapkan pada proyek Supabase.
 - Build Next.js produksi belum dapat diverifikasi di lingkungan penyusunan ZIP karena instalasi dependency tidak selesai. Jalankan `npm install` lalu `npm run build` sebelum deployment produksi.
+
+
+## V16 — Navigasi sidebar tetap, menu diringkas, ikon berlian konsisten
+
+- Sidebar desktop dipasang tetap di sisi kiri layar; area konten utama memiliki scroll vertikal sendiri.
+- Menu Latihan dan Dialog & Audio dihapus dari daftar navigasi utama. Aktivitas latihan, dialog, dan audio tetap tersedia di dalam halaman Materi/Bab.
+- Menu Keluar ditambahkan pada bagian paling bawah sidebar desktop melalui server action `signOut`. Pada layar mobile, tombol keluar tetap tersedia di halaman Profil karena sidebar desktop disembunyikan.
+- Menu Materi tetap aktif sebagai penanda navigasi ketika siswa membuka halaman latihan dari jalur belajar.
+- Ikon berlian di Beranda, Toko Hadiah, Profil, dan indikator latihan menggunakan komponen `GamificationIcon` yang sama agar bentuknya konsisten.
+- Navigasi mobile menyesuaikan jumlah menu yang tersisa secara otomatis.

@@ -1,32 +1,32 @@
 import Link from "next/link";
 import {
   BookOpen, Home, ShoppingBag, UserRound,
-  GraduationCap, Dumbbell, MessageCircle
+  GraduationCap, LogOut
 } from "lucide-react";
 import CatMascot from "@/components/CatMascot";
 import DailyHeartSync from "@/components/DailyHeartSync";
 import GamificationIcon from "@/components/GamificationIcon";
+import { signOut } from "@/app/actions";
 
 const links = [
   { href: "/dashboard", label: "Beranda", shortLabel: "Beranda", icon: Home, key: "/dashboard" },
   { href: "/lessons", label: "Materi", shortLabel: "Materi", icon: BookOpen, key: "/lessons" },
   { href: "/outcomes", label: "Capaian", shortLabel: "Capaian", icon: GraduationCap, key: "/outcomes" },
-  { href: "/practice/at-taaruf?mode=mixed&level=1", label: "Latihan", shortLabel: "Latihan", icon: Dumbbell, key: "/practice" },
-  { href: "/lessons/at-taaruf#dialog", label: "Dialog & Audio", shortLabel: "Dialog", icon: MessageCircle, key: "/dialog" },
   { href: "/shop", label: "Toko hadiah", shortLabel: "Toko", icon: ShoppingBag, key: "/shop" },
   { href: "/profile", label: "Profil", shortLabel: "Profil", icon: UserRound, key: "/profile" }
 ];
 
 function isLinkActive(active: string | undefined, key: string) {
   if (!active) return false;
-  if (key === "/lessons") return active === "/lessons" || active.startsWith("/lessons/");
+  if (key === "/lessons") {
+    return active === "/lessons" || active.startsWith("/lessons/") || active === "/practice";
+  }
   return active === key;
 }
 
 function NavItems({ active, role, mobile = false }: { active?: string; role: string; mobile?: boolean }) {
-  const visibleLinks = mobile ? links.filter((item) => item.key !== "/dialog") : links;
   return <>
-    {visibleLinks.map((item) => {
+    {links.map((item) => {
       const Icon = item.icon;
       const isActive = isLinkActive(active, item.key);
       return (
@@ -76,9 +76,17 @@ export default function AppShell({
         <nav className="desktop-sidebar-nav">
           <NavItems active={active} role={role} />
         </nav>
-        <div className="sidebar-bottom-note">
-          <CatMascot mood="happy" size={50} />
-          <p>Belajar sedikit demi sedikit. Kamu pasti bisa!</p>
+        <div className="sidebar-bottom-area">
+          <div className="sidebar-bottom-note">
+            <CatMascot mood="happy" size={46} />
+            <p>Belajar sedikit demi sedikit. Kamu pasti bisa!</p>
+          </div>
+          <form action={signOut} className="sidebar-logout-form">
+            <button type="submit" className="sidebar-logout-button">
+              <LogOut size={20} strokeWidth={2.2} aria-hidden="true" />
+              <span>Keluar</span>
+            </button>
+          </form>
         </div>
       </aside>
 
@@ -95,7 +103,7 @@ export default function AppShell({
               {stats?.hearts !== undefined && <span className="stat-pill header-stat-pill" aria-label={`${stats.hearts} nyawa`}><GamificationIcon kind="heart" size={23}/><b>{stats.hearts}</b></span>}
             </div>
           </div>
-          <nav className="mobile-nav" aria-label="Navigasi utama">
+          <nav className={`mobile-nav ${role === "teacher" || role === "admin" ? "has-teacher-link" : ""}`} aria-label="Navigasi utama">
             <NavItems active={active} role={role} mobile />
           </nav>
         </header>

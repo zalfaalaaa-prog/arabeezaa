@@ -341,3 +341,10 @@ Jalankan migration `supabase/migrations/007_dialogue_xp_refill_and_indonesian_wo
 - Latihan speaking repeat tidak menampilkan teks target sebelum dijawab; siswa dapat beralih ke susun kata.
 - Skor bintang: 90-100 = 3 bintang, 75-89 = 2 bintang, di bawah 75 = 1 bintang.
 - Jalankan migration `supabase/migrations/008_v13_dialogue_assessment_and_star_rules.sql` setelah migration 001-007.
+
+
+### Pembaruan V16
+- Sidebar desktop tetap di sisi kiri saat konten halaman digulir.
+- Menu utama diringkas: Beranda, Materi, Capaian, Toko Hadiah, dan Profil. Latihan, dialog, dan audio tetap berada di dalam Materi.
+- Tombol Keluar tersedia di bagian paling bawah sidebar desktop; pada mobile tetap tersedia di Profil.
+- Ikon berlian Toko Hadiah disamakan dengan ikon berlian pada Beranda menggunakan komponen SVG ARABEEZA.

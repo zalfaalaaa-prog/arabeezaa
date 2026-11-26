@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, ArrowRight, CheckCircle2, Gem, Heart, Mic,
+  ArrowLeft, ArrowRight, CheckCircle2, Heart, Mic,
   Volume2, VolumeX, XCircle, Headphones, BookOpen,
   PencilLine, Star, MessageCircle
 } from "lucide-react";
@@ -12,6 +12,7 @@ import { normalizeArabic } from "@/lib/utils";
 import { normalizeDialogueNamesForSpeech } from "@/lib/dialogue-speech";
 import type { Question } from "@/lib/types";
 import CatMascot from "@/components/CatMascot";
+import GamificationIcon from "@/components/GamificationIcon";
 
 type Feedback = { correct: boolean; message: string; answer: string; skipped?: boolean };
 type DialogueLine = { speaker: string; text: string };
@@ -651,7 +652,7 @@ export default function PracticeClient({
         <p className="mt-1 text-xs font-semibold text-[#806f73]">Percobaan ini: {earnedStars} bintang · Pencapaian terbaik tidak akan berkurang saat kamu mengulang tahap.</p>
         <div className="my-7 grid grid-cols-3 gap-3">
           <div className="rounded-2xl bg-[#fffaf3] p-4"><div className="text-2xl font-black">{finalScore}</div><div className="text-xs font-bold text-[#718078]">Skor / 100</div></div>
-          <div className="rounded-2xl bg-[#fffaf3] p-4"><div className="flex items-center justify-center gap-1 text-2xl font-black text-sky-600"><Gem size={19} />{diamondsEarned}</div><div className="text-xs font-bold text-[#718078]">Berlian</div></div>
+          <div className="rounded-2xl bg-[#fffaf3] p-4"><div className="flex items-center justify-center gap-1 text-2xl font-black text-sky-600"><GamificationIcon kind="diamond" size={21} />{diamondsEarned}</div><div className="text-xs font-bold text-[#718078]">Berlian</div></div>
           <div className="rounded-2xl bg-[#fffaf3] p-4"><div className="text-2xl font-black text-[#bd795a]">+{xpEarned}</div><div className="text-xs font-bold text-[#718078]">XP</div></div>
         </div>
         <p className="rounded-xl bg-[#eaf2df] p-3 text-sm font-bold text-[#657449]">{saving ? "Menyimpan progres..." : savedMessage}</p>
@@ -942,7 +943,7 @@ export default function PracticeClient({
 
         {!feedback && (
           <div className="mt-6">
-            <div className="flex items-center justify-between text-xs font-bold text-[#8a9890]"><span>{selected ? "Sudah yakin? Periksa jawabanmu." : "Pilih satu jawaban terlebih dahulu."}</span><span className="flex items-center gap-1"><Gem size={14} className="text-sky-500" />{diamonds}</span></div>
+            <div className="flex items-center justify-between text-xs font-bold text-[#8a9890]"><span>{selected ? "Sudah yakin? Periksa jawabanmu." : "Pilih satu jawaban terlebih dahulu."}</span><span className="flex items-center gap-1"><GamificationIcon kind="diamond" size={17} />{diamonds}</span></div>
             <button type="button" disabled={!selected || recording || verifying || gameOver} onClick={verifyAnswer} className="btn-primary practice-check-button mt-4 w-full disabled:cursor-not-allowed disabled:opacity-40">{verifying ? "Memeriksa..." : "Periksa jawaban"}</button>
           </div>
         )}

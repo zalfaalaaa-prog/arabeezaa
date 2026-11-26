@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { Gem, Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
+import GamificationIcon from "@/components/GamificationIcon";
 import AppShell from "@/components/AppShell";
 import { buyHeartsFromShop, buyHeartsWithXpFromShop } from "@/app/actions";
 import { createClient } from "@/lib/supabase/server";
@@ -26,7 +27,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fff0f0] text-[#f06b75]"><Heart size={30} fill="currentColor"/></div>
           <h2 className="mt-4 text-xl font-black">Isi ulang 5 nyawa</h2>
           <p className="mt-2 text-sm leading-6 text-[#718078]">Gunakan berlian untuk memulihkan energi belajar hingga lima nyawa.</p>
-          <div className="my-5 flex items-center gap-2 text-lg font-black text-sky-600"><Gem size={21}/>25 berlian</div>
+          <div className="my-5 flex items-center gap-2 text-lg font-black text-sky-600"><GamificationIcon kind="diamond" size={24}/>25 berlian</div>
           <form action={buyHeartsFromShop}><button className="btn-primary w-full" type="submit" disabled={p.hearts >= 5 || p.diamonds < 25}>{p.hearts >= 5 ? "Nyawa sudah penuh" : p.diamonds < 25 ? "Berlian belum cukup" : "Tukar 25 berlian"}</button></form>
         </article>
         <article className="surface p-6">
@@ -37,9 +38,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           <form action={buyHeartsWithXpFromShop}><button className="btn-primary w-full" type="submit" disabled={p.hearts >= 5 || p.xp < 100}>{p.hearts >= 5 ? "Nyawa sudah penuh" : p.xp < 100 ? "XP belum cukup" : "Tukar 100 XP"}</button></form>
         </article>
         <article className="surface flex flex-col justify-between bg-[#fcf8f4] p-6">
-          <div><div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#b18a43]"><Gem size={28}/></div><h2 className="mt-4 text-xl font-black">Saldo hadiahmu</h2><p className="mt-2 text-sm leading-6 text-[#806f73]">Kumpulkan XP dan berlian dengan menyelesaikan latihan. Pilih hadiah sesuai saldo yang tersedia.</p></div>
+          <div><div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#b18a43]"><GamificationIcon kind="diamond" size={30}/></div><h2 className="mt-4 text-xl font-black">Saldo hadiahmu</h2><p className="mt-2 text-sm leading-6 text-[#806f73]">Kumpulkan XP dan berlian dengan menyelesaikan latihan. Pilih hadiah sesuai saldo yang tersedia.</p></div>
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-white p-4"><p className="text-xs font-bold text-[#806f73]">BERLIAN</p><p className="mt-1 flex items-center gap-2 text-2xl font-black text-sky-600"><Gem size={21}/>{p.diamonds}</p></div>
+            <div className="rounded-2xl bg-white p-4"><p className="text-xs font-bold text-[#806f73]">BERLIAN</p><p className="mt-1 flex items-center gap-2 text-2xl font-black text-sky-600"><GamificationIcon kind="diamond" size={25}/>{p.diamonds}</p></div>
             <div className="rounded-2xl bg-white p-4"><p className="text-xs font-bold text-[#806f73]">XP</p><p className="mt-1 text-2xl font-black text-[#b18a43]">✦ {p.xp}</p></div>
           </div>
         </article>

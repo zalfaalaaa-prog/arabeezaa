@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
-import { Gem, Flame, Heart, LogOut } from "lucide-react";
+import { Flame, Heart, LogOut } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import AvatarEditor from "@/components/AvatarEditor";
+import GamificationIcon from "@/components/GamificationIcon";
 import { signOut } from "@/app/actions";
 import CatAvatar, { getCatPresetFromAvatar } from "@/components/CatAvatar";
 import { createClient } from "@/lib/supabase/server";
@@ -53,7 +54,7 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
           <p className="mx-auto mt-2 max-w-[240px] text-center text-xs font-semibold leading-5 text-[#6f8177]">
             Teman kucingmu akan menemanimu di perjalanan belajar Arabeeza.
           </p>
-          <form action={signOut} className="mt-5">
+          <form action={signOut} className="profile-signout-form mt-5">
             <button type="submit" className="profile-signout-button w-full">
               <LogOut size={17} /> Keluar dari akun
             </button>
@@ -65,7 +66,7 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
               <p className="mt-1 text-xs text-[#718078]">Hari streak</p>
             </div>
             <div className="rounded-2xl bg-[#f7faf6] p-4">
-              <div className="flex items-center gap-2 text-sky-500"><Gem size={17}/><b>{p.diamonds}</b></div>
+              <div className="flex items-center gap-2 text-sky-500"><GamificationIcon kind="diamond" size={20}/><b>{p.diamonds}</b></div>
               <p className="mt-1 text-xs text-[#718078]">Total berlian</p>
             </div>
             <div className="rounded-2xl bg-[#f7faf6] p-4">
