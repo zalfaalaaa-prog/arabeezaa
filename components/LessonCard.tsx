@@ -17,7 +17,7 @@ export default function LessonCard({ lesson, completed = 0, bestScore = 0 }: { l
         <div className="mt-4 flex items-center justify-between text-xs font-bold text-[#718078]"><span>Skor terbaik</span><span>{bestScore}/100</span></div>
         <div className="progress-track mt-2" role="progressbar" aria-label={`Skor terbaik ${bestScore} dari 100`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(bestScore, 100)}><div className="progress-fill" style={{ width: `${Math.min(bestScore, 100)}%` }} /></div>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          <Link href={`/practice/${lesson.slug}?mode=mixed&level=1`} className="btn-primary"><Sparkles size={16} /> Mulai tahap 1</Link>
+          <Link href={`/practice/${lesson.slug}?mode=mixed&level=1`} className="btn-primary"><Sparkles size={16} /> Mulai level 1</Link>
           <Link href={`/lessons/${lesson.slug}`} className="btn-secondary"><BookOpen size={16} /> Pelajari Materi 1 <ArrowRight size={14} /></Link>
         </div>
       </div>

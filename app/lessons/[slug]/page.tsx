@@ -7,6 +7,7 @@ import {
 import AppShell from "@/components/AppShell";
 import CatMascot from "@/components/CatMascot";
 import DialogueChat, { type DialogueTurn } from "@/components/DialogueChat";
+import LessonSlides from "@/components/LessonSlides";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -94,8 +95,8 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
             <h1 className="mt-2 text-3xl font-black">Salam dan Perkenalan</h1>
             <p className="mt-3 text-sm leading-6 text-[#78664d]">Pelajari ungkapan salam, memperkenalkan diri, menanyakan kabar, identitas, kata tanya, kata ganti, dialog, dan penerapannya dalam kehidupan sehari-hari.</p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link href={`/practice/${slug}?mode=mixed&level=1`} className="btn-primary">Mulai tahap pertama →</Link>
-              <span className="rounded-xl bg-white/80 px-4 py-3 text-sm font-extrabold text-[#827148]">105 soal · 7 tahap</span>
+              <Link href={`/practice/${slug}?mode=mixed&level=1`} className="btn-primary">Mulai level 1 →</Link>
+              <span className="rounded-xl bg-white/80 px-4 py-3 text-sm font-extrabold text-[#827148]">105 soal · 7 level</span>
             </div>
           </div>
           <CatMascot mood="happy" size={126} className="self-center drop-shadow-sm" />
@@ -108,6 +109,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
         <div className="mt-5 rounded-2xl bg-[#f8e6dc] p-4"><p className="material-kicker">Pertanyaan pemantik</p><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-[#785a4a]"><li>Mengapa sikap sopan dan jujur penting saat memperkenalkan diri?</li><li>Bagaimana cara memperkenalkan diri dengan baik menurut ajaran Islam?</li></ul></div>
       </section>
 
+      <LessonSlides title="Materi inti">
       <section className="mt-7">
         <div className="mb-4 flex items-center gap-3"><div className="rounded-2xl bg-[#eaf2df] p-3 text-[#74834f]"><MessageCircle size={22} /></div><div><p className="material-kicker">Bagian 1</p><h2 className="text-xl font-black">Ungkapan salam dan perkenalan</h2></div></div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -147,6 +149,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
         </div>
         <article className="material-section mt-4 p-5"><div className="flex items-center gap-2"><Volume2 size={19} className="text-[#827148]" /><h3 className="font-black">Teks bacaan: Identitas diri</h3></div><p lang="ar" dir="rtl" className="arabic mt-4 text-right text-xl font-bold leading-[2.2]">اِسْمِي أَحْمَدُ. أَنَا طَالِبٌ فِي الْمَدْرَسَةِ الثَّانَوِيَّةِ. أَسْكُنُ فِي سُورَابَايَا مَعَ أُسْرَتِي. أُحِبُّ تَعَلُّمَ اللُّغَةِ الْعَرَبِيَّةِ.</p><p className="mt-3 text-sm leading-7 text-[#718078]">Nama saya Ahmad. Saya seorang siswa di sekolah menengah. Saya tinggal di Surabaya bersama keluarga saya. Saya suka belajar Bahasa Arab.</p><p className="mt-3 rounded-xl bg-[#fff0d9] p-3 text-sm text-[#78664d]">Saat membaca teks, temukan nama, status, tempat tinggal, anggota keluarga yang disebutkan, dan kegiatan yang disukai tokoh.</p></article>
       </section>
+      </LessonSlides>
 
       <section className="material-section mt-7 p-5 md:p-6">
         <div className="mb-4 flex items-center gap-3"><div className="rounded-2xl bg-[#f8e6dc] p-3 text-[#bd795a]"><Sparkles size={22} /></div><div><p className="material-kicker">Bagian 6</p><h2 className="text-xl font-black">اَلتَّطْبِيْقُ · Penerapan materi</h2></div></div>
@@ -175,7 +178,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
         <div className="grid gap-3 sm:grid-cols-2">{maharah.map((item) => { const Icon = item.icon; return <article key={item.title} className="material-section flex gap-4 p-5"><div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${item.color}`}><Icon size={22} /></div><div><h3 className="font-black">{item.title}</h3><p className="mt-1 text-sm leading-6 text-[#718078]">{item.detail}</p></div></article>; })}</div>
       </section>
 
-      <section className="mt-7 rounded-[26px] bg-[#eaf2df] p-5 md:p-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-3"><CatMascot mood="celebrate" size={68} /><div><p className="material-kicker">Siap berlatih?</p><h2 className="text-xl font-black">Uji pemahamanmu di 7 tahap</h2><p className="mt-1 text-sm text-[#5f694b]">Setiap tahap berisi 15 soal dengan tingkat tantangan bertahap.</p></div></div><Link href={`/practice/${slug}?mode=mixed&level=1`} className="btn-primary shrink-0">Mulai belajar →</Link></div></section>
+      <section className="mt-7 rounded-[26px] bg-[#eaf2df] p-5 md:p-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-3"><CatMascot mood="celebrate" size={68} /><div><p className="material-kicker">Siap berlatih?</p><h2 className="text-xl font-black">Uji pemahamanmu di 7 level</h2><p className="mt-1 text-sm text-[#5f694b]">Setiap level berisi 15 soal dengan tingkat tantangan bertahap.</p></div></div><Link href={`/practice/${slug}?mode=mixed&level=1`} className="btn-primary shrink-0">Mulai belajar →</Link></div></section>
     </AppShell>
   );
 }

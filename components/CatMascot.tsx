@@ -1,15 +1,29 @@
 export default function CatMascot({ mood = "happy", size = 76, className = "" }: { mood?: "happy" | "thinking" | "celebrate" | "sad"; size?: number; className?: string }) {
-  const mouth = mood === "sad" ? "M43 61 Q50 54 57 61" : mood === "thinking" ? "M44 60 Q50 56 56 60" : "M42 57 Q50 68 58 57";
-  return <svg className={className} width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Maskot kucing Arabeeza" focusable="false">
-    <ellipse cx="50" cy="88" rx="29" ry="6" fill="#263b35" opacity=".12"/>
-    <path d="M19 38 23 10 43 26 Q51 23 59 26 L78 10 81 42 Q88 53 83 70 Q75 91 50 91 Q25 91 17 70 Q12 52 19 38Z" fill="#fff" stroke="#34423d" strokeWidth="3" strokeLinejoin="round"/>
-    <path d="M25 31 27 17 39 29Z M64 29 76 17 77 33Z" fill="#f3a4b3"/>
-    <path d="M21 43 Q31 28 44 30 Q37 43 22 52Z" fill="#39413f"/><path d="M57 30 Q72 27 79 42 L78 53 Q64 44 57 30Z" fill="#39413f"/>
-    <ellipse cx="37" cy="51" rx="4" ry="6" fill="#263b35"/><ellipse cx="63" cy="51" rx="4" ry="6" fill="#263b35"/>
-    <circle cx="38" cy="49" r="1.5" fill="white"/><circle cx="64" cy="49" r="1.5" fill="white"/>
-    <path d="M47 59 Q50 55 53 59 Q50 64 47 59Z" fill="#ef8e9e"/><path d={mouth} fill="none" stroke="#34423d" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M17 58 5 55 M18 64 5 66 M82 58 95 55 M82 65 95 67" stroke="#68756f" strokeWidth="1.5" strokeLinecap="round"/>
-    <path d="M75 78 Q97 69 91 55 Q88 48 82 54" fill="none" stroke="#39413f" strokeWidth="8" strokeLinecap="round"/>
-    {mood === "celebrate" && <path d="m13 17 3-7 3 7 7 3-7 3-3 7-3-7-7-3Z M82 15l2-5 2 5 5 2-5 2-2 5-2-5-5-2Z" fill="#f4b544"/>}
-  </svg>;
+  const mouth = mood === "sad" ? "M43 64 Q50 57 57 64" : mood === "thinking" ? "M44 62 Q50 59 56 62" : "M42 60 Q50 70 58 60";
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Maskot kucing Arabeeza yang ramah" focusable="false">
+      <ellipse cx="50" cy="89" rx="29" ry="6" fill="#354d43" opacity=".10" />
+      <path d="M18 39 L22 12 Q23 7 28 11 L43 27 Q50 24 57 27 L72 11 Q77 7 78 13 L82 40 Q89 51 84 69 Q77 89 50 91 Q23 89 16 69 Q11 52 18 39Z" fill="#fffdf8" stroke="#42594e" strokeWidth="3" strokeLinejoin="round" />
+      <path d="M25 32 L27 18 L39 30Z M61 30 L74 18 L76 33Z" fill="#f4b9c5" />
+      <path d="M25 38 Q33 30 42 33 Q38 43 27 48Z" fill="#f8e8e7" />
+      <ellipse cx="36" cy="51" rx="5.2" ry="6.8" fill="#263b35" />
+      <ellipse cx="64" cy="51" rx="5.2" ry="6.8" fill="#263b35" />
+      <circle cx="38" cy="48.5" r="2" fill="#fff" />
+      <circle cx="66" cy="48.5" r="2" fill="#fff" />
+      <ellipse cx="27" cy="62" rx="6" ry="3.2" fill="#f4a8b4" opacity=".62" />
+      <ellipse cx="73" cy="62" rx="6" ry="3.2" fill="#f4a8b4" opacity=".62" />
+      <path d="M46 59 Q50 55 54 59 Q50 64 46 59Z" fill="#ed91a3" />
+      <path d={mouth} fill="none" stroke="#42594e" strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M17 58 L7 55 M17 65 L6 67 M83 58 L93 55 M83 65 L94 67" stroke="#8a9a90" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M75 80 Q94 72 90 59 Q88 52 82 56" fill="none" stroke="#42594e" strokeWidth="7" strokeLinecap="round" />
+      <g transform="translate(50 24)">
+        <path d="M0 4 C-12 -7 -22 -3 -18 6 C-14 14 -5 11 0 7Z" fill="#ef9fba" stroke="#42594e" strokeWidth="1.7" />
+        <path d="M0 4 C12 -7 22 -3 18 6 C14 14 5 11 0 7Z" fill="#ef9fba" stroke="#42594e" strokeWidth="1.7" />
+        <circle cx="0" cy="6" r="4" fill="#f6ce75" stroke="#42594e" strokeWidth="1.5" />
+      </g>
+      {mood === "celebrate" && <g fill="#f3c96e"><path d="m9 19 3-7 3 7 7 3-7 3-3 7-3-7-7-3Z"/><path d="m84 15 2-5 2 5 5 2-5 2-2 5-2-5-5-2Z"/></g>}
+      {mood === "thinking" && <circle cx="82" cy="25" r="5" fill="#c7ddf6" stroke="#42594e" strokeWidth="1.5"/>}
+      {mood === "sad" && <path d="M78 38 Q86 48 79 55" fill="none" stroke="#8ec5df" strokeWidth="3" strokeLinecap="round"/>}
+    </svg>
+  );
 }

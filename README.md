@@ -130,7 +130,7 @@ Buka `http://localhost:3000`.
 8. Jalankan migration `006_interactive_question_types.sql` untuk bank soal terbaru dengan tipe interaktif.
 9. Jalankan migration `007_dialogue_xp_refill_and_indonesian_word_order.sql` untuk dialog Faris–Zaid, soal susun kata berbasis arti Indonesia, dan isi ulang nyawa dengan 100 XP.
 
-Urutan instalasi untuk database baru: migration 001–002, seed.sql untuk membuat materi/bab, lalu migration 003–007. Pada database yang sudah berisi materi dan menjalankan migration 001–006, cukup jalankan migration 007. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
+Urutan instalasi untuk database baru: migration 001–002, seed.sql untuk membuat materi/bab, lalu migration 003–008. Pada database yang sudah berisi materi dan menjalankan migration 001–006, jalankan migration 007 dan 008. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
 
 ## 4. Deploy ke GitHub dan Vercel
 
@@ -302,3 +302,15 @@ V12 menambahkan landing page satu layar, katalog sampul bab, tampilan percakapan
 
 ### Database
 Jalankan migration `supabase/migrations/007_dialogue_xp_refill_and_indonesian_word_order.sql` setelah migration 001–006. Fungsi `buy_hearts_with_xp()` menetapkan biaya 100 XP di sisi database dan mengisi nyawa hingga 5.
+
+
+## Revisi V13
+
+- Palet warna diperhalus menjadi pastel pink, peach, kuning, mint, biru, lavender, dan periwinkle.
+- Halaman login menggunakan layout dua kolom dengan maskot kucing yang lebih ramah.
+- Materi inti ditampilkan sebagai presentasi slide yang dapat digeser pada perangkat seluler.
+- Dialog latihan dibedakan dari dialog materi dan tersedia pemutaran berurutan dengan dua profil suara/intonasi bila didukung browser.
+- Audio listening tidak menampilkan transkrip yang membocorkan jawaban; siswa dapat memilih alternatif non-audio tanpa penalti dan tanpa pengulangan.
+- Latihan speaking repeat tidak menampilkan teks target sebelum dijawab; siswa dapat beralih ke susun kata.
+- Skor bintang: 90-100 = 3 bintang, 75-89 = 2 bintang, di bawah 75 = 1 bintang.
+- Jalankan migration `supabase/migrations/008_v13_dialogue_assessment_and_star_rules.sql` setelah migration 001-007.

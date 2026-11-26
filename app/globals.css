@@ -1271,3 +1271,188 @@ html[data-a11y-motion="reduced"] .landing-secondary,
 html[data-a11y-motion="reduced"] .chapter-cover-card,
 html[data-a11y-motion="reduced"] .chapter-cover-cat,
 html[data-a11y-motion="reduced"] .life-refill-option { transition: none !important; }
+
+/* ARABEEZA V13: palet pastel lembut, tombol responsif, dan presentasi materi. */
+:root {
+  --ink: #30483f;
+  --green: #a9cdb8;
+  --green-dark: #8fb8a4;
+  --mint: #e7f2e8;
+  --orange: #f2d69a;
+  --cream: #fffdf9;
+  --line: #e7e9e2;
+  --muted: #6e8177;
+  --rose: #e8aeb9;
+  --arabeeza-cream: #fff2cb;
+  --arabeeza-sage: #cbdcba;
+  --arabeeza-brown: #718477;
+  --arabeeza-salmon: #f2c6ba;
+  --pastel-pink: #ebc9d3;
+  --pastel-peach: #ffd2c9;
+  --pastel-yellow: #fff2cb;
+  --pastel-mint: #e4f0cd;
+  --pastel-blue: #c8def8;
+  --pastel-lavender: #d4d0f9;
+  --pastel-periwinkle: #bdc7fa;
+}
+
+html, body { background: #fffdfa; }
+button, a, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button { transition-duration: .12s; }
+.btn-primary,
+.landing-primary,
+.landing-register {
+  background: #b9d8c6 !important;
+  color: #29483c !important;
+  border: 1px solid #a8cdb7 !important;
+  box-shadow: 0 4px 0 #91b9a1, 0 10px 22px rgba(111,151,126,.12) !important;
+}
+.btn-primary:hover,
+.landing-primary:hover,
+.landing-register:hover { background: #acd0bb !important; color: #29483c !important; }
+.btn-secondary { background: #fff !important; border-color: #e2e8df !important; color: #365247 !important; }
+.progress-fill { background: linear-gradient(90deg, #d3e8d5, #9fc9b1) !important; }
+.choice.is-selected { border-color: #a9c8e9 !important; background: #eaf2fc !important; color: #354f70 !important; }
+.choice.correct { border-color: #a8cfb7 !important; background: #e7f2e8 !important; color: #365a48 !important; }
+.choice.wrong { border-color: #e7b2bd !important; background: #fce9ed !important; color: #8d4e5d !important; }
+
+/* Banner dan bulatan level memakai warna pastel yang berbeda-beda. */
+.unit-banner {
+  color: #344d69 !important;
+  background: var(--pastel-blue) !important;
+  border-color: #e9f1fb !important;
+  box-shadow: 0 6px 0 rgba(121,151,188,.20), 0 12px 25px rgba(121,151,188,.12) !important;
+}
+.unit-banner-kicker { color: #526d8d !important; }
+.unit-banner-icon { color: #46627f !important; background: rgba(255,255,255,.62) !important; border-color: rgba(255,255,255,.88) !important; }
+.level-node { color: #354a42 !important; border-color: #fff !important; box-shadow: 0 5px 0 rgba(73,82,74,.13), 0 9px 18px rgba(75,80,72,.09) !important; }
+.level-node-1 { background: #c8e5d3 !important; }
+.level-node-2 { background: #bfe5e0 !important; }
+.level-node-3 { background: #d4d0f9 !important; }
+.level-node-4 { background: #f8e3a8 !important; }
+.level-node-5 { background: #f2c6bd !important; }
+.level-node-6 { background: #c8def8 !important; }
+.level-node-7 { background: #bdc7fa !important; }
+.level-node.is-current { box-shadow: 0 0 0 7px rgba(190,211,231,.35), 0 5px 0 rgba(73,82,74,.13), 0 9px 18px rgba(75,80,72,.09) !important; }
+.level-node.is-locked { color: #8a938e !important; background: #edf0ed !important; }
+.level-star.earned, .finish-star.earned { color: #e5b94f !important; }
+.level-label { color: #496455 !important; }
+
+/* Kartu latihan, audio, matching, dan word bank mengikuti palet yang sama. */
+.audio-play-button { background: #c8def8 !important; color: #385574 !important; box-shadow: 0 4px 0 #a9c7e8 !important; }
+.audio-play-button:hover { box-shadow: 0 5px 0 #a9c7e8 !important; }
+.audio-card { background: #fff7e8 !important; border-color: #f1e6ce !important; }
+.practice-mic-button { background: #c8def8 !important; color: #344f70 !important; box-shadow: 0 3px 0 #a9c7e8 !important; }
+.sensory-alternative-button { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; border: 1px solid #d6e2f1; border-radius: 12px; background: #f1f6fd; padding: 9px 13px; color: #405c7b; font-size: 12px; font-weight: 800; }
+.sensory-alternative-button:hover { background: #e5effb; }
+.sensory-alternative-button:disabled { cursor: not-allowed; opacity: .55; }
+.matching-game { background: #f7f8f6 !important; border-color: #e7e9e2 !important; }
+.match-tile { background: #f0f1ef !important; border-color: #e1e5df !important; color: #45584f !important; }
+.match-tile.is-selected { background: #eaf2fc !important; border-color: #b5cbe7 !important; color: #385575 !important; }
+.match-tile.is-matched { background: #e4f0cd !important; border-color: #b9d2a0 !important; color: #456044 !important; }
+.match-tile.is-wrong { background: #fce5e9 !important; border-color: #e7aeb9 !important; color: #8e4d5b !important; }
+.word-bank { background: #f7f8fc !important; border-color: #e2e3f1 !important; }
+.word-token { background: #fff !important; border-color: #dcdff0 !important; color: #4a5570 !important; }
+.word-token-selected { background: #e9e6fb !important; border-color: #c5c0ee !important; color: #4b477d !important; }
+.image-choice-card { background: #fff !important; border-color: #e4e8e2 !important; }
+.image-choice-card.is-selected { background: #eaf2fc !important; border-color: #b5cbe7 !important; }
+.image-choice-card.correct { background: #e4f0cd !important; border-color: #b9d2a0 !important; color: #456044 !important; }
+.image-choice-card.wrong { background: #fce5e9 !important; border-color: #e7aeb9 !important; color: #8e4d5b !important; }
+.feedback-correct .feedback-dock-inner { background: #e4f0cd !important; color: #405d46 !important; }
+.feedback-try .feedback-dock-inner { background: #fff2cb !important; color: #705b3e !important; }
+.feedback-next-button { background: #b9d8c6 !important; color: #29483c !important; box-shadow: 0 4px 0 #91b9a1 !important; }
+.practice-check-button { background: #b9d8c6 !important; color: #29483c !important; box-shadow: 0 4px 0 #91b9a1 !important; }
+
+/* Tombol aksesibilitas menggunakan biru soft, bukan biru dongker. */
+.a11y-launcher { background: #c8def8 !important; color: #344f70 !important; border-color: #b7cfe9 !important; box-shadow: 0 5px 15px rgba(80,112,151,.16) !important; }
+.a11y-launcher:hover { background: #b9d4f2 !important; color: #344f70 !important; }
+.a11y-panel-icon { background: #dceafa !important; color: #3e5d7c !important; }
+.a11y-scale-button.is-active { background: #eaf2fc !important; border-color: #a9c7e8 !important; color: #344f70 !important; box-shadow: inset 0 0 0 1px #a9c7e8 !important; }
+.a11y-done-button { background: #c8def8 !important; border-color: #b7cfe9 !important; color: #344f70 !important; }
+.a11y-speech-button { background: #edf4fc !important; border-color: #d3e1f1 !important; color: #405c7b !important; }
+.a11y-live-note { background: #edf4fc !important; color: #405c7b !important; }
+
+/* Tombol dengarkan dialog dan kontrol presentasi materi. */
+.dialogue-chat-heading, .practice-dialogue-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.practice-dialogue-tools { margin-bottom: 10px; color: #61776b; font-size: 12px; font-weight: 900; }
+.dialogue-play-all { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: 7px; border: 1px solid #d8e6d8; border-radius: 999px; background: #edf5e9; padding: 8px 12px; color: #46664f; font-size: 11px; font-weight: 900; }
+.dialogue-play-all:hover { background: #e3efdc; }
+.lesson-slides-wrap { overflow: hidden; border: 1px solid #e7e9e2; border-radius: 26px; background: #fff; padding: 15px; box-shadow: 0 10px 28px rgba(48,72,63,.055); }
+.lesson-slides-heading { display: flex; align-items: center; gap: 12px; padding: 4px 3px 14px; }
+.lesson-slides-icon { display: grid; width: 44px; height: 44px; flex: 0 0 44px; place-items: center; border-radius: 15px; background: #e4f0cd; color: #526d50; }
+.lesson-slide-count { margin-left: auto; border-radius: 999px; background: #f4f5f1; padding: 7px 11px; color: #607369; font-size: 11px; font-weight: 900; }
+.lesson-slide-viewport { min-height: 240px; touch-action: pan-y; }
+.lesson-slide-content { animation: lessonSlideIn .24s ease both; }
+.lesson-slide-content > section { margin-top: 0 !important; }
+.lesson-slide-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid #edf0e9; padding-top: 14px; }
+.lesson-slide-button { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 6px; border-radius: 12px; padding: 9px 12px; font-size: 12px; font-weight: 900; }
+.lesson-slide-button.secondary { border: 1px solid #e2e8df; background: #fff; color: #53695d; }
+.lesson-slide-button.primary { border: 1px solid #a8cdb7; background: #e4f0cd; color: #405d46; }
+.lesson-slide-button:disabled { cursor: not-allowed; opacity: .38; }
+.lesson-slide-dots { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.lesson-slide-dot { width: 8px; height: 8px; border-radius: 999px; background: #e2e7df; transition: width .15s ease, background .15s ease; }
+.lesson-slide-dot.active { width: 22px; background: #a9cdb8; }
+.lesson-slide-hint { margin: 10px 0 0; color: #8a9990; font-size: 10px; text-align: center; }
+@keyframes lessonSlideIn { from { opacity: .35; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+/* Halaman login: maskot dan formulir ditata berdampingan, lalu bertumpuk di ponsel. */
+.login-page { background: #fffdfa; }
+.login-layout { max-width: 1080px; }
+.login-welcome-panel { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; }
+.login-brand { display: inline-flex; align-items: center; gap: 11px; color: #30483f; font-size: 30px; font-weight: 1000; letter-spacing: -.05em; }
+.login-brand > span:last-child > span { color: #e8b86a; }
+.login-brand-icon { display: grid; width: 54px; height: 54px; place-items: center; border-radius: 18px; background: #e4f0e5; }
+.login-welcome-copy { margin-top: 36px; max-width: 540px; }
+.login-welcome-kicker { display: inline-flex; border-radius: 999px; background: #f7edcf; padding: 8px 13px; color: #806a3d; font-size: 10px; font-weight: 1000; letter-spacing: .12em; }
+.login-welcome-copy h1 { margin-top: 18px; color: #30483f; font-size: clamp(32px, 4vw, 50px); font-weight: 1000; letter-spacing: -.045em; line-height: 1.08; }
+.login-welcome-copy h1 span { color: #6e9c87; }
+.login-welcome-copy p { margin-top: 15px; max-width: 440px; color: #718078; font-size: 16px; line-height: 1.75; }
+.login-cat-scene { position: relative; display: flex; width: min(100%, 440px); min-height: 260px; align-items: flex-end; justify-content: center; align-self: center; margin-top: 12px; border-radius: 36px; background: linear-gradient(145deg, #e4f0e5, #eaf2fc 70%, #fff2df); }
+.login-cat-mascot { position: relative; z-index: 1; margin-bottom: 22px; filter: drop-shadow(0 9px 9px rgba(54,79,65,.12)); animation: catHello 3.2s ease-in-out infinite; }
+.login-cat-bubble { position: absolute; z-index: 2; top: 18px; right: 18px; display: grid; gap: 3px; border: 1px solid #eee6d8; border-radius: 18px 18px 5px 18px; background: #fff; padding: 10px 13px; color: #476657; box-shadow: 0 7px 18px rgba(60,70,50,.08); }
+.login-cat-bubble span { font-family: Georgia, serif; font-size: 20px; font-weight: 900; text-align: right; }
+.login-cat-bubble small { font-size: 10px; font-weight: 800; }
+.login-cat-star { position: absolute; color: #e4b75d; font-size: 32px; }
+.login-cat-star.star-one { top: 44px; left: 28px; }
+.login-cat-star.star-two { right: 30px; bottom: 55px; color: #d79bb0; }
+.login-cat-caption { position: absolute; bottom: 15px; left: 50%; z-index: 2; transform: translateX(-50%); white-space: nowrap; border-radius: 999px; background: #fff; padding: 7px 12px; color: #668071; font-size: 10px; font-weight: 900; }
+.login-form-column { display: flex; min-width: 0; justify-content: center; }
+.login-card { max-width: 480px; border-color: #e7e9e2 !important; background: #fff !important; box-shadow: 0 18px 50px rgba(48,72,63,.08) !important; }
+.login-back-home { display: block; margin-top: 18px; color: #718078; font-size: 12px; font-weight: 800; text-align: center; text-decoration: underline; text-underline-offset: 3px; }
+@keyframes catHello { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-6px) rotate(1deg); } }
+
+@media (max-width: 1023px) {
+  .login-layout { min-height: auto; max-width: 600px; }
+  .login-welcome-panel { align-items: center; text-align: center; }
+  .login-welcome-copy { margin-top: 22px; }
+  .login-welcome-copy p { margin-inline: auto; }
+  .login-cat-scene { min-height: 190px; max-width: 340px; margin-top: 20px; }
+  .login-cat-mascot { width: 170px; height: 170px; }
+  .login-form-column { width: 100%; }
+  .login-card { max-width: 560px; }
+}
+@media (max-width: 520px) {
+  .lesson-slides-wrap { padding: 11px; border-radius: 20px; }
+  .lesson-slide-button { padding-inline: 9px; font-size: 11px; }
+  .lesson-slide-dots { gap: 4px; }
+  .lesson-slide-dot { width: 6px; height: 6px; }
+  .lesson-slide-dot.active { width: 15px; }
+  .login-page { padding-top: 18px; padding-bottom: 24px; }
+  .login-layout { gap: 18px; }
+  .login-brand { font-size: 24px; }
+  .login-brand-icon { width: 46px; height: 46px; }
+  .login-welcome-copy h1 { font-size: 32px; }
+  .login-welcome-copy p { font-size: 14px; }
+  .login-cat-scene { min-height: 160px; }
+  .login-cat-mascot { width: 145px; height: 145px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+html[data-a11y-motion="reduced"] *,
+html[data-a11y-motion="reduced"] *::before,
+html[data-a11y-motion="reduced"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+.unit-banner [class*="text-white"] { color: #526d8d !important; }
+.a11y-fieldset legend { color: #4e6a89 !important; }
+.a11y-option-row input, .a11y-fieldset input { accent-color: #9ebcda !important; }

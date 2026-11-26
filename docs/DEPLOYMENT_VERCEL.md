@@ -26,6 +26,7 @@
 - [ ] Migration `supabase/migrations/004_daily_hearts_reset.sql` telah dijalankan.
 - [ ] Migration `supabase/migrations/005_stage_progress.sql` telah dijalankan.
 - [ ] Migration `supabase/migrations/006_interactive_question_types.sql` telah dijalankan.
+- [ ] Migration `supabase/migrations/008_v13_dialogue_assessment_and_star_rules.sql` telah dijalankan setelah migration 007.
 - [ ] Site URL dan Redirect URLs memuat domain Vercel.
 
 ## Setelah deploy
@@ -34,7 +35,7 @@
 - [ ] Registrasi dan login berhasil.
 - [ ] Dashboard dapat memuat profil.
 - [ ] Materi At-Ta‘āruf tampil.
-- [ ] Ketujuh tahap Materi 1 masing-masing memuat 15 soal (105 soal total).
+- [ ] Ketujuh level Materi 1 masing-masing memuat 15 soal (105 soal total).
 - [ ] Tahap 1 terbuka dan tahap 2–7 terkunci sampai tahap sebelumnya selesai.
 - [ ] Setiap tahap menampilkan tiga bintang; skor terbaik tidak turun saat siswa mengulang.
 - [ ] Audio Maryam dapat diputar dan dihentikan tanpa membuat halaman tersangkut.
@@ -75,3 +76,8 @@ Uji setelah deploy: matching Arab–Indonesia, susun kata, audio listening, spea
 ## Migration ARABEEZA V12
 
 Setelah migration 001-006 selesai dijalankan, jalankan satu kali file `supabase/migrations/007_dialogue_xp_refill_and_indonesian_word_order.sql` di Supabase SQL Editor. Migration ini menambahkan dialog Faris-Zaid, memperbarui petunjuk susun kalimat berbasis arti Bahasa Indonesia, dan membuat fungsi isi ulang nyawa dengan 100 XP. Tidak perlu mengubah Environment Variables Vercel.
+
+
+## V13 - Revisi soal dan palet pastel
+
+Untuk database yang sudah menjalankan migration 001–007, jalankan satu kali `supabase/migrations/008_v13_dialogue_assessment_and_star_rules.sql` melalui Supabase SQL Editor. Migration ini memperbarui dialog latihan, menambahkan bacaan untuk soal Abdullah dan Khalid, menyembunyikan transkrip jawaban pada latihan audio, serta menyamakan ambang bintang. Setelah itu push source code ke GitHub dan tunggu deployment Vercel selesai.

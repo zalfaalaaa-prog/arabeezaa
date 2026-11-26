@@ -54,7 +54,7 @@ export default async function DashboardPage() {
           <p className="text-xs font-black tracking-[.16em] text-[#6f8f70]">مَرْحَبًا · MARHABAN!</p>
           <h1 className="mt-2 text-3xl font-black">Halo, {profile.display_name} 👋</h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-[#5f705f]">
-            Lanjutkan perjalanan Bahasa Arabmu. Buka tahap satu per satu, kumpulkan bintang terbaik, dan ulangi tahap kapan saja untuk memperbaiki skor.
+            Lanjutkan perjalanan Bahasa Arabmu. Buka level satu per satu, kumpulkan bintang terbaik, dan ulangi level kapan saja untuk memperbaiki skor.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <span className="stat-pill"><Flame size={16} className="text-[#d88962]" /> {profile.streak_count} hari streak</span>
@@ -92,18 +92,18 @@ export default async function DashboardPage() {
               <h2 className="mt-1 text-xl font-black md:text-2xl">At-Ta‘āruf</h2>
               <p className="mt-1 text-sm font-bold text-white/95">Perkenalan · التَّعَارُفُ</p>
               <p className="mt-2 text-xs leading-5 text-white/85">
-                Ikuti jalur belajar, buka tahap baru, dan kumpulkan tiga bintang terbaik.
+                Ikuti jalur belajar, buka level baru, dan kumpulkan tiga bintang terbaik.
               </p>
             </div>
             <div className="unit-banner-icon" aria-hidden="true"><BookOpen size={31} strokeWidth={2.5} /></div>
           </div>
 
           <div className="level-path-caption">
-            <span>7 tahap · 15 soal per tahap</span>
-            <span className="level-scroll-hint">Geser halaman untuk melihat semua tahap ↓</span>
+            <span>7 level · 15 soal per level</span>
+            <span className="level-scroll-hint">Geser halaman untuk melihat semua level ↓</span>
           </div>
 
-          <nav className="learning-path" aria-label="Tujuh tahap latihan At-Ta‘āruf">
+          <nav className="learning-path" aria-label="Tujuh level latihan At-Ta‘āruf">
             {levelSteps.map((step, index) => {
               const Icon = step.icon;
               const stage = getStageProgress(step.level);
@@ -123,7 +123,7 @@ export default async function DashboardPage() {
                     <Link
                       href={target}
                       className="level-hit-area"
-                      aria-label={`${completed ? "Ulangi" : "Mulai"} tahap ${step.level}: ${step.label}`}
+                      aria-label={`${completed ? "Ulangi" : "Mulai"} level ${step.level}: ${step.label}`}
                       title={step.label}
                     >
                       <span className={`level-node level-node-${step.level} ${completed ? "has-played" : "is-current"}`}>
@@ -131,7 +131,7 @@ export default async function DashboardPage() {
                       </span>
                     </Link>
                   ) : (
-                    <div className="level-hit-area is-locked" role="group" aria-label={`Tahap ${step.level}: ${step.label}, terkunci. Selesaikan tahap sebelumnya untuk membuka.`} aria-disabled="true" title="Selesaikan tahap sebelumnya untuk membuka tahap ini">
+                    <div className="level-hit-area is-locked" role="group" aria-label={`Level ${step.level}: ${step.label}, terkunci. Selesaikan level sebelumnya untuk membuka.`} aria-disabled="true" title="Selesaikan level sebelumnya untuk membuka level ini">
                       <span className="level-node is-locked">
                         <Lock size={23} strokeWidth={2.7} aria-hidden="true" />
                       </span>
@@ -158,12 +158,12 @@ export default async function DashboardPage() {
           <div className="mt-4 rounded-2xl bg-[#f7faf6] px-4 py-3 text-center text-xs font-semibold text-[#89968f]">
             <span>105 soal · 4 maharah</span>
             <span className="mx-2 text-[#c8cec9]">•</span>
-            <span>Ulangi tahap kapan saja untuk memperbaiki bintang</span>
+            <span>Ulangi level kapan saja untuk memperbaiki bintang</span>
           </div>
 
           {stageProgressResult.error && (
             <p className="mt-4 rounded-xl bg-[#fff6df] p-3 text-xs leading-5 text-[#98702b]">
-              Fitur bintang dan pembukaan level memerlukan migration 005. Jalankan file <strong>supabase/migrations/005_stage_progress.sql</strong> di Supabase SQL Editor.
+              Fitur bintang dan pembukaan level memerlukan migration 005 dan 008. Pastikan file <strong>supabase/migrations/008_v13_dialogue_assessment_and_star_rules.sql</strong> sudah dijalankan di Supabase SQL Editor.
             </p>
           )}
         </section>

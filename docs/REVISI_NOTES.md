@@ -149,3 +149,29 @@ Untuk project Supabase yang sudah menjalankan migration 001–005 dan seed, jala
 - Petunjuk soal word-order tertentu diubah menjadi arti Bahasa Indonesia, termasuk contoh kalimat Khalid rajin di sekolah.
 - Pemilihan avatar kucing diberi animasi pop-up dan menghormati pengaturan reduce-motion.
 - Migration tambahan: `007_dialogue_xp_refill_and_indonesian_word_order.sql`.
+
+
+## V13 (26 November 2026)
+
+- Mengubah warna aplikasi ke palet pastel dan mengganti banner/navy menjadi biru soft.
+- Mengganti maskot pada halaman login dan menyusun ulang layout login.
+- Membungkus materi inti dalam navigasi slide; tujuan pembelajaran dan pertanyaan pemantik tetap di luar slide.
+- Membuat dialog latihan Nadia-Hana terpisah dari dialog materi Faris-Zaid.
+- Menambahkan audio dialog berurutan dengan pergantian suara/intonasi dan tidak membacakan nama pembicara.
+- Menghapus transkrip audio pada soal listening dan menyembunyikan teks target speaking repeat.
+- Menambahkan alternatif non-audio untuk aktivitas listening/speaking tanpa penalti skip dan tanpa re-queue.
+- Menambahkan bacaan Abdullah dan Khalid untuk mendukung soal yang sebelumnya tidak memiliki teks sumber.
+- Memperjelas perolehan bintang dengan ambang 90/75.
+- Mempercepat umpan balik jawaban dan memperbaiki area sentuh tombol.
+
+
+## V13 (26 November 2026)
+
+- Palet aplikasi diubah menjadi pastel: pink, peach, kuning, mint, biru soft, lavender, dan periwinkle.
+- Halaman login ditata ulang dengan maskot kucing Arabeeza yang lebih ramah.
+- Materi inti dibungkus menjadi presentasi slide yang dapat digeser; tujuan pembelajaran dan pertanyaan pemantik tetap di luar presentasi.
+- Dialog latihan Nadia-Hana dibedakan dari dialog materi Faris-Zaid. Audio dialog diputar berurutan dengan pergantian suara/intonasi bila browser mendukung dan tidak membacakan nama pembicara.
+- Transkrip jawaban dihilangkan dari soal listening dan teks target disembunyikan pada speaking repeat. Siswa dapat memilih mode alternatif non-audio tanpa penalti skip dan tanpa pengulangan.
+- Bacaan Abdullah dan Khalid ditambahkan sebagai konteks soal yang sebelumnya belum memiliki teks sumber.
+- Ambang bintang diperjelas: skor 90–100 = 3 bintang, 75–89 = 2 bintang, dan di bawah 75 = 1 bintang.
+- Jalankan migration `008_v13_dialogue_assessment_and_star_rules.sql` setelah migration 001–007.
