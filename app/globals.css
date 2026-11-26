@@ -1456,3 +1456,212 @@ html[data-a11y-motion="reduced"] *::after { animation: none !important; transiti
 .unit-banner [class*="text-white"] { color: #526d8d !important; }
 .a11y-fieldset legend { color: #4e6a89 !important; }
 .a11y-option-row input, .a11y-fieldset input { accent-color: #9ebcda !important; }
+
+/* ARABEEZA V14 — identitas visual maroon, status jawaban tetap hijau/merah. */
+:root {
+  --ink: #35232b;
+  --green: #762b40;
+  --green-dark: #4d1c2b;
+  --mint: #f1e1e4;
+  --orange: #d7b66f;
+  --cream: #fcf8f4;
+  --line: #eadde0;
+  --muted: #806f73;
+  --rose: #b77c8c;
+  --arabeeza-cream: #fcf8f4;
+  --arabeeza-sage: #f1e1e4;
+  --arabeeza-brown: #762b40;
+  --arabeeza-salmon: #e9c6cf;
+  --brand-maroon: #762b40;
+  --brand-deep: #4d1c2b;
+  --brand-rose: #b77c8c;
+  --brand-blush: #f1e1e4;
+  --brand-cream: #fcf8f4;
+  --brand-gold: #d7b66f;
+}
+
+html, body, .app-shell-root, .arabeeza-landing, .login-page {
+  background: var(--brand-cream) !important;
+  color: var(--ink);
+}
+body { color: var(--ink) !important; }
+.surface, .material-section, .lesson-slides-wrap, .chapter-cover-card, .login-card {
+  border-color: var(--line) !important;
+  box-shadow: 0 10px 28px rgba(77, 28, 43, .055) !important;
+}
+.app-header, .mobile-nav { border-color: var(--line) !important; }
+.app-brand-name, .landing-brand, .login-brand { color: var(--brand-deep) !important; }
+.app-brand-dot, .landing-brand-dot, .login-brand > span:last-child > span { color: var(--brand-gold) !important; }
+.app-brand .cat-mascot-svg { animation: arabeezaLogoBob 3.4s ease-in-out infinite; }
+.nav-link:hover, .nav-link.active, .mobile-nav-link.active { color: var(--brand-maroon) !important; }
+.nav-link.active, .mobile-nav-link.active { background: var(--brand-blush); border-radius: 12px; }
+.app-footer { border-color: var(--line) !important; color: #8c7c80 !important; }
+
+.btn-primary, .landing-primary, .landing-register, .practice-check-button,
+.feedback-next-button, .lesson-slide-button.primary, .practice-mic-button {
+  background: var(--brand-maroon) !important;
+  border-color: var(--brand-deep) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 0 var(--brand-deep), 0 9px 20px rgba(118,43,64,.13) !important;
+}
+.btn-primary:hover, .landing-primary:hover, .landing-register:hover,
+.feedback-next-button:hover, .practice-check-button:hover {
+  background: var(--brand-deep) !important;
+  color: #fff !important;
+}
+.btn-secondary, .landing-secondary, .lesson-slide-button.secondary {
+  border-color: var(--line) !important;
+  background: #fff !important;
+  color: var(--brand-deep) !important;
+}
+.input:focus, .choice.is-selected, .match-tile.is-selected, .image-choice-card.is-selected {
+  border-color: var(--brand-rose) !important;
+  box-shadow: 0 0 0 3px rgba(183,124,140,.15) !important;
+}
+.progress-track { background: #f1e7e9 !important; }
+.progress-fill { background: linear-gradient(90deg, #b77c8c, #762b40) !important; }
+.stat-pill { border-color: var(--line) !important; background: #fff !important; }
+
+/* Banner Bab 1 dibuat sederhana tanpa ikon buku. */
+.unit-banner {
+  min-height: 126px !important;
+  justify-content: flex-start !important;
+  background: var(--brand-maroon) !important;
+  border-color: rgba(255,255,255,.32) !important;
+  color: #fff !important;
+  box-shadow: 0 7px 0 rgba(77,28,43,.22), 0 14px 26px rgba(77,28,43,.12) !important;
+}
+.unit-banner-kicker, .unit-banner [class*="text-white"] { color: rgba(255,255,255,.9) !important; }
+.unit-banner-icon { display: none !important; }
+.level-path-caption { color: #8c777d !important; }
+.learning-path::before { border-color: #e7cfd5 !important; }
+.level-node { color: #fff !important; border-color: #fffaf8 !important; box-shadow: 0 6px 0 rgba(77,28,43,.16), 0 10px 18px rgba(77,28,43,.10) !important; }
+.level-node-1 { background: #762b40 !important; }
+.level-node-2 { background: #85384e !important; }
+.level-node-3 { background: #93475d !important; }
+.level-node-4 { background: #a35c70 !important; }
+.level-node-5 { background: #b77c8c !important; }
+.level-node-6 { background: #8f465b !important; }
+.level-node-7 { background: #4d1c2b !important; }
+.level-node.is-current { box-shadow: 0 0 0 7px rgba(183,124,140,.22), 0 6px 0 rgba(77,28,43,.16), 0 10px 18px rgba(77,28,43,.10) !important; }
+.level-node.is-locked { color: #8b7d80 !important; background: #eee8e9 !important; border-color: #fff !important; filter: none !important; }
+.level-label { color: var(--brand-deep) !important; }
+.level-step.is-locked .level-label { color: #a89b9e !important; }
+.level-star.earned, .finish-star.earned { color: var(--brand-gold) !important; }
+
+/* Katalog hanya menonjolkan Bab 1 dengan sampul yang konsisten. */
+.chapter-cover-card { --chapter-color: #762b40 !important; border-color: var(--line) !important; background: #fff !important; }
+.chapter-cover-label { background: var(--brand-blush) !important; color: var(--brand-deep) !important; }
+.chapter-cover-sparkle { background: #fbf4e7 !important; color: var(--brand-gold) !important; }
+.chapter-cover-art { background: #f8edf0 !important; }
+.chapter-cover-arabic, .chapter-cover-open { color: var(--brand-maroon) !important; }
+.chapter-cover-title { color: var(--brand-deep) !important; }
+.chapter-cover-description { color: #806f73 !important; }
+
+/* Landing, login, profil, dan identitas karakter. */
+.landing-brand-icon, .login-brand-icon { background: var(--brand-blush) !important; }
+.landing-eyebrow, .login-welcome-kicker { background: var(--brand-blush) !important; color: var(--brand-maroon) !important; }
+.landing-copy h1, .login-welcome-copy h1 { color: var(--brand-deep) !important; }
+.landing-copy h1 span, .login-welcome-copy h1 span, .landing-speech-arabic { color: var(--brand-maroon) !important; }
+.landing-login, .login-back-home { color: var(--brand-maroon) !important; }
+.landing-mascot-card, .login-cat-scene { background: linear-gradient(145deg, #f8edf0, #fcf8f4 72%, #f5e8eb) !important; border-color: var(--line) !important; }
+.landing-speech-bubble, .login-cat-bubble { border-color: var(--line) !important; color: var(--brand-deep) !important; }
+.landing-mascot-caption, .login-cat-caption { color: var(--brand-maroon) !important; }
+.landing-deco-heart, .landing-deco-spark, .login-cat-star.star-two { color: var(--brand-rose) !important; }
+.landing-deco-star, .login-cat-star.star-one { color: var(--brand-gold) !important; }
+.login-card { border-color: var(--line) !important; }
+.cat-mascot-svg { transform-origin: 50% 78%; }
+.cat-avatar-profile { animation: profileCatFloat 3.6s ease-in-out infinite; transform-origin: 50% 82%; }
+.cat-avatar-preview { animation: avatarPreviewPop .48s cubic-bezier(.18,.8,.28,1.2) both, profileCatFloat 3.8s ease-in-out .5s infinite; }
+.avatar-choice-pop { animation: avatarChoicePop .42s cubic-bezier(.18,.8,.28,1.25) both; }
+
+/* Materi inti menggunakan area scroll internal seperti panel dialog. */
+.lesson-slides-wrap { border-color: var(--line) !important; background: #fff !important; }
+.lesson-slides-icon { background: var(--brand-blush) !important; color: var(--brand-maroon) !important; }
+.lesson-slide-count { background: #f8edf0 !important; color: var(--brand-deep) !important; }
+.lesson-slide-viewport {
+  min-height: 240px;
+  max-height: min(66svh, 620px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b77c8c #f8edf0;
+  padding: 2px 5px 8px 2px;
+  touch-action: pan-y;
+}
+.lesson-slide-viewport:focus-visible { outline: 2px solid var(--brand-rose); outline-offset: 3px; border-radius: 14px; }
+.lesson-slide-footer { border-color: var(--line) !important; }
+.lesson-slide-button.primary { border-color: var(--brand-deep) !important; }
+.lesson-slide-dot { background: #eadde0 !important; }
+.lesson-slide-dot.active { background: var(--brand-maroon) !important; }
+.lesson-slide-hint { color: #8c7c80 !important; }
+.material-kicker { color: var(--brand-maroon) !important; }
+
+/* Praktik dialog dan kontrol audio menggunakan aksen maroon. */
+.mascot-coach { border-color: #ead2d9 !important; background: linear-gradient(105deg, #f8edf0, #fcf8f4) !important; }
+.mascot-speech-bubble { border-color: #ead2d9 !important; }
+.audio-card { border-color: #ead2d9 !important; background: #fcf6f7 !important; }
+.audio-card-icon, .audio-play-button { background: var(--brand-maroon) !important; color: #fff !important; box-shadow: 0 4px 0 var(--brand-deep) !important; }
+.audio-play-button:hover { box-shadow: 0 5px 0 var(--brand-deep) !important; }
+.practice-mic-button { color: #fff !important; }
+.sensory-alternative-button { border-color: #e6cbd2 !important; background: #f8edf0 !important; color: var(--brand-deep) !important; }
+.sensory-alternative-button:hover { background: #f1e1e4 !important; }
+.dialogue-practice-note { display: flex; align-items: flex-start; gap: 10px; border: 1px solid #e8cbd3; border-radius: 15px; background: #f8edf0; padding: 12px 14px; color: #762b40; font-size: 12px; line-height: 1.65; }
+.dialogue-practice-note svg { flex: 0 0 auto; margin-top: 1px; }
+.practice-application-note { background: #fbf4e7; border-color: #eadbbd; color: #725a2d; }
+.practice-dialogue { border-color: #ead2d9 !important; background: #fcf8f4 !important; }
+.dialogue-chat-avatar.avatar-mint { background: var(--brand-maroon) !important; }
+.dialogue-chat-avatar.avatar-peach { background: var(--brand-rose) !important; }
+.dialogue-chat-meta, .dialogue-chat-row.is-right .dialogue-chat-meta { color: var(--brand-maroon) !important; }
+.dialogue-audio-button { border-color: #ead2d9 !important; color: var(--brand-maroon) !important; }
+.dialogue-play-all { border-color: #e6cbd2 !important; background: #f8edf0 !important; color: var(--brand-maroon) !important; }
+.dialogue-play-all:hover { background: #f1e1e4 !important; }
+.word-bank { background: #fcf8f4 !important; border-color: var(--line) !important; }
+.word-token { border-color: var(--line) !important; color: var(--brand-deep) !important; }
+.word-token-selected { background: var(--brand-blush) !important; border-color: var(--brand-rose) !important; color: var(--brand-deep) !important; }
+.matching-game { background: #fcf8f4 !important; border-color: var(--line) !important; }
+.match-tile { border-color: var(--line) !important; background: #fff !important; color: var(--brand-deep) !important; }
+.match-tile.is-selected { background: #f1e1e4 !important; border-color: var(--brand-rose) !important; color: var(--brand-deep) !important; }
+/* Status jawaban sengaja tetap hijau untuk benar dan merah untuk salah. */
+.choice.correct, .match-tile.is-matched, .image-choice-card.correct { border-color: #39a96b !important; background: #e9f9ef !important; color: #216b43 !important; }
+.choice.wrong, .match-tile.is-wrong, .image-choice-card.wrong { border-color: #ef7b83 !important; background: #fff0f0 !important; color: #a33c45 !important; }
+.choice.is-selected, .image-choice-card.is-selected { background: #f1e1e4 !important; border-color: #b77c8c !important; color: var(--brand-deep) !important; }
+.feedback-correct .feedback-dock-inner { background: #e9f9ef !important; color: #216b43 !important; }
+.feedback-try .feedback-dock-inner { background: #fff0f0 !important; color: #a33c45 !important; }
+.feedback-next-button { background: var(--brand-maroon) !important; color: #fff !important; box-shadow: 0 4px 0 var(--brand-deep) !important; }
+
+/* Toko hadiah dan aksesibilitas mengikuti warna merek. */
+.life-refill-xp { border-color: #d7b66f !important; background: #fcf8f4 !important; }
+.life-refill-xp:hover:not(:disabled) { background: #fbf4e7 !important; }
+.life-refill-diamond { border-color: #e5cbd2 !important; }
+.a11y-launcher { background: var(--brand-maroon) !important; color: #fff !important; border-color: var(--brand-deep) !important; box-shadow: 0 5px 15px rgba(77,28,43,.18) !important; }
+.a11y-launcher:hover { background: var(--brand-deep) !important; color: #fff !important; }
+.a11y-panel-icon { background: var(--brand-blush) !important; color: var(--brand-maroon) !important; }
+.a11y-scale-button.is-active, .a11y-done-button { background: var(--brand-maroon) !important; border-color: var(--brand-deep) !important; color: #fff !important; }
+.a11y-speech-button, .a11y-live-note { background: #f8edf0 !important; border-color: #ead2d9 !important; color: var(--brand-deep) !important; }
+
+/* Brand text yang masih memakai kelas warna lama dari versi sebelumnya. */
+[class*="text-[#2e8b62]"], [class*="text-[#278b65]"], [class*="text-[#278b5c]"],
+[class*="text-[#7e9d7b]"], [class*="text-[#6f8f70]"], [class*="text-[#348f68]"],
+[class*="text-[#827148]"], [class*="text-[#a76d50]"], [class*="text-[#74834f]"],
+[class*="text-[#587e6d]"], [class*="text-[#658d7b]"] { color: var(--brand-maroon) !important; }
+[class*="bg-[#eaf2df]"], [class*="bg-[#edf4e8]"], [class*="bg-[#e4f0e5]"],
+[class*="bg-[#f8e6dc]"], [class*="bg-[#fff0d9]"] { background-color: #f8edf0 !important; }
+
+@keyframes arabeezaLogoBob { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-3px) rotate(1deg); } }
+@keyframes profileCatFloat { 0%,100% { transform: translateY(0) rotate(-.5deg); } 50% { transform: translateY(-6px) rotate(.5deg); } }
+@media (max-width: 520px) { .lesson-slide-viewport { max-height: 62svh; } }
+@media (prefers-reduced-motion: reduce) {
+  .app-brand .cat-mascot-svg, .cat-avatar-profile, .cat-avatar-preview { animation: none !important; }
+}
+html[data-a11y-motion="reduced"] .app-brand .cat-mascot-svg,
+html[data-a11y-motion="reduced"] .cat-avatar-profile,
+html[data-a11y-motion="reduced"] .cat-avatar-preview { animation: none !important; }
+
+/* Pesan sukses tetap hijau sebagai warna status, bukan warna branding. */
+[class*="bg-[#eaf7ef]"][class*="text-[#2e8b62]"] { color: #216b43 !important; }
+
+/* Latar netral lama diselaraskan ke cream agar tidak menyisakan nuansa hijau. */
+[class*="bg-[#f7faf6]"], [class*="bg-[#f4faf6]"], [class*="bg-[#f4f4f1]"] { background-color: #fcf8f4 !important; }
+[class*="bg-[#edf0fa]"], [class*="bg-[#edf3fc]"], [class*="bg-[#f1eafa]"] { background-color: #f8edf0 !important; }

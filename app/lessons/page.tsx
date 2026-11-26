@@ -16,7 +16,7 @@ export default async function LessonsIndexPage() {
 
   const [{ data: profile }, { data: lessons }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
-    supabase.from("lessons").select("*").eq("is_published", true).order("sort_order")
+    supabase.from("lessons").select("*").eq("slug", "at-taaruf").eq("is_published", true).order("sort_order").limit(1)
   ]);
 
   const chapters = (lessons || []) as Lesson[];
@@ -25,10 +25,10 @@ export default async function LessonsIndexPage() {
       <section className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-black tracking-[.16em] text-[#2e8b62]">PERPUSTAKAAN ARABEEZA</p>
-          <h1 className="mt-1 text-3xl font-black">Pilih bab yang ingin dipelajari</h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-[#718078]">Setiap sampul berisi materi, percakapan, kosakata, dan latihan dalam satu bab.</p>
+          <h1 className="mt-1 text-3xl font-black">Bab yang sedang dipelajari</h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[#718078]">Saat ini kita fokus menuntaskan Bab 1: At-Ta‘āruf. Materi, dialog, kosakata, dan latihan tersedia dalam satu perjalanan belajar.</p>
         </div>
-        <div className="flex items-center gap-2 rounded-2xl bg-[#fff0d9] px-4 py-3 text-sm font-bold text-[#94662c]"><BookOpen size={18}/> {chapters.length} bab tersedia</div>
+        <div className="flex items-center gap-2 rounded-2xl bg-[#fff0d9] px-4 py-3 text-sm font-bold text-[#94662c]"><BookOpen size={18}/> {chapters.length ? "1 bab tersedia" : "0 bab tersedia"}</div>
       </section>
 
       {chapters.length === 0 ? (

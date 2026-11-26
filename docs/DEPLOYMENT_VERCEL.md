@@ -26,7 +26,9 @@
 - [ ] Migration `supabase/migrations/004_daily_hearts_reset.sql` telah dijalankan.
 - [ ] Migration `supabase/migrations/005_stage_progress.sql` telah dijalankan.
 - [ ] Migration `supabase/migrations/006_interactive_question_types.sql` telah dijalankan.
+- [ ] Migration `supabase/migrations/007_dialogue_xp_refill_and_indonesian_word_order.sql` telah dijalankan.
 - [ ] Migration `supabase/migrations/008_v13_dialogue_assessment_and_star_rules.sql` telah dijalankan setelah migration 007.
+- [ ] Migration `supabase/migrations/009_best_stars_persistence.sql` telah dijalankan setelah migration 008.
 - [ ] Site URL dan Redirect URLs memuat domain Vercel.
 
 ## Setelah deploy
@@ -37,7 +39,8 @@
 - [ ] Materi At-Ta‘āruf tampil.
 - [ ] Ketujuh level Materi 1 masing-masing memuat 15 soal (105 soal total).
 - [ ] Tahap 1 terbuka dan tahap 2–7 terkunci sampai tahap sebelumnya selesai.
-- [ ] Setiap tahap menampilkan tiga bintang; skor terbaik tidak turun saat siswa mengulang.
+- [ ] Setiap tahap menampilkan pencapaian bintang terbaik; skor/bintang terbaik tidak turun saat siswa mengulang.
+- [ ] Toko hadiah dapat mengisi lima nyawa dengan 25 berlian atau 100 XP.
 - [ ] Audio Maryam dapat diputar dan dihentikan tanpa membuat halaman tersangkut.
 - [ ] Dialog percakapan tampil per baris dengan nama pembicara.
 - [ ] Jawaban salah mengurangi nyawa dan dialog isi ulang tampil saat nyawa habis.
@@ -81,3 +84,8 @@ Setelah migration 001-006 selesai dijalankan, jalankan satu kali file `supabase/
 ## V13 - Revisi soal dan palet pastel
 
 Untuk database yang sudah menjalankan migration 001–007, jalankan satu kali `supabase/migrations/008_v13_dialogue_assessment_and_star_rules.sql` melalui Supabase SQL Editor. Migration ini memperbarui dialog latihan, menambahkan bacaan untuk soal Abdullah dan Khalid, menyembunyikan transkrip jawaban pada latihan audio, serta menyamakan ambang bintang. Setelah itu push source code ke GitHub dan tunggu deployment Vercel selesai.
+
+
+## V14 — tema maroon dan pencapaian terbaik
+
+Untuk database yang sudah menjalankan migration 001–008, jalankan satu kali `supabase/migrations/009_best_stars_persistence.sql`. Migration ini memperkuat penyimpanan bintang terbaik dengan `GREATEST`, sehingga hasil pengulangan yang lebih rendah tidak menimpa pencapaian tertinggi. Toko XP menggunakan RPC `buy_hearts_with_xp` yang sudah dibuat pada migration 007.

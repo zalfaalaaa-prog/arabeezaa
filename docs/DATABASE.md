@@ -22,5 +22,6 @@ Run migrations in order:
 7. `006_interactive_question_types.sql` (105 soal bertingkat dengan variasi matching, susun kata, listening, speaking, dan kosakata bergambar)
 8. `007_dialogue_xp_refill_and_indonesian_word_order.sql` (dialog Faris–Zaid per baris, petunjuk susun kata berbahasa Indonesia, dan isi ulang 5 nyawa dengan 100 XP)
 9. `008_v13_dialogue_assessment_and_star_rules.sql` (dialog latihan baru, bacaan Abdullah/Khalid, alternatif soal non-audio, dan aturan bintang 90/75)
+10. `009_best_stars_persistence.sql` (menyimpan nilai bintang tertinggi per tahap dan tidak menurunkannya saat siswa mengulang)
 
-For an existing project that already has migrations 001–007 and the seed, do not recreate the database. Run only migration `008_v13_dialogue_assessment_and_star_rules.sql` in Supabase SQL Editor to add the revised dialogue/reading questions, non-audio alternatives, and updated star rules.
+For an existing project that already has migrations 001–008 and the seed, do not recreate the database. Run only migration `009_best_stars_persistence.sql` in Supabase SQL Editor to make best-star persistence explicit and safe across repeated attempts. The XP refill RPC is provided by migration 007; do not rerun it if it has already been applied.

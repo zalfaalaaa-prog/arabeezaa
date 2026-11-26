@@ -15,10 +15,7 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
   if (!user) redirect("/login");
   await supabase.rpc("refresh_daily_hearts");
 
-  const [{ data: profile }, { data: teacherNotes }] = await Promise.all([
-    supabase.from("profiles").select("*").eq("id", user.id).single(),
-    supabase.from("teacher_notes").select("*, lesson:lessons(title)").eq("student_id", user.id).order("created_at", { ascending: false }).limit(10)
-  ]);
+  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
 
   const p = profile || {
     display_name: user.user_metadata?.display_name || "Teman Arabeeza",
@@ -98,21 +95,6 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
         </section>
       </div>
 
-      <section className="surface mt-6 p-5">
-        <h2 className="text-xl font-black">Catatan dari guru</h2>
-        <p className="mt-1 text-sm text-[#718078]">Umpan balik pembelajaran yang diberikan guru untuk akunmu.</p>
-        <div className="mt-4 space-y-3">
-          {(teacherNotes || []).length === 0
-            ? <p className="rounded-xl bg-[#f7faf6] p-4 text-sm text-[#718078]">Belum ada catatan dari guru.</p>
-            : (teacherNotes || []).map((note: any) => (
-              <article key={note.id} className="rounded-xl bg-[#f7faf6] p-4">
-                <p className="text-xs font-black text-[#2e8b62]">{note.lesson?.title || "Catatan pembelajaran"}</p>
-                <p className="mt-2 text-sm leading-6 text-[#50645a]">{note.note}</p>
-                <p className="mt-2 text-right text-[11px] text-[#89968f]">{new Date(note.created_at).toLocaleDateString("id-ID")}</p>
-              </article>
-            ))}
-        </div>
-      </section>
     </AppShell>
   );
 }

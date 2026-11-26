@@ -107,7 +107,7 @@ export async function saveQuizResult(input: QuizResult) {
   const { data, error } = await supabase.rpc("record_stage_quiz_result", safe);
   if (error) {
     const migrationHint = error.message.toLowerCase().includes("record_stage_quiz_result") || error.message.toLowerCase().includes("stage_progress")
-      ? " Jalankan migration 005_stage_progress.sql di Supabase terlebih dahulu."
+      ? " Pastikan migration 005_stage_progress.sql dan 009_best_stars_persistence.sql sudah dijalankan di Supabase."
       : "";
     return { ok: false, error: `${error.message}${migrationHint}` };
   }
@@ -179,6 +179,15 @@ export async function buyHeartsFromShop() {
   const { error } = await supabase.rpc("buy_hearts", { p_cost: 25 });
   if (error) redirect(`/shop?error=${encodeURIComponent(error.message)}`);
   redirect("/shop?success=1");
+}
+
+export async function buyHeartsWithXpFromShop() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+  const { error } = await supabase.rpc("buy_hearts_with_xp");
+  if (error) redirect(`/shop?error=${encodeURIComponent(error.message)}`);
+  redirect("/shop?success=xp");
 }
 
 export async function updateAvatar(formData: FormData) {

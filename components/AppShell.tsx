@@ -29,8 +29,7 @@ export default function AppShell({
         <div className="page-wrap app-header-main">
           <Link href="/dashboard" className="app-brand" aria-label="Arabeeza beranda">
             <CatMascot size={44}/>
-            <span className="app-brand-name">arabeeza<span className="text-[#45ad78]">.</span></span>
-            <span className="language-badge" aria-label="Bahasa Arab" title="Bahasa Arab">🇸🇦</span>
+            <span className="app-brand-name">arabeeza<span className="app-brand-dot">.</span></span>
           </Link>
           <nav className="desktop-nav flex items-center gap-5" aria-label="Navigasi utama">
             {links.map((item) => {

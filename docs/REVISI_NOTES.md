@@ -175,3 +175,16 @@ Untuk project Supabase yang sudah menjalankan migration 001–005 dan seed, jala
 - Bacaan Abdullah dan Khalid ditambahkan sebagai konteks soal yang sebelumnya belum memiliki teks sumber.
 - Ambang bintang diperjelas: skor 90–100 = 3 bintang, 75–89 = 2 bintang, dan di bawah 75 = 1 bintang.
 - Jalankan migration `008_v13_dialogue_assessment_and_star_rules.sql` setelah migration 001–007.
+
+## V14 — pematangan tema, Bab 1, progres bintang, dan interaksi
+- Identitas visual aplikasi disatukan ke tema maroon, deep maroon, blush, cream, dan champagne gold. Status jawaban benar tetap hijau dan jawaban salah tetap merah.
+- Dashboard menggunakan label BAB 1, tanpa ikon buku pada banner. Jalur pembelajaran tetap terdiri dari tujuh tahap.
+- Menu Materi hanya menampilkan satu sampul Bab 1 At-Ta'aruf; route materi lain belum dibuka agar cakupan belajar terfokus.
+- Materi inti memiliki area scroll vertikal di dalam panel presentasi, serupa area dialog, dan posisi scroll kembali ke atas saat slide berganti.
+- Catatan guru dihapus dari profil siswa. Fitur catatan guru tetap tersedia pada halaman guru/admin dan tabel database tidak dihapus.
+- Toko hadiah menyediakan isi ulang lima nyawa menggunakan 25 berlian atau 100 XP. Harga XP tetap ditetapkan oleh fungsi Supabase di sisi server.
+- Halaman praktik tahap 6 diberi identitas Praktik Dialog dan tahap 7 Praktik Penerapan. Dialog percakapan tetap ditampilkan sebagai gelembung percakapan pada soal yang memiliki konteks dialog; aktivitas audio tetap tidak membocorkan transkrip jawaban.
+- Tampilan hasil menonjolkan bintang terbaik yang tersimpan, sementara bintang percobaan terbaru ditampilkan sebagai informasi sekunder.
+- Ditambahkan migration `009_best_stars_persistence.sql` untuk memastikan bintang terbaik menggunakan nilai maksimum antara pencapaian lama dan hasil terbaru. Migration tidak menurunkan bintang yang sudah tersimpan.
+- Maskot utama dan avatar profil diperbarui menjadi bentuk wajah lebih bulat, dengan animasi lembut yang menghormati preferensi reduce-motion. Logo SVG menggunakan aksen maroon.
+- ZIP ini mempertahankan fitur aksesibilitas global V11. Pengaturan aksesibilitas khusus di halaman profil belum ditambahkan pada revisi ini.

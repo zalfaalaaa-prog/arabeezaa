@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, useRef, useState, type ReactNode, type TouchEvent } from "react";
+import { Children, useEffect, useRef, useState, type ReactNode, type TouchEvent } from "react";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 
 /**
@@ -12,7 +12,12 @@ export default function LessonSlides({ children, title = "Materi inti" }: { chil
   const slides = Children.toArray(children);
   const [activeIndex, setActiveIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const total = slides.length;
+
+  useEffect(() => {
+    if (viewportRef.current) viewportRef.current.scrollTop = 0;
+  }, [activeIndex]);
 
   function previous() {
     setActiveIndex((current) => Math.max(0, current - 1));
@@ -51,7 +56,7 @@ export default function LessonSlides({ children, title = "Materi inti" }: { chil
         <span className="lesson-slide-count">{activeIndex + 1} / {total}</span>
       </div>
 
-      <div className="lesson-slide-viewport" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div ref={viewportRef} className="lesson-slide-viewport" tabIndex={0} aria-label="Area materi yang dapat digulir" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className="lesson-slide-content" key={activeIndex} aria-live="polite">
           {slides[activeIndex]}
         </div>

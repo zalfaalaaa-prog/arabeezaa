@@ -334,7 +334,7 @@ export default function PracticeClient({
 
   const progress = Math.min(100, Math.round(((index + (feedback ? 1 : 0)) / Math.max(queue.length, 1)) * 100));
   const score = useMemo(() => Math.round((firstTryCorrect / Math.max(questions.length, 1)) * 100), [firstTryCorrect, questions.length]);
-  const modeLabel = mode === "listening" ? "Menyimak" : mode === "reading" ? "Membaca" : mode === "conversation" ? "Percakapan" : "Campuran 4 Maharah";
+  const modeLabel = level === 6 ? "Praktik Dialog" : level === 7 ? "Praktik Penerapan" : mode === "listening" ? "Menyimak" : mode === "reading" ? "Membaca" : mode === "conversation" ? "Percakapan" : "Campuran 4 Maharah";
   const currentSkill = question ? (skillMeta[question.skill] || skillMeta.reading) : skillMeta.reading;
   const SkillIcon = currentSkill.icon;
   const dialogueLines = question ? getDialogueLines(question) : null;
@@ -439,7 +439,6 @@ export default function PracticeClient({
     setFinished(true);
     const finalScore = Math.round((firstTryCorrect / Math.max(questions.length, 1)) * 100);
     const earnedStars = starsForScore(finalScore);
-    setBestStars(Math.max(initialBestStars, earnedStars));
     const diamondsEarned = Math.max(1, Math.round(finalScore / 10));
     const xpEarned = Math.min(1000, questions.length * 10 + Math.round(finalScore / 5));
     let result: Awaited<ReturnType<typeof saveQuizResult>>;
@@ -641,14 +640,14 @@ export default function PracticeClient({
           <span className="finish-sparkle finish-sparkle-two">✧</span>
           <CatMascot mood="celebrate" size={112} className="mascot-celebrate" />
         </div>
-        <p className="mt-2 text-xs font-black uppercase tracking-[.18em] text-[#827148]">LEVEL {level} SELESAI</p>
+        <p className="mt-2 text-xs font-black uppercase tracking-[.18em] text-[#827148]">TAHAP {level} SELESAI</p>
         <h1 className="mt-2 text-3xl font-black">Level selesai!</h1>
-        <p className="mt-2 text-sm text-[#718078]">Kamu telah menuntaskan 15 soal pada {lessonTitle}.</p>
-        <div className="finish-star-row" role="img" aria-label={`${earnedStars} dari 3 bintang untuk sesi ini`}>
-          {[1, 2, 3].map((star) => <Star key={star} size={38} className={star <= earnedStars ? "finish-star earned" : "finish-star"} fill={star <= earnedStars ? "currentColor" : "none"} aria-hidden="true" />)}
+        <p className="mt-2 text-sm text-[#718078]">Kamu telah menuntaskan 15 aktivitas pada Bab 1 · {lessonTitle}.</p>
+        <div className="finish-star-row" role="img" aria-label={`${bestStars} dari 3 bintang sebagai pencapaian terbaik`}>
+          {[1, 2, 3].map((star) => <Star key={star} size={38} className={star <= bestStars ? "finish-star earned" : "finish-star"} fill={star <= bestStars ? "currentColor" : "none"} aria-hidden="true" />)}
         </div>
-        <p className="mt-2 text-sm font-extrabold text-[#657b70]">Bintang sesi ini: {earnedStars} dari 3</p>
-        <p className="mt-1 text-xs font-semibold text-[#718078]">Rekor terbaik: {bestStars} dari 3 bintang · 90–100 = 3, 75–89 = 2, di bawah 75 = 1</p>
+        <p className="mt-2 text-sm font-extrabold text-[#762b40]">Bintang terbaikmu: {bestStars} dari 3</p>
+        <p className="mt-1 text-xs font-semibold text-[#806f73]">Percobaan ini: {earnedStars} bintang · Pencapaian terbaik tidak akan berkurang saat kamu mengulang tahap.</p>
         <div className="my-7 grid grid-cols-3 gap-3">
           <div className="rounded-2xl bg-[#fffaf3] p-4"><div className="text-2xl font-black">{finalScore}</div><div className="text-xs font-bold text-[#718078]">Skor / 100</div></div>
           <div className="rounded-2xl bg-[#fffaf3] p-4"><div className="flex items-center justify-center gap-1 text-2xl font-black text-sky-600"><Gem size={19} />{diamondsEarned}</div><div className="text-xs font-bold text-[#718078]">Berlian</div></div>
@@ -656,14 +655,14 @@ export default function PracticeClient({
         </div>
         <p className="rounded-xl bg-[#eaf2df] p-3 text-sm font-bold text-[#657449]">{saving ? "Menyimpan progres..." : savedMessage}</p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link className="btn-secondary" href={`/practice/${lessonSlug}?mode=mixed&level=${level}`}>Ulangi level</Link>
-          {level < 7 ? <Link className="btn-primary" href={`/practice/${lessonSlug}?mode=mixed&level=${level + 1}`}>Lanjut level {level + 1} <ArrowRight size={17} /></Link> : <Link className="btn-primary" href="/dashboard">Kembali ke beranda</Link>}
+          <Link className="btn-secondary" href={`/practice/${lessonSlug}?mode=mixed&level=${level}`}>Ulangi tahap</Link>
+          {level < 7 ? <Link className="btn-primary" href={`/practice/${lessonSlug}?mode=mixed&level=${level + 1}`}>Lanjut tahap {level + 1} <ArrowRight size={17} /></Link> : <Link className="btn-primary" href="/dashboard">Kembali ke beranda</Link>}
         </div>
       </div>
     );
   }
 
-  if (!question) return <div className="surface p-8 text-center">Soal atau percakapan belum tersedia. Pastikan migration 003, 006, 007, dan 008 sudah dijalankan di Supabase.</div>;
+  if (!question) return <div className="surface p-8 text-center">Soal atau percakapan belum tersedia. Pastikan migration 003, 006, 007, dan 008 sudah dijalankan di Supabase. Untuk penyimpanan bintang terbaik, jalankan juga migration 009.</div>;
 
   return (
     <div className={`practice-page mx-auto max-w-3xl ${feedback ? "has-feedback" : ""}`}>
@@ -695,6 +694,8 @@ export default function PracticeClient({
           <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-black ${currentSkill.color}`}><SkillIcon size={15} />{currentSkill.label}</span>
           <span className="text-xs font-semibold text-[#89968f]">Jawaban salah mengurangi 1 nyawa</span>
         </div>
+        {level === 6 && <div className="dialogue-practice-note mb-4"><MessageCircle size={18}/><span><strong>Praktik dialog:</strong> perhatikan percakapan, dengarkan pengucapan, lalu pilih, susun, atau ucapkan respons yang sesuai.</span></div>}
+        {level === 7 && <div className="dialogue-practice-note practice-application-note mb-4"><PencilLine size={18}/><span><strong>Praktik penerapan:</strong> gunakan kosakata dan ungkapan Bab 1 dalam situasi perkenalan sehari-hari.</span></div>}
         <h1 id="practice-question-title" aria-live="polite" aria-atomic="true" className="text-xl font-black leading-8 md:text-2xl">{promptLabel}</h1>
 
         {dialogueLines ? (

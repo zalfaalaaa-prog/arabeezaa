@@ -68,6 +68,7 @@ const maharah = [
 
 export default async function LessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (slug !== "at-taaruf") notFound();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -90,13 +91,13 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
       <section className="relative overflow-hidden rounded-[28px] bg-[#fff0d9] p-6 md:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-2xl">
-            <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#a76d50]">MATERI 1 · BAB التَّعَارُفُ</span>
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#a76d50]">BAB 1 · التَّعَارُفُ</span>
             <p lang="ar" dir="rtl" className="arabic mt-5 text-right text-4xl font-black">التَّحِيَّةُ وَالتَّعَارُفُ</p>
             <h1 className="mt-2 text-3xl font-black">Salam dan Perkenalan</h1>
             <p className="mt-3 text-sm leading-6 text-[#78664d]">Pelajari ungkapan salam, memperkenalkan diri, menanyakan kabar, identitas, kata tanya, kata ganti, dialog, dan penerapannya dalam kehidupan sehari-hari.</p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link href={`/practice/${slug}?mode=mixed&level=1`} className="btn-primary">Mulai level 1 →</Link>
-              <span className="rounded-xl bg-white/80 px-4 py-3 text-sm font-extrabold text-[#827148]">105 soal · 7 level</span>
+              <Link href={`/practice/${slug}?mode=mixed&level=1`} className="btn-primary">Mulai tahap 1 →</Link>
+              <span className="rounded-xl bg-white/80 px-4 py-3 text-sm font-extrabold text-[#827148]">105 soal · 7 tahap</span>
             </div>
           </div>
           <CatMascot mood="happy" size={126} className="self-center drop-shadow-sm" />

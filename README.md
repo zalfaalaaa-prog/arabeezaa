@@ -4,7 +4,19 @@ ARABEEZA adalah bahan ajar Bahasa Arab inklusif berbasis website untuk siswa kel
 
 Project ini menggunakan Next.js App Router, React, TypeScript, Tailwind CSS, dan Supabase (Auth + PostgreSQL). Struktur ZIP ini sengaja dibuat **langsung di root project**: folder `app/` dan file `package.json` berada sejajar. Karena itu, ketika diunggah ke GitHub, unggah **isi ZIP**, bukan folder pembungkusnya.
 
-## Pembaruan pada revisi ini
+## Pembaruan ARABEEZA V14
+
+- Identitas utama menggunakan tema maroon, deep maroon, blush, cream, dan champagne gold. Indikator jawaban benar tetap hijau dan jawaban salah tetap merah.
+- Materi aktif dibatasi pada Bab 1 At-Ta‘āruf; tujuh tahap latihan tetap tersedia di dalam Bab 1.
+- Banner dashboard menampilkan label BAB 1 tanpa ikon buku. Katalog Materi hanya menampilkan satu kartu sampul Bab 1.
+- Area materi inti dapat digulir secara vertikal di dalam panel presentasi.
+- Catatan guru tidak ditampilkan pada profil siswa; pengelolaan catatan tetap tersedia di halaman guru.
+- Toko hadiah menyediakan isi ulang lima nyawa dengan 25 berlian atau 100 XP.
+- Praktik tahap 6 diberi identitas Praktik Dialog dan tahap 7 Praktik Penerapan.
+- Hasil tahap menampilkan pencapaian bintang terbaik; pengulangan dengan skor lebih rendah tidak menurunkan bintang tersimpan.
+- Maskot dan avatar dibuat lebih bulat serta diberi animasi lembut.
+
+## Pembaruan pada revisi sebelumnya
 
 - Navigasi mobile menampilkan label Beranda, Materi, Capaian, Toko, dan Profil.
 - Maskot kucing Arabeeza tampil di beranda dan selama latihan; logo SVG juga diganti menjadi kucing.
@@ -129,8 +141,10 @@ Buka `http://localhost:3000`.
 7. Jalankan migration `003_materi1_105_questions_and_lives.sql`, `004_daily_hearts_reset.sql`, dan `005_stage_progress.sql` secara berurutan.
 8. Jalankan migration `006_interactive_question_types.sql` untuk bank soal terbaru dengan tipe interaktif.
 9. Jalankan migration `007_dialogue_xp_refill_and_indonesian_word_order.sql` untuk dialog Faris–Zaid, soal susun kata berbasis arti Indonesia, dan isi ulang nyawa dengan 100 XP.
+10. Jalankan migration `008_v13_dialogue_assessment_and_star_rules.sql` untuk dialog latihan, bacaan, alternatif aktivitas non-audio, dan ambang bintang 90/75.
+11. Jalankan migration `009_best_stars_persistence.sql` agar bintang terbaik selalu tersimpan dan tidak turun saat siswa mengulang tahap.
 
-Urutan instalasi untuk database baru: migration 001–002, seed.sql untuk membuat materi/bab, lalu migration 003–008. Pada database yang sudah berisi materi dan menjalankan migration 001–006, jalankan migration 007 dan 008. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
+Urutan instalasi untuk database baru: migration 001–002, seed.sql untuk membuat materi/bab, lalu migration 003–009 secara berurutan. Pada database yang sudah menjalankan migration 001–008, cukup jalankan migration 009. Jika migration 007 atau 008 belum dijalankan, selesaikan urutannya terlebih dahulu. File seed dapat dijalankan ulang; data inti memakai kunci unik agar tidak menggandakan baris.
 
 ## 4. Deploy ke GitHub dan Vercel
 

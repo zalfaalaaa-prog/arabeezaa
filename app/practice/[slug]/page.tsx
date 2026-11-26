@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function PracticePage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ mode?: string; level?: string }> }) {
   const { slug } = await params;
+  if (slug !== "at-taaruf") notFound();
   const query = await searchParams;
   // All seven learning stages use the integrated 4-maharah question bank.
   const mode = "mixed";
