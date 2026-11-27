@@ -2013,12 +2013,11 @@ html[data-a11y-motion="reduced"] .dashboard-welcome-cat { animation: none !impor
 
 /* ARABEEZA V16 — sidebar desktop terkunci di kiri; hanya area konten yang bergulir. */
 @media (min-width: 960px) {
-  html,
-  body {
-    height: 100%;
-    overflow: hidden;
-  }
-
+  /*
+   * Jangan kunci scroll html/body secara global.
+   * Landing page, login, dan register tetap membutuhkan document scroll.
+   * Area dashboard mengelola scroll-nya sendiri melalui .app-content-area.
+   */
   .app-shell-root {
     display: block;
     min-height: 100vh;
@@ -2151,3 +2150,57 @@ html[data-a11y-motion="reduced"] .dashboard-welcome-cat { animation: none !impor
     display: block;
   }
 }
+
+/* ARABEEZA V16.1 — perbaikan scroll halaman publik dan respons sentuhan mobile. */
+
+/* Area sentuh yang nyaman untuk perangkat touchscreen. */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Hindari efek hover yang tertinggal setelah sentuhan pada layar sentuh. */
+  button:hover,
+  a:hover,
+  [role="button"]:hover {
+    transform: none;
+  }
+
+  .landing-login,
+  .landing-register,
+  .landing-primary,
+  .landing-secondary,
+  .login-back-home {
+    min-height: 48px;
+  }
+
+  .landing-login,
+  .login-back-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+  }
+}
+
+/* Tombol utama tetap mudah disentuh pada layar kecil. */
+@media (max-width: 760px) {
+  .landing-actions > a {
+    min-height: 48px;
+  }
+
+  .login-card form button,
+  .login-card form [type="submit"] {
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+
+  .a11y-launcher {
+    min-width: 52px;
+    min-height: 52px;
+  }
+}
+
