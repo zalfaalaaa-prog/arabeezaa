@@ -45,7 +45,7 @@ export default function AccessibilityTools({ children }: { children: React.React
   const [speaking, setSpeaking] = useState(false);
   const [ready, setReady] = useState(false);
   const panelTitleRef = useRef<HTMLHeadingElement>(null);
-  const toggleRef = useRef<HTMLButtonElement>(null);
+  const menuOpenerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     let initial = DEFAULT_SETTINGS;
@@ -83,12 +83,21 @@ export default function AccessibilityTools({ children }: { children: React.React
   }, [settings, ready]);
 
   useEffect(() => {
+    const openFromMenu = () => {
+      menuOpenerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setOpen(true);
+    };
+    window.addEventListener("arabeeza:open-accessibility", openFromMenu);
+    return () => window.removeEventListener("arabeeza:open-accessibility", openFromMenu);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     panelTitleRef.current?.focus();
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
-        toggleRef.current?.focus();
+        menuOpenerRef.current?.focus();
       }
     };
     document.addEventListener("keydown", handleKeyDown);
@@ -169,7 +178,7 @@ export default function AccessibilityTools({ children }: { children: React.React
                   <p className="text-xs a11y-muted">Atur tampilan dan cara belajar.</p>
                 </div>
               </div>
-              <button type="button" className="a11y-icon-button" onClick={() => { setOpen(false); toggleRef.current?.focus(); }} aria-label="Tutup pengaturan aksesibilitas">
+              <button type="button" className="a11y-icon-button" onClick={() => { setOpen(false); menuOpenerRef.current?.focus(); }} aria-label="Tutup pengaturan aksesibilitas">
                 <X size={19} />
               </button>
             </div>
@@ -238,25 +247,13 @@ export default function AccessibilityTools({ children }: { children: React.React
               <p className="a11y-storage-note">Pilihanmu disimpan di perangkat ini dan berlaku di halaman ARABEEZA berikutnya.</p>
               <div className="a11y-panel-actions">
                 <button type="button" className="a11y-reset-button" onClick={resetSettings}><RotateCcw size={15} /> Atur ulang</button>
-                <button type="button" className="a11y-done-button" onClick={() => { setOpen(false); toggleRef.current?.focus(); }}><Check size={16} /> Selesai</button>
+                <button type="button" className="a11y-done-button" onClick={() => { setOpen(false); menuOpenerRef.current?.focus(); }}><Check size={16} /> Selesai</button>
               </div>
               {notice && <p className="a11y-live-note" role="status" aria-live="polite">{notice}</p>}
             </div>
           </section>
         )}
 
-        <button
-          ref={toggleRef}
-          type="button"
-          className="a11y-launcher"
-          aria-label={open ? "Tutup pengaturan aksesibilitas" : "Buka pengaturan aksesibilitas"}
-          aria-expanded={open}
-          aria-controls="arabeeza-accessibility-panel"
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X size={23} /> : <Accessibility size={25} />}
-          <span className="a11y-launcher-label">Aksesibilitas</span>
-        </button>
       </div>
     </>
   );

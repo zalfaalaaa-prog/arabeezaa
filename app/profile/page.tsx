@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
-import { Flame, Heart, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import AvatarEditor from "@/components/AvatarEditor";
-import GamificationIcon from "@/components/GamificationIcon";
 import { signOut } from "@/app/actions";
 import CatAvatar, { getCatPresetFromAvatar } from "@/components/CatAvatar";
 import { createClient } from "@/lib/supabase/server";
@@ -62,15 +61,15 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <div className="rounded-2xl bg-[#f7faf6] p-4">
-              <div className="flex items-center gap-2 text-[#d88962]"><Flame size={17}/><b>{p.streak_count}</b></div>
+              <div className="flex items-center gap-2 text-[#d88962]"><span role="img" aria-label="Api" className="text-lg leading-none">🔥</span><b>{p.streak_count}</b></div>
               <p className="mt-1 text-xs text-[#718078]">Hari streak</p>
             </div>
             <div className="rounded-2xl bg-[#f7faf6] p-4">
-              <div className="flex items-center gap-2 text-sky-500"><GamificationIcon kind="diamond" size={20}/><b>{p.diamonds}</b></div>
+              <div className="flex items-center gap-2 text-sky-500"><span role="img" aria-label="Berlian" className="text-lg leading-none">💎</span><b>{p.diamonds}</b></div>
               <p className="mt-1 text-xs text-[#718078]">Total berlian</p>
             </div>
             <div className="rounded-2xl bg-[#f7faf6] p-4">
-              <div className="flex items-center gap-2 text-rose-500"><Heart size={17}/><b>{p.hearts}/5</b></div>
+              <div className="flex items-center gap-2 text-rose-500"><span role="img" aria-label="Nyawa" className="text-lg leading-none">❤️</span><b>{p.hearts}/5</b></div>
               <p className="mt-1 text-xs text-[#718078]">Nyawa tersedia</p>
             </div>
             <div className="rounded-2xl bg-[#f7faf6] p-4">

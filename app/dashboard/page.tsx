@@ -71,11 +71,6 @@ export default async function DashboardPage() {
                 </div>
               </section>
 
-              <div className="level-path-caption">
-                <span>7 tahap · 15 soal per tahap</span>
-                <span className="level-scroll-hint">Geser halaman untuk melihat semua tahap ↓</span>
-              </div>
-
               <section className="surface dashboard-path-panel">
                 <nav className="learning-path" aria-label="Tujuh tahap latihan At-Ta‘āruf">
                   {levelSteps.map((step, index) => {

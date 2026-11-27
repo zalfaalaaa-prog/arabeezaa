@@ -6,6 +6,7 @@ import {
 import CatMascot from "@/components/CatMascot";
 import DailyHeartSync from "@/components/DailyHeartSync";
 import GamificationIcon from "@/components/GamificationIcon";
+import AccessibilityMenuButton from "@/components/AccessibilityMenuButton";
 import { signOut } from "@/app/actions";
 
 const links = [
@@ -49,6 +50,7 @@ function NavItems({ active, role, mobile = false }: { active?: string; role: str
         <span>{mobile ? "Guru" : "Ruang Guru"}</span>
       </Link>
     )}
+    <AccessibilityMenuButton mobile={mobile} />
   </>;
 }
 

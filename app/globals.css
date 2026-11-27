@@ -1961,7 +1961,9 @@ button:focus-visible, a:focus-visible { outline-color: var(--brand-rose); }
   .app-main.page-wrap { width: calc(100% - 28px); max-width: 1600px; padding-top: 22px; padding-bottom: 30px; }
   .app-footer.page-wrap { width: calc(100% - 28px); padding-top: 16px; padding-bottom: 18px; }
   .dashboard-layout { grid-template-columns: minmax(0,1fr); gap: 18px; }
-  .dashboard-side-column { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; }
+  /* Di HP, ringkasan belajar tampil sebelum bab dan jalur 7 tahap. Layout desktop tetap. */
+  .dashboard-side-column { order: -1; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; }
+  .dashboard-main-column { order: 0; }
   .dashboard-welcome-card { grid-column: 1 / -1; }
   .dashboard-stats-panel, .dashboard-xp-panel, .dashboard-progress-card { min-width: 0; }
   .dashboard-tip-card { margin-top: 14px; }
@@ -1992,7 +1994,6 @@ button:focus-visible, a:focus-visible { outline-color: var(--brand-rose); }
   .lesson-slide-footer { flex-wrap: wrap; }
   .lesson-slide-dots { order: 3; width: 100%; justify-content: center; }
   .lesson-slide-button { flex: 1 1 calc(50% - 5px); }
-  .a11y-launcher { right: 10px; bottom: max(84px, calc(env(safe-area-inset-bottom) + 76px)); min-height: 50px; padding-inline: 12px; }
   .feedback-dock { bottom: max(8px, env(safe-area-inset-bottom)); }
   .dialogue-chat-heading { align-items: flex-start; flex-wrap: wrap; }
   .dialogue-play-all { width: 100%; }
@@ -2135,11 +2136,11 @@ html[data-a11y-motion="reduced"] .dashboard-welcome-cat { animation: none !impor
   }
 
   .mobile-nav {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .mobile-nav.has-teacher-link {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
   }
 
   .sidebar-bottom-area {
@@ -2198,9 +2199,5 @@ html[data-a11y-motion="reduced"] .dashboard-welcome-cat { animation: none !impor
     touch-action: manipulation;
   }
 
-  .a11y-launcher {
-    min-width: 52px;
-    min-height: 52px;
-  }
 }
 
