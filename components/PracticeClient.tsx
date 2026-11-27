@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, ArrowRight, CheckCircle2, Heart, Mic,
+  ArrowLeft, ArrowRight, CheckCircle2, Mic,
   Volume2, VolumeX, XCircle, Headphones, BookOpen,
   PencilLine, Star, MessageCircle
 } from "lucide-react";
@@ -340,9 +340,14 @@ export default function PracticeClient({
   const currentSkill = question ? (skillMeta[question.skill] || skillMeta.reading) : skillMeta.reading;
   const SkillIcon = currentSkill.icon;
   const dialogueLines = question ? getDialogueLines(question) : null;
-  const promptLabel = question && dialogueLines && question.prompt.includes(":")
+  const rawPromptLabel = question && dialogueLines && question.prompt.includes(":")
     ? question.prompt.slice(0, question.prompt.indexOf(":") + 1)
-    : question?.prompt;
+    : question?.prompt || "";
+  // Hilangkan terjemahan dalam tanda kurung yang menempel pada kosakata Arab agar soal tidak membocorkan jawaban.
+  const promptLabel = rawPromptLabel.replace(
+    /([\u0600-\u06FF][\u0600-\u06FF\u064B-\u065F\u0670\s]*)\s*\(([^()]*)\)/gu,
+    "$1"
+  ).replace(/\s{2,}/g, " ").trim();
 
   async function verifyAnswer() {
     if (!question || feedback || !selected || verifying || gameOver || verifyLockRef.current) return;
@@ -656,9 +661,10 @@ export default function PracticeClient({
           <div className="rounded-2xl bg-[#fffaf3] p-4"><div className="text-2xl font-black text-[#bd795a]">+{xpEarned}</div><div className="text-xs font-bold text-[#718078]">XP</div></div>
         </div>
         <p className="rounded-xl bg-[#eaf2df] p-3 text-sm font-bold text-[#657449]">{saving ? "Menyimpan progres..." : savedMessage}</p>
-        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link className="btn-secondary" href={`/practice/${lessonSlug}?mode=mixed&level=${level}`}>Ulangi tahap</Link>
-          {level < 7 ? <Link className="btn-primary" href={`/practice/${lessonSlug}?mode=mixed&level=${level + 1}`}>Lanjut tahap {level + 1} <ArrowRight size={17} /></Link> : <Link className="btn-primary" href="/dashboard">Kembali ke beranda</Link>}
+        <div className="finish-actions mt-6 flex flex-col justify-center gap-3">
+          <Link className="btn-secondary finish-action-link" href={`/practice/${lessonSlug}?mode=mixed&level=${level}`} prefetch={false}>Ulangi tahap</Link>
+          {level < 7 && <Link className="btn-primary finish-action-link" href={`/practice/${lessonSlug}?mode=mixed&level=${level + 1}`} prefetch={false}>Lanjut tahap {level + 1} <ArrowRight size={17} /></Link>}
+          <Link className="btn-secondary finish-action-link" href="/dashboard" prefetch={false}>Kembali ke beranda</Link>
         </div>
       </div>
     );
@@ -674,7 +680,7 @@ export default function PracticeClient({
           <div className="progress-track practice-progress" role="progressbar" aria-label="Kemajuan latihan" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><div className="progress-fill" style={{ width: `${progress}%` }} /></div>
           <p className="mt-1 text-[10px] font-extrabold tracking-wide text-[#9a9b8d]">LEVEL {level} · SOAL {Math.min(index + 1, questions.length)} / 15</p>
         </div>
-        <span className="flex items-center gap-1 font-black text-rose-500"><Heart size={19} fill="currentColor" />{hearts}</span>
+        <span className="flex items-center gap-1 font-black text-rose-500"><GamificationIcon kind="heart" size={21} />{hearts}</span>
       </div>
 
       <div className="practice-card surface p-5 md:p-8">
@@ -971,10 +977,10 @@ export default function PracticeClient({
       {gameOver && (
         <div className="life-overlay" role="presentation">
           <section className="life-dialog pop-in" role="dialog" aria-modal="true" aria-labelledby="life-title">
-            <div className="mb-4 flex items-center justify-between"><span className="rounded-full bg-[#f8e6dc] px-3 py-1 text-xs font-black text-[#a76d50]">ENERGI HABIS</span><Heart className="text-rose-500" fill="currentColor" size={28} /></div>
+            <div className="mb-4 flex items-center justify-between"><span className="rounded-full bg-[#f8e6dc] px-3 py-1 text-xs font-black text-[#a76d50]">ENERGI HABIS</span><GamificationIcon kind="heart" size={30} /></div>
             <div className="flex items-center gap-3"><CatMascot mood="sad" size={78} /><div><h2 id="life-title" className="text-2xl font-black">Kamu kehabisan nyawa!</h2><p className="mt-1 text-sm leading-5 text-[#718078]">Pelajaran belum selesai. Pilih cara untuk melanjutkan.</p></div></div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <button type="button" onClick={refillHearts} disabled={refilling} className="life-refill-option life-refill-diamond" aria-label="Isi ulang hingga lima nyawa dengan 25 berlian"><span className="flex items-center justify-between"><Heart className="text-rose-500" fill="currentColor" size={23} /><span className="rounded-full bg-[#fff0d9] px-2 py-1 text-xs font-black text-[#a76d50]">25 💎</span></span><strong className="mt-3 block text-sm">Isi dengan berlian</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Isi kembali hingga 5 nyawa menggunakan 25 berlian.</span></button>
+              <button type="button" onClick={refillHearts} disabled={refilling} className="life-refill-option life-refill-diamond" aria-label="Isi ulang hingga lima nyawa dengan 25 berlian"><span className="flex items-center justify-between"><GamificationIcon kind="heart" size={25} /><span className="rounded-full bg-[#fff0d9] px-2 py-1 text-xs font-black text-[#a76d50]">25 💎</span></span><strong className="mt-3 block text-sm">Isi dengan berlian</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Isi kembali hingga 5 nyawa menggunakan 25 berlian.</span></button>
               <button type="button" onClick={refillHeartsWithXp} disabled={refilling || xp < 100} className="life-refill-option life-refill-xp" aria-label="Isi ulang hingga lima nyawa dengan 100 XP"><span className="flex items-center justify-between"><span className="text-2xl font-black text-[#bd795a]">✦</span><span className="rounded-full bg-[#f8e6dc] px-2 py-1 text-xs font-black text-[#a76d50]">100 XP</span></span><strong className="mt-3 block text-sm">Isi dengan XP</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Tukarkan 100 XP untuk mengisi kembali hingga 5 nyawa.</span>{xp < 100 && <span className="mt-2 block text-[11px] font-bold text-[#a65d4b]">XP belum cukup</span>}</button>
               <Link href="/dashboard" className="rounded-2xl border-2 border-[#d9d3c3] bg-white p-4 text-left transition hover:bg-[#f1eadb] sm:col-span-2"><span className="flex h-[23px] items-center text-2xl">🏡</span><strong className="mt-3 block text-sm">Akhiri pelajaran</strong><span className="mt-1 block text-xs leading-5 text-[#718078]">Kembali ke beranda dan lanjutkan nanti.</span></Link>
             </div>

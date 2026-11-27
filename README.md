@@ -348,3 +348,12 @@ Jalankan migration `supabase/migrations/007_dialogue_xp_refill_and_indonesian_wo
 - Menu utama diringkas: Beranda, Materi, Capaian, Toko Hadiah, dan Profil. Latihan, dialog, dan audio tetap berada di dalam Materi.
 - Tombol Keluar tersedia di bagian paling bawah sidebar desktop; pada mobile tetap tersedia di Profil.
 - Ikon berlian Toko Hadiah disamakan dengan ikon berlian pada Beranda menggunakan komponen SVG ARABEEZA.
+
+## Revisi V16.3
+- Menata ikon streak, berlian, dan nyawa agar konsisten menggunakan 🔥 💎 ❤️ di seluruh tampilan.
+- Mengganti statistik total bintang pada beranda menjadi Total XP.
+- Menghapus keterangan petunjuk di bawah jalur tujuh tahap.
+- Menghilangkan terjemahan dalam tanda kurung yang menempel pada kosakata Arab di teks pertanyaan.
+- Menambahkan tombol Kembali ke beranda pada layar penyelesaian tahap.
+- Memperbesar target sentuh dan mengurangi efek hover/transform pada perangkat touchscreen.
+- Tombol Ulangi tahap dan Lanjut tahap tetap membuka langsung halaman soal untuk tahap terkait.

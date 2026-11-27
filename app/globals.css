@@ -2201,3 +2201,49 @@ html[data-a11y-motion="reduced"] .dashboard-welcome-cat { animation: none !impor
 
 }
 
+
+
+/* ARABEEZA V16.3 — mobile touch reliability and stage completion actions. */
+.finish-actions { width: 100%; }
+.finish-action-link { display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: center; padding: 14px 18px; border-radius: 16px; font-size: 16px; line-height: 1.25; text-align: center; }
+
+@media (hover: none) and (pointer: coarse) {
+  html, body { -webkit-tap-highlight-color: transparent; }
+  button, a, [role="button"], input, select, textarea, summary {
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: rgba(118, 43, 64, .12);
+  }
+  button, a, [role="button"] {
+    pointer-events: auto;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  button:hover, a:hover, [role="button"]:hover {
+    transform: none !important;
+    filter: none;
+  }
+  button:active:not(:disabled), a:active, [role="button"]:active {
+    filter: brightness(.97);
+  }
+  .btn-primary, .btn-secondary, .choice, .image-choice-card, .match-tile, .word-token,
+  .level-hit-area, .mobile-nav-link, .sidebar-nav-link, .feedback-next-button,
+  .practice-back, .audio-play-button, .audio-read-button, .dialogue-audio-button,
+  .dialogue-play-all, .practice-mic-button, .sensory-alternative-button,
+  .finish-action-link, .a11y-icon-button, .a11y-done-button, .a11y-reset-button {
+    min-height: 48px;
+    touch-action: manipulation !important;
+  }
+  .level-hit-area { min-width: 88px; min-height: 88px; }
+  .feedback-dock { pointer-events: none; }
+  .feedback-dock-inner { pointer-events: auto; }
+}
+
+@media (max-width: 959px) {
+  .dashboard-path-footer { display: none; }
+}
+
+@media (max-width: 600px) {
+  .finish-actions { gap: 12px; }
+  .finish-action-link { min-height: 58px; font-size: 16px; }
+  .dashboard-stat-card { min-height: 84px; }
+}

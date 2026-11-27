@@ -45,9 +45,6 @@ export default async function DashboardPage() {
   const activeLesson = lessons[0];
   const getStageProgress = (levelNo: number) =>
     stageProgress.find((item: any) => item.lesson_id === activeLesson?.id && item.level_no === levelNo);
-  const totalStars = stageProgress
-    .filter((item: any) => item.lesson_id === activeLesson?.id)
-    .reduce((total: number, item: any) => total + Number(item.best_stars || 0), 0);
   const completedStages = stageProgress
     .filter((item: any) => item.lesson_id === activeLesson?.id && Number(item.completed_sessions || 0) > 0).length;
 
@@ -170,8 +167,8 @@ export default async function DashboardPage() {
                 <div><strong>{profile.hearts}/5</strong><span>Nyawa</span></div>
               </div>
               <div className="dashboard-stat-card">
-                <GamificationIcon kind="star" size={34} />
-                <div><strong>{totalStars}</strong><span>Total bintang terbaik</span></div>
+                <GamificationIcon kind="xp" size={34} />
+                <div><strong>{profile.xp.toLocaleString("id-ID")}</strong><span>Total XP</span></div>
               </div>
             </div>
           </section>
