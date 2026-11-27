@@ -662,9 +662,32 @@ export default function PracticeClient({
         </div>
         <p className="rounded-xl bg-[#eaf2df] p-3 text-sm font-bold text-[#657449]">{saving ? "Menyimpan progres..." : savedMessage}</p>
         <div className="finish-actions mt-6 flex flex-col justify-center gap-3">
-          <Link className="btn-secondary finish-action-link" href={`/practice/${lessonSlug}?mode=mixed&level=${level}`} prefetch={false}>Ulangi tahap</Link>
-          {level < 7 && <Link className="btn-primary finish-action-link" href={`/practice/${lessonSlug}?mode=mixed&level=${level + 1}`} prefetch={false}>Lanjut tahap {level + 1} <ArrowRight size={17} /></Link>}
-          <Link className="btn-secondary finish-action-link" href="/dashboard" prefetch={false}>Kembali ke beranda</Link>
+          <button
+            type="button"
+            className="btn-secondary finish-action-link"
+            disabled={saving}
+            onClick={() => window.location.assign(`/practice/${lessonSlug}?mode=mixed&level=${level}&restart=${Date.now()}`)}
+          >
+            {saving ? "Menyimpan progres..." : "Ulangi tahap"}
+          </button>
+          {level < 7 && (
+            <button
+              type="button"
+              className="btn-primary finish-action-link"
+              disabled={saving}
+              onClick={() => window.location.assign(`/practice/${lessonSlug}?mode=mixed&level=${level + 1}&start=${Date.now()}`)}
+            >
+              Lanjut tahap {level + 1} <ArrowRight size={17} />
+            </button>
+          )}
+          <button
+            type="button"
+            className="btn-secondary finish-action-link"
+            disabled={saving}
+            onClick={() => window.location.assign("/dashboard")}
+          >
+            Kembali ke beranda
+          </button>
         </div>
       </div>
     );

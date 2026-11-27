@@ -357,3 +357,12 @@ Jalankan migration `supabase/migrations/007_dialogue_xp_refill_and_indonesian_wo
 - Menambahkan tombol Kembali ke beranda pada layar penyelesaian tahap.
 - Memperbesar target sentuh dan mengurangi efek hover/transform pada perangkat touchscreen.
 - Tombol Ulangi tahap dan Lanjut tahap tetap membuka langsung halaman soal untuk tahap terkait.
+
+## V16.4 – Perbaikan navigasi akhir tahap
+
+- Tombol **Ulangi tahap** sekarang memuat ulang halaman latihan dengan parameter sesi baru agar state selesai tidak terbawa; latihan dimulai dari soal pertama tahap yang sama.
+- Tombol **Lanjut tahap** memuat halaman baru untuk tahap berikutnya agar state tahap sebelumnya tidak terbawa; latihan dimulai dari soal pertama tahap tujuan.
+- Tombol navigasi dinonaktifkan selama penyimpanan progres berlangsung agar perpindahan halaman tidak memotong penyimpanan hasil.
+- **Kembali ke beranda** tetap mengarah langsung ke dashboard.
+
+Catatan: build/typecheck belum dijalankan karena `node_modules` tidak tersedia di lingkungan pemeriksaan.
